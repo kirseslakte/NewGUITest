@@ -1,0 +1,14 @@
+Add Buildings
+Add feats/unit feats&other unit related things
+add culture&religion
+add tradefunction
+
+on mainthread:
+fix loop so that all buttons have functionality
+
+on mainwindow:
+Add governemnt tab
+Add Official functionality
+Add trade
+add hex things
+add units
