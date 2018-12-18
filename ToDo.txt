@@ -1,19 +1,21 @@
 rule-wize:
 Add Buildings
 Add Institutions
-add culture&religion
+add culture&religion tables
 add tradefunction
-
-Add military things
 Add feats/unit feats&other unit related things
 
 on mainthread:
-fix loop so that all buttons have functionality
+fix loop so that all buttons have functionality---DONE!
 
 on mainwindow:
-add slots so that we can actually start testing functionality
-Add governemnt tab
+add layouts so that we can actually start testing functionality
+
+
+Add governemnt tab (already exists??)
+These should not be on main window, but should possibly be sub-classes to main window, which all opens a small pop-up themselves.
 Add Official functionality
 Add trade
 add hex things
 add units
+Add military things
