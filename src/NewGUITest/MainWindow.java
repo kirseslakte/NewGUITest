@@ -32,7 +32,7 @@ public class MainWindow extends Frame {
 		newVassalBtn = new Button("New Vassal");//adding buttons
 		mainPnl.add(newVassalBtn);
 		saveBtn = new Button("Save Nation");
-		mainPnl.add(saveBtn);
+		mainPnl.add(saveBtn);//new vassal and save nation still has no functionality to them.
 		loadBtn = new Button("Load Nation");
 		mainPnl.add(loadBtn);
 		quitBtn = new Button("Quit");

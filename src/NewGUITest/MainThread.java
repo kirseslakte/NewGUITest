@@ -15,22 +15,34 @@ public class MainThread {
 		ReadNWrite writer = new ReadNWrite();
 		menuWindow.Start();
 		while(true){
-			while (menuWindow.running||mainWindow.running||loadWindow.running){
+			while (menuWindow.running){//main menu loop
 				try {
 					TimeUnit.SECONDS.sleep(1);
 				}catch (InterruptedException e){
 					System.out.println(e);
 				}
-				System.out.println(writer.updateSaves());
+			}
+			while (mainWindow.running){//main window loop
+				try {
+					TimeUnit.SECONDS.sleep(1);
+				}catch (InterruptedException e){
+					System.out.println(e);
+				}
+				//will update every second and save every 30 seconds?
+			}
+			while (loadWindow.running){//load window loop
+				try {
+					TimeUnit.SECONDS.sleep(1);
+				}catch (InterruptedException e){
+					System.out.println(e);
+				}
+				System.out.println(writer.updateSaves());//prints the number of save folders.
 			}
 			if (menuWindow.choice == "Main"||loadWindow.choice == "Main"){//going to the main window
-				System.out.println(menuWindow.nation_name);
-				System.out.println(loadWindow.nation_name);
-				if ("".equals(loadWindow.nation_name))
+				if ("".equals(loadWindow.nation_name))//setting the name of the current government displayed in mainWindow
 					nation_name = menuWindow.nation_name;
 				else if ("".equals(menuWindow.nation_name))
 					nation_name = loadWindow.nation_name;
-				System.out.println("Setting main frame name to "+nation_name);
 				menuWindow.Stop();
 				menuWindow.StopNation();
 				loadWindow.Stop();
