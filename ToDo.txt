@@ -11,6 +11,8 @@ fix loop so that all buttons have functionality---DONE!
 on mainwindow:
 add layouts so that we can actually start testing functionality
 
+on nation:
+total bpm, tax income, total trade value must be global and accessible, bake them into the nation object
 
 Add governemnt tab (already exists??)
 These should not be on main window, but should possibly be sub-classes to main window, which all opens a small pop-up themselves.
