@@ -2,6 +2,7 @@ package NewGUITest;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.TimeUnit;
 
 public class MainMenu extends Frame {
 	//add components that will go in the frame
@@ -12,6 +13,8 @@ public class MainMenu extends Frame {
 	private Button quitBtn;
 	public String choice = "";
 	public boolean running = false;
+	public String nation_name;
+	NewNation namenation = new NewNation();
 	
 	public MainMenu() {//constructor constructs the frame
 		menuFrame = new Frame("Main Menu");
@@ -32,7 +35,7 @@ public class MainMenu extends Frame {
 		menuFrame.add(menuPnl);
 		newBtn.addActionListener(new ActionListener() {//add action event to new button
 			public void actionPerformed(ActionEvent e){
-				choice = "Main";
+				choice = "New";
 				running = false;
 			}
 		});
@@ -57,6 +60,57 @@ public class MainMenu extends Frame {
 	
 	public void Stop() {
 		choice = "";
+		nation_name = "";
 		menuFrame.setVisible(false);
+	}
+	/////THIS IS ANOTHER FRAME AND WINDOW ALLTOGHETHER. IT IS HERE BECAUSE THERE WAS SPACE AND PALLA WITH NEW .JAVA FILES//////
+	//These are the create new nation methods
+	public void StartNation() {
+		namenation.Start();;
+	}
+	public void StopNation() {
+		namenation.Stop();
+	}
+	
+	public class NewNation extends Frame{//called whenever a new nation is about to be named
+		private Frame nameFrame;
+		private Panel namePanel;
+		private TextField txtfield;
+		private Button btn;
+		
+		public NewNation() {
+			nameFrame = new Frame("Name Your Nation");
+			nameFrame.setSize(200,600);//x,y
+			nameFrame.addWindowListener(new WindowAdapter() {//close program on closing window
+				public void windowClosing(WindowEvent windowEvent){
+					System.exit(0);
+				}
+			});
+			namePanel = new Panel();//set out panel
+			namePanel.setLayout(new GridLayout(2,1));//set layout
+			txtfield = new TextField("Type Nation Name Here");
+			namePanel.add(txtfield);
+			btn = new Button("Create Nation!");//adding buttons
+			namePanel.add(btn);
+			nameFrame.add(namePanel);
+			btn.addActionListener(new ActionListener() {//add action event to new button
+				public void actionPerformed(ActionEvent e){
+					choice = "Main";
+					running = false;
+					nation_name = txtfield.getText();
+				}
+			});
+		}
+		
+		public void Start() {
+			nation_name = "";
+			running = true;
+			nameFrame.setVisible(true);
+		}
+		public void Stop() {
+			nation_name = "";
+			choice = "";
+			nameFrame.setVisible(false);
+		}
 	}
 }

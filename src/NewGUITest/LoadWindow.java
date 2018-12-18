@@ -18,7 +18,7 @@ public class LoadWindow extends Frame {
 	private Panel loadPnl;
 	public boolean running = false;
 	public String choice = "";
-	public String nation_name;
+	public String nation_name = "";
 	
 	public LoadWindow() {
 		loadFrame = new Frame("Load Nation");
@@ -55,12 +55,14 @@ public class LoadWindow extends Frame {
 
 	
 	public void Start() {
+		nation_name = "";
 		running = true;
 		loadFrame.setVisible(true);
 	}
 	
 	public void Stop() {
 		choice = "";
+		nation_name = "";
 		loadFrame.setVisible(false);
 	}
 }

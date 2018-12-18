@@ -69,25 +69,57 @@ public class Nation {
 		govn.setCentralisation(cent);
 	}
 	
-	public void setInstitutions(String[] in_institutions) {
+	public void setInstitutions(String[] in_institutions) {//set the institutions of the nation
 		for (String s: in_institutions) {
 			//check which institutions player wants
 		}
 	}
 	
-	public class official {
+	public class official {//initializing an 'official' object where you can create 'characters'
 		public String name;
 		public String type;
 		public int roll;
+		public boolean inhex;
+		public String hex;
 		
+		public official(String[] s){
+			this.name = s[0];
+			this.type = s[1];
+			this.roll = Integer.parseInt(s[2]);
+			this.inhex = Boolean.parseBoolean(s[3]);
+			if (inhex)
+				this.hex = s[4];
+			else
+				this.hex = "";
+		}
 		
+		public void changeName(String s) {//methods for changing the officials (some might be redundant)
+			this.name = s;
+		}
+		public void changeType(String s) {
+			this.type = s;
+		}
+		public void changeRoll(int i) {
+			this.roll = i;
+		}
+		public void changeInHex(boolean b) {
+			this.inhex = b;
+		}
+		public void changeHex(String s) {
+			this.hex = s;
+		}
 	}
 	
-	public void setCultureBonuses(double[] input_bonuses) {
+	public void setCultureBonuses(double[] input_bonuses) {//set the culture bonuses fed from front panel
 		culture_bonuses = input_bonuses;
 	}
 	
-	public void setEconomyAndOfficials(double[] e) {
+	public void setEconomyAndOfficials(double[] e) {//set the economy settings fed from the front panel
 		eco = e;
+	}
+	
+	public Object assignOfficial(String[] s) {//create a new official object
+		official official = new official(s);
+		return official;
 	}
 }

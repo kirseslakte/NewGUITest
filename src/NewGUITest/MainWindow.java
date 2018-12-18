@@ -21,7 +21,7 @@ public class MainWindow extends Frame {
 	
 	public MainWindow() {
 		mainFrame = new Frame();
-		mainFrame.setSize(2500,2000);//x,y
+		mainFrame.setSize(1500,1000);//x,y
 		mainFrame.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				System.exit(0);
@@ -37,13 +37,13 @@ public class MainWindow extends Frame {
 		mainPnl.add(loadBtn);
 		quitBtn = new Button("Quit");
 		mainPnl.add(quitBtn);
-		mainFrame.add(mainPnl);
+		mainFrame.add(mainPnl);/*
 		newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
 			public void actionPerformed(ActionEvent e){
 				choice = "Main";
 				running = false;
 			}
-		});
+		});*/
 		loadBtn.addActionListener(new ActionListener() {//add action event to load button
 			public void actionPerformed(ActionEvent e){
 				choice = "Load";
@@ -59,8 +59,9 @@ public class MainWindow extends Frame {
 	}
 	
 	
-	public void Start() {
+	public void Start(String s) {
 		running = true;
+		mainFrame.setTitle(s);
 		mainFrame.setVisible(true);
 	}
 	
