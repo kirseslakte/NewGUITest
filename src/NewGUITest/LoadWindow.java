@@ -3,6 +3,7 @@ package NewGUITest;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.awt.Dimension;
 import java.awt.Panel;
 import java.awt.Frame;
 import java.awt.Button;
@@ -20,23 +21,21 @@ public class LoadWindow extends Frame {
 	public String nation_name;
 	
 	public LoadWindow() {
-		loadFrame = new Frame();
-		loadFrame.setSize(200,200);//x,y
+		loadFrame = new Frame("Load Nation");
 		loadFrame.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				System.exit(0);
 			}
 		});
 		ReadNWrite write = new ReadNWrite();
+		loadFrame.setSize(600, (int) Math.floor(write.n_saves/3+1)*75);//x,y
 		loadPnl = new Panel();
-		loadPnl.setLayout(new GridLayout((int) Math.floor(write.n_saves/3+1),3));//
-		System.out.println(Math.floor(write.n_saves/3));
+		loadPnl.setLayout(new GridLayout((int) Math.floor(write.n_saves/3+1),3));//setting up grid for loading buttons
 		List<Button> btnList = new ArrayList<Button>();
 		ActionListener listener = new ActionListener() {//creating standardized action listeners for all buttons in arraylist
 			public void actionPerformed(ActionEvent e){
 				if (e.getSource() instanceof Button){
 					nation_name = ((Button) e.getSource()).getName();
-					System.out.println("Getting "+((Button) e.getSource()).getName()+" ready");
 					choice = "Main";
 					running = false;
 				}
@@ -45,7 +44,6 @@ public class LoadWindow extends Frame {
 		for (int i=0;i<write.n_saves;i++){//adding all buttons
 			Button btn = new Button(write.save_names[i]);
 			btn.setName(write.save_names[i]);
-			System.out.println("Created button for "+write.save_names[i]);
 			btnList.add(btn);
 			btnList.get(i).addActionListener(listener);//add action event to new button
 			loadPnl.add(btn);

@@ -21,12 +21,12 @@ public class Governments {
 	double trade_eff = 0;
 	double vassal_inc_eff = 0;
 	double bank_inc_eff = 0;
-	double bank_prod_eff = 0;
+	double bank_dev_eff = 0;
 	double plunder_eff = 0;
 	double max_pop_size = 0;
 	int move_pop_mod = 1;
 	double unit_cap_mod = 1;
-	double max_bank_prod_eff = 0;
+	double max_bank_dev_eff = 0;
 	int min_unrest = 0;
 	double max_tax_rate = 0;
 	
@@ -48,12 +48,12 @@ public class Governments {
 		trade_eff = 0;
 		vassal_inc_eff = 0;
 		bank_inc_eff = 0;
-		bank_prod_eff = 0;
+		bank_dev_eff = 0;
 		plunder_eff = 0;
 		max_pop_size = 0;
 		move_pop_mod = 1;
 		unit_cap_mod = 1;
-		max_bank_prod_eff = 0;
+		max_bank_dev_eff = 0;
 		min_unrest = 0;
 		max_tax_rate = 0;
 	}
@@ -83,7 +83,7 @@ public class Governments {
 		tax_eff += 0.1;
 		prod_eff += 0.1;
 		bank_inc_eff += 0.2;
-		bank_prod_eff += 0.2;
+		bank_dev_eff += 0.2;
 		trade_eff += 0.2;
 	}
 	public void setAutocratic() {//modifiers for the autocratic system
@@ -98,7 +98,7 @@ public class Governments {
 		sys = systems[2];
 		tax_eff += 0.1;
 		prod_eff += 0.3;
-		bank_prod_eff += 0.2;
+		bank_dev_eff += 0.2;
 	}
 	public void setTheocratic() {//modifiers for the theocratic system
 		sys = systems[3];
@@ -115,7 +115,7 @@ public class Governments {
 		sys = systems[5];
 		tax_eff += 0.1;
 		prod_eff += 0.1;
-		bank_prod_eff += 0.2;
+		bank_dev_eff += 0.2;
 		trade_eff += 0.4;
 	}
 	public void setHive() {//modifiers for the hive system
@@ -177,22 +177,22 @@ public class Governments {
 	}
 	public void setSettled() {
 		style = life[0];
-		max_bank_prod_eff = 10;
-		bank_prod_eff += 0.1;
+		max_bank_dev_eff = 10;
+		bank_dev_eff += 0.1;
 		max_pop_size = 10;
 		move_pop_mod *= 16;
 		plunder_eff = 0.25;
 	}
 	public void setTribalistic() {
 		style = life[1];
-		max_bank_prod_eff = 0.5;
+		max_bank_dev_eff = 0.5;
 		max_pop_size = 6;
 		move_pop_mod *= 4;
 		plunder_eff += 0.5;
 	}
 	public void setNomadic() {
 		style = life[2];
-		max_bank_prod_eff = 0.3;
+		max_bank_dev_eff = 0.3;
 		unit_training_cost_mod *= 0.9;
 		unit_cap_mod *= 0.9;
 		max_pop_size = 4;
