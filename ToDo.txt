@@ -1,3 +1,7 @@
+general:
+construct the save/load methods so that they... *gasp* work!
+when a new vassal is created make a new window, and simply make the 'inactive ones' invisible, so that their states can still be accessed.
+
 rule-wize:
 Add Buildings
 Add Institutions

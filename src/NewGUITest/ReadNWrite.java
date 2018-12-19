@@ -28,6 +28,7 @@ public class ReadNWrite {
 		directory.mkdir();
 	}
 	
+	////LOAD METHODS////
 	public List<Lord> readSaveFile(File k) {//reading a save file with nation file directory as input
 		List<Lord> listoflords = new ArrayList<Lord>();//list of all lords in the savefile
 		//overlord always exist and vassals go as vassal1, vassal2, ...
@@ -38,19 +39,27 @@ public class ReadNWrite {
 		}											//PROBABLY BUILDINGS UNLESS THEY ARE PART OF Hex OBJECT
 		return listoflords;
 	}
-	
-	private Lord readLordFile(File k, String s) {//read a vassal file (only ever called from readSaveFile
+	//load lord
+	private Lord readLordFile(File k, String s) {//read a lord file (only ever called from readSaveFile
 		Lord lord = new Lord(s);//import the lord
 		return lord;
 	}
-	
+	//Load hex
 	private Hex readHex(File k) {//reads the hex-file and imports a hex. will have to call this once for every hex probs
 		Hex hex = new Hex();//import the hex
 		
 		return hex;
 	}
-	
-	public void writeSaveFile(Lord lord) {//Writing the save file. needs to be called for each vassal?
+	////SAVE METHODS////
+	public void writeSaveFile(File k, List<Lord> listoflords, List<Hex> listofhexes) {
+		
+	}
+	//Saving hex
+	public void writeHexFile(Hex hex) {//writing 
+		
+	}
+	//saving lord
+	public void writeLordFile(Lord lord) {//Writing the save file. needs to be called for each vassal?
 		String s = directory+"\\"+lord.title+filetype;
 		File file = new File(s);
 		try {
@@ -85,7 +94,7 @@ public class ReadNWrite {
 			System.out.println(e);
 		}
 	}
-	
+	/////THIS IS NOTHING IMPORTANT, DON'T LOOK AT THIS
 	public void generateLord(String input) {//this is simply a test to see if we can save a lord
 		Lord lord = new Lord("Marle");
 		String[] s = {"Democracy", "Classisist","Monarchy","Settled","Highly","LN","LE","Mamma Murre",
@@ -102,6 +111,6 @@ public class ReadNWrite {
 			k[i] = i;
 		lord.setEconomyAndOfficials(k);
 		setSaveName(input);
-		writeSaveFile(lord);
+		writeLordFile(lord);
 	}
 }
