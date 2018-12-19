@@ -79,6 +79,7 @@ public class MainMenu extends Frame {
 		private Button btn;
 		
 		public NewNation() {
+			ReadNWrite writer = new ReadNWrite();
 			nameFrame = new Frame("Name Your Nation");
 			nameFrame.setSize(200,600);//x,y
 			nameFrame.addWindowListener(new WindowAdapter() {//close program on closing window
@@ -96,8 +97,9 @@ public class MainMenu extends Frame {
 			btn.addActionListener(new ActionListener() {//add action event to new button
 				public void actionPerformed(ActionEvent e){
 					choice = "Main";
-					running = false;
 					nation_name = txtfield.getText();
+					writer.setSaveName(nation_name);
+					running = false;
 				}
 			});
 		}

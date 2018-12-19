@@ -18,6 +18,7 @@ public class MainWindow extends Frame {
 	private Button quitBtn;
 	public String choice = "";
 	public boolean running = false;
+	ReadNWrite write = new ReadNWrite();
 	
 	public MainWindow() {
 		mainFrame = new Frame();
@@ -53,6 +54,13 @@ public class MainWindow extends Frame {
 		quitBtn.addActionListener(new ActionListener() {//add action event to quit button
 			public void actionPerformed(ActionEvent e){
 				choice = "Quit";
+				running = false;
+			}
+		});
+		newVassalBtn.addActionListener(new ActionListener() {//this is a placeholder to test the save functionality
+			public void actionPerformed(ActionEvent e){
+				choice = "Load";
+				write.generateLord(mainFrame.getTitle());
 				running = false;
 			}
 		});

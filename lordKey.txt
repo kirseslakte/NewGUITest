@@ -1,0 +1,22 @@
+name						1
+system						2
+societal_structure				3
+ruler						4
+life_style					5
+centralisation					6
+alignemnt					7
+religion					8
+ruler_name					9
+legitimacy					10
+is_vassal					11
+institution1					12
+institution2					13
+institution3					14
+institution4					15
+culture_bonuses (22 doubles)			16
+last culture bonus				37
+number_of_officials				38
+tax_rate					39
+banked_rp					40
+banked_development				41
+tax_rate_overlord				42

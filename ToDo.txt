@@ -10,9 +10,10 @@ fix loop so that all buttons have functionality---DONE!
 
 on mainwindow:
 add layouts so that we can actually start testing functionality
+fix the save button so that we can start trying to read/write save files!
 
 on nation:
-total bpm, tax income, total trade value must be global and accessible, bake them into the nation object
+total bpm, tax income, total trade value and overlord tax must be global and accessible, bake them into the nation object---DONE!
 
 Add governemnt tab (already exists??)
 These should not be on main window, but should possibly be sub-classes to main window, which all opens a small pop-up themselves.

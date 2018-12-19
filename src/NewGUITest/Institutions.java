@@ -2,13 +2,61 @@ package NewGUITest;
 
 
 public class Institutions {
+	public int number_of_institutions;
+	public String[] institution_names = { "Arts","Church","Courts","Druids","Education","Foreign Office","Interior","Mages","Merchants",
+			"Military","Monstrologist","Parliament","Psions","Secret Service","Slavery","Tinkers","Treasury","Welfare"};
+	public Institutions() {//whenever an object is created from this class we reset all the modifiers from them
+		resetModifiers();
+	}
 	
-	public Institutions() {
+	public void findInstitution(String s) {//input is institute and it executes that institue method
+		if (s==institution_names[0])
+			arts();
+		else if (s==institution_names[1])
+			church();
+		else if (s==institution_names[2])
+			courts();
+		else if (s==institution_names[3])
+			druids();
+		else if (s==institution_names[4])
+			education();
+		else if (s==institution_names[5])
+			foreignOffice();
+		else if (s==institution_names[6])
+			interior();
+		else if (s==institution_names[7])
+			mages();
+		else if (s==institution_names[8])
+			merchants();
+		else if (s==institution_names[9])
+			military();
+		else if (s==institution_names[10])
+			monstrologist();
+		else if (s==institution_names[11])
+			parliament();
+		else if (s==institution_names[12])
+			psions();
+		else if (s==institution_names[13])
+			secretService();
+		else if (s==institution_names[14])
+			slavery();
+		else if (s==institution_names[15])
+			tinkers();
+		else if (s==institution_names[16])
+			treasury();
+		else if (s==institution_names[17])
+			welfare();
+		else
+			//nothing
+		
+		resetModifiers();
+	}	
+	public void resetModifiers() {//resets all the modifiers from insitutions
 		
 	}
-		
 	public void arts() {
 		//bard lvl 1 in all possible hexes (not paying for that tho)
+		String name = institution_names[0];
 	}
 	public void church() {
 		//church lvl 1 in all possible hexes (not paying for that tho)

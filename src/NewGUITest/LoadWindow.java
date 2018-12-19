@@ -2,6 +2,7 @@ package NewGUITest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 import java.awt.Dimension;
 import java.awt.Panel;
@@ -21,6 +22,7 @@ public class LoadWindow extends Frame {
 	public String nation_name = "";
 	
 	public LoadWindow() {
+		ReadNWrite writer = new ReadNWrite();
 		loadFrame = new Frame("Load Nation");
 		loadFrame.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
@@ -36,6 +38,7 @@ public class LoadWindow extends Frame {
 			public void actionPerformed(ActionEvent e){
 				if (e.getSource() instanceof Button){
 					nation_name = ((Button) e.getSource()).getName();
+					writer.setSaveName(nation_name);
 					choice = "Main";
 					running = false;
 				}
