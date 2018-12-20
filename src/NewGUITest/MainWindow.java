@@ -1,13 +1,7 @@
 package NewGUITest;
 
-import java.awt.Button;
-import java.awt.Frame;
-import java.awt.GridLayout;
-import java.awt.Panel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.event.*;
 
 public class MainWindow extends Frame {
 	private Frame mainFrame;
@@ -21,8 +15,12 @@ public class MainWindow extends Frame {
 	ReadNWrite write = new ReadNWrite();
 	
 	public MainWindow() {
-		mainFrame = new Frame();
+		mainFrame = new Frame();		
 		mainFrame.setSize(1500,1000);//x,y
+	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+	    int x = (int) ((dimension.getWidth() - mainFrame.getWidth()) / 2);
+	    int y = (int) ((dimension.getHeight() - mainFrame.getHeight()) / 2);
+	    mainFrame.setLocation(x, y);
 		mainFrame.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				System.exit(0);
@@ -54,13 +52,6 @@ public class MainWindow extends Frame {
 		quitBtn.addActionListener(new ActionListener() {//add action event to quit button
 			public void actionPerformed(ActionEvent e){
 				choice = "Quit";
-				running = false;
-			}
-		});
-		newVassalBtn.addActionListener(new ActionListener() {//this is a placeholder to test the save functionality
-			public void actionPerformed(ActionEvent e){
-				choice = "Load";
-				write.generateLord(mainFrame.getTitle());
 				running = false;
 			}
 		});

@@ -44,19 +44,12 @@ public class MainThread {
 				else if ("".equals(menuWindow.nation_name))
 					nation_name = loadWindow.nation_name;
 				menuWindow.Stop();
-				menuWindow.StopNation();
 				loadWindow.Stop();
 				mainWindow.Start(nation_name);
 			}else if (menuWindow.choice == "Load"||mainWindow.choice=="Load"){//going to the load saves window
 				mainWindow.Stop();
-				menuWindow.StopNation();
 				menuWindow.Stop();
 				loadWindow.Start();
-			}else if (menuWindow.choice == "New"){
-				mainWindow.Stop();
-				menuWindow.Stop();
-				loadWindow.Stop();
-				menuWindow.StartNation();
 			}else if (menuWindow.choice == "Quit"||mainWindow.choice=="Quit"){//quitting the application
 				System.exit(0);
 			}

@@ -1,8 +1,8 @@
 package NewGUITest;
 
 import java.awt.*;
+import javax.swing.JOptionPane;
 import java.awt.event.*;
-import java.util.concurrent.TimeUnit;
 
 public class MainMenu extends Frame {
 	//add components that will go in the frame
@@ -14,11 +14,15 @@ public class MainMenu extends Frame {
 	public String choice = "";
 	public boolean running = false;
 	public String nation_name;
-	NewNation namenation = new NewNation();
+	//NewNation namenation = new NewNation();
 	
 	public MainMenu() {//constructor constructs the frame
 		menuFrame = new Frame("Main Menu");
 		menuFrame.setSize(200,600);//x,y
+	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+	    int x = (int) ((dimension.getWidth() - menuFrame.getWidth()) / 2);
+	    int y = (int) ((dimension.getHeight() - menuFrame.getHeight()) / 2);
+	    menuFrame.setLocation(x, y);
 		menuFrame.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				System.exit(0);
@@ -35,8 +39,7 @@ public class MainMenu extends Frame {
 		menuFrame.add(menuPnl);
 		newBtn.addActionListener(new ActionListener() {//add action event to new button
 			public void actionPerformed(ActionEvent e){
-				choice = "New";
-				running = false;
+				startNation();
 			}
 		});
 		loadBtn.addActionListener(new ActionListener() {//add action event to load button
@@ -63,56 +66,21 @@ public class MainMenu extends Frame {
 		nation_name = "";
 		menuFrame.setVisible(false);
 	}
-	/////THIS IS ANOTHER FRAME AND WINDOW ALLTOGHETHER. IT IS HERE BECAUSE THERE WAS SPACE AND PALLA WITH NEW .JAVA FILES//////
-	//These are the create new nation methods
-	public void StartNation() {
-		namenation.Start();;
-	}
-	public void StopNation() {
-		namenation.Stop();
-	}
-	
-	public class NewNation extends Frame{//called whenever a new nation is about to be named
-		private Frame nameFrame;
-		private Panel namePanel;
-		private TextField txtfield;
-		private Button btn;
-		
-		public NewNation() {
-			ReadNWrite writer = new ReadNWrite();
-			nameFrame = new Frame("Name Your Nation");
-			nameFrame.setSize(200,600);//x,y
-			nameFrame.addWindowListener(new WindowAdapter() {//close program on closing window
-				public void windowClosing(WindowEvent windowEvent){
-					System.exit(0);
-				}
-			});
-			namePanel = new Panel();//set out panel
-			namePanel.setLayout(new GridLayout(2,1));//set layout
-			txtfield = new TextField("Type Nation Name Here");
-			namePanel.add(txtfield);
-			btn = new Button("Create Nation!");//adding buttons
-			namePanel.add(btn);
-			nameFrame.add(namePanel);
-			btn.addActionListener(new ActionListener() {//add action event to new button
-				public void actionPerformed(ActionEvent e){
-					choice = "Main";
-					nation_name = txtfield.getText();
-					writer.setSaveName(nation_name);
-					running = false;
-				}
-			});
-		}
-		
-		public void Start() {
-			nation_name = "";
-			running = true;
-			nameFrame.setVisible(true);
-		}
-		public void Stop() {
-			nation_name = "";
-			choice = "";
-			nameFrame.setVisible(false);
+	//new nation pop-up
+	public void startNation() {
+		ReadNWrite writer = new ReadNWrite();
+		TextField name = new TextField("Type Nation Name Here");
+		Panel newNation = new Panel(new GridLayout(0,1));
+		newNation.add(name);
+		int result = JOptionPane.showConfirmDialog(null, newNation, "Create a new nation",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (result==JOptionPane.OK_OPTION){
+			choice = "Main";
+			nation_name = name.getText();
+			writer.setSaveName(nation_name);
+			running = false;
+		}else{
+			choice = "Menu";
 		}
 	}
 }

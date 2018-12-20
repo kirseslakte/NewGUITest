@@ -24,6 +24,7 @@ public class LoadWindow extends Frame {
 	public LoadWindow() {
 		ReadNWrite writer = new ReadNWrite();
 		loadFrame = new Frame("Load Nation");
+		loadFrame.setLocationRelativeTo(null);
 		loadFrame.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				System.exit(0);

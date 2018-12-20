@@ -33,10 +33,13 @@ public class ReadNWrite {
 		List<Lord> listoflords = new ArrayList<Lord>();//list of all lords in the savefile
 		//overlord always exist and vassals go as vassal1, vassal2, ...
 		//vassals of vassals go as vassal1_1, vassal1_2,... or vassal1_1_1, vassal1_1_2,... and so on
+		List<Hex> listofhexes = new ArrayList<Hex>();
 		for (String s: k.list()) {//call the method readLordFile for each lord in the file directory
-			if (s.contains("hexes")==false)//only import lords and not hexes
-				listoflords.add(readLordFile(k,s));//ADD MORE EXCEPTIONS AS THEY DEVELOP
-		}											//PROBABLY BUILDINGS UNLESS THEY ARE PART OF Hex OBJECT
+			if (s.contains("lord")||s.contains("vassal"))//only import lords and not hexes into listoflords
+				listoflords.add(readLordFile(k,s));		//ADD MORE EXCEPTIONS AS THEY DEVELOP
+			else if (s.contains("hex")==true)			//PROBABLY BUILDINGS UNLESS THEY ARE PART OF Hex OBJECT
+				listofhexes.add(readHexFile(k));		//onlyimport the hexes into listofhexes
+		}											
 		return listoflords;
 	}
 	//load lord
@@ -45,14 +48,23 @@ public class ReadNWrite {
 		return lord;
 	}
 	//Load hex
-	private Hex readHex(File k) {//reads the hex-file and imports a hex. will have to call this once for every hex probs
+	private Hex readHexFile(File k) {//reads the hex-file and imports a hex. will have to call this once for every hex probs
 		Hex hex = new Hex();//import the hex
 		
 		return hex;
 	}
 	////SAVE METHODS////
-	public void writeSaveFile(File k, List<Lord> listoflords, List<Hex> listofhexes) {
-		
+	public void writeSaveFile(File k, List<Lord> listoflords, List<Hex> listofhexes) {//the 'proper save method' which
+												//properly clears the directory and then saves.
+	}											//called when the user presses 'save nation' button
+	//the quick save which is called every x secs
+	public void quickSaveFile(File k, List<Lord> listoflords, List<Hex> listofhexes) {
+		for (Lord lord: listoflords){
+			writeLordFile(lord);
+		}
+		for (Hex hex: listofhexes){
+			writeHexFile(hex);
+		}
 	}
 	//Saving hex
 	public void writeHexFile(Hex hex) {//writing 
@@ -93,24 +105,5 @@ public class ReadNWrite {
 		} catch (Exception e){
 			System.out.println(e);
 		}
-	}
-	/////THIS IS NOTHING IMPORTANT, DON'T LOOK AT THIS
-	public void generateLord(String input) {//this is simply a test to see if we can save a lord
-		Lord lord = new Lord("Marle");
-		String[] s = {"Democracy", "Classisist","Monarchy","Settled","Highly","LN","LE","Mamma Murre",
-				"10","1","1","1","1","0","overlord"};
-		lord.setGovernment(s);
-		String[] in = {"Druids","Church","Interior"};
-		lord.setInstitutions(in);
-		double[] e = new double[lord.number_of_culture_bonuses];
-		for (int i=0;i<lord.number_of_culture_bonuses;i++)
-			e[i] = i;
-		lord.setCultureBonuses(e);
-		double[] k = new double[5];
-		for (int i=0;i<5;i++)
-			k[i] = i;
-		lord.setEconomyAndOfficials(k);
-		setSaveName(input);
-		writeLordFile(lord);
 	}
 }

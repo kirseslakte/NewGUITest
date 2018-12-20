@@ -11,6 +11,21 @@ Add feats/unit feats&other unit related things
 
 on mainthread:
 fix loop so that all buttons have functionality---DONE!
+tidy up the mainthread so that it is a bit easier to overview wtf is going on. MORE COMMENTS!
+set up a check to see if save_request? and then call NationHandler.properSave() or something
+connect to nationhandler instead of mainwindow
+
+NationHanler:
+connect to the mainthread in a proper way.
+initializer must set overlord window to visible and set that up properly
+set up methods for showing (or unshowing) lord windows
+
+LordWindow:
+governmentpanel
+nationstatspanel
+culture/portfoliopanel
+set up pages for vassaltree and notes
+set up buttons (maybe nex to file?) for hexes, military, trade
 
 on mainwindow:
 add layouts so that we can actually start testing functionality
@@ -26,3 +41,8 @@ Add trade
 add hex things
 add units
 Add military things
+
+priorities:
+1. connect nationhandler to mainthread
+2. set initializers of nationhandler so that both lordwindow and hexwindow are created (probs mil/trade aswell)
+3. create hex/mil/trade windows
