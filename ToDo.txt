@@ -11,9 +11,9 @@ Add feats/unit feats&other unit related things
 
 on mainthread:
 fix loop so that all buttons have functionality---DONE!
-tidy up the mainthread so that it is a bit easier to overview wtf is going on. MORE COMMENTS!
+tidy up the mainthread so that it is a bit easier to overview wtf is going on. MORE COMMENTS!---DONE!
 set up a check to see if save_request? and then call NationHandler.properSave() or something
-connect to nationhandler instead of mainwindow
+connect to nationhandler instead of mainwindow---save is handled from the nationhandler
 
 NationHanler:
 connect to the mainthread in a proper way.
@@ -43,6 +43,13 @@ add units
 Add military things
 
 priorities:
-1. connect nationhandler to mainthread
+1. connect nationhandler to mainthread---DONE!
 2. set initializers of nationhandler so that both lordwindow and hexwindow are created (probs mil/trade aswell)
 3. create hex/mil/trade windows
+
+NOTES:
+Complete classes:
+MainThread
+These might also need some visual tweaking (but are still 'complete'):
+MainMenu
+LoadWindow

@@ -10,7 +10,7 @@ public class LordWindow extends JFrame {
 	public Lord lord;
 	public boolean save_request = false;
 	
-	public LordWindow() {
+	public LordWindow(Lord lord) {
 		
 		lordFrame = new JFrame();		
 		lordFrame.setSize(1500,1000);//x,y
@@ -23,6 +23,7 @@ public class LordWindow extends JFrame {
 				System.exit(0);
 			}
 		});
+		lordFrame.setTitle(lord.name);
 	    
 		////SETTING UP THE MENU BAR////
 	    
@@ -88,13 +89,15 @@ public class LordWindow extends JFrame {
 		});*/
 	}
 	
+	public void loadLord(Lord lord) {
+		
+	}
 	
-	public void Start(String s) {
-		lordFrame.setTitle(s);
+	public void start() {
 		lordFrame.setVisible(true);
 	}
 	
-	public void Stop() {
+	public void stop() {
 		lordFrame.setVisible(false);
 	}
 }

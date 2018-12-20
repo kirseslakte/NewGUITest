@@ -7,59 +7,55 @@ public class MainThread {
 	public static String nation_name;
 	
 	public static void main(String[] args) {
+		//FIRST INITIALIZATIONS
 		File nations = new File("Nations");
 		nations.mkdirs();
 		MainMenu menuWindow = new MainMenu();
-		MainWindow mainWindow = new MainWindow();
 		LoadWindow loadWindow = new LoadWindow();
-		ReadNWrite writer = new ReadNWrite();
-		menuWindow.Start();
+		NationHandler handler = new NationHandler();
+		menuWindow.start();
+		//THE MAIN THREAD
 		while(true){
-			while (menuWindow.running){//main menu loop
+			
+			//THE MAIN MENU LOOP
+			
+			while (menuWindow.running){
 				try {
 					TimeUnit.SECONDS.sleep(1);
 				}catch (InterruptedException e){
 					System.out.println(e);
-				}
+				}//three alternatives from main menu
+				if (menuWindow.feedback=="New"){//new->startNation in LoadWindow
+					loadWindow.startNation();
+					menuWindow.stop();
+				}else if (menuWindow.feedback=="Load"){//load->LoadWindow
+					menuWindow.stop();
+					loadWindow.start();
+				}else if (menuWindow.feedback=="Quit")//quit
+					System.exit(0);
 			}
-			while (mainWindow.running){//main window loop
+			
+			//THE LOAD WINDOW LOOP
+			
+			while (loadWindow.running){
 				try {
 					TimeUnit.SECONDS.sleep(1);
 				}catch (InterruptedException e){
 					System.out.println(e);
+				}//three alternatives from load menu
+				if (loadWindow.feedback=="New"){//pass over responsibility to nationhandlers main thread
+					handler.createNation(loadWindow.nation_name);//first we create a new nation
+					loadWindow.stop();
+					handler.mainThread();
+				}else if (loadWindow.feedback=="Load"){//pass over responsibility to nationhandlers main thread
+					handler.loadNation(loadWindow.nation_name);
+					loadWindow.stop();
+					handler.mainThread();
+				}else if (loadWindow.feedback=="Back") {//quit
+					loadWindow.stop();
+					menuWindow.start();
 				}
-				//will update every second and save every 30 seconds?
-			}
-			while (loadWindow.running){//load window loop
-				try {
-					TimeUnit.SECONDS.sleep(1);
-				}catch (InterruptedException e){
-					System.out.println(e);
-				}
-				System.out.println(writer.updateSaves());//prints the number of save folders.
-			}
-			if (menuWindow.choice == "Main"||loadWindow.choice == "Main"){//going to the main window
-				if ("".equals(loadWindow.nation_name))//setting the name of the current government displayed in mainWindow
-					nation_name = menuWindow.nation_name;
-				else if ("".equals(menuWindow.nation_name))
-					nation_name = loadWindow.nation_name;
-				menuWindow.Stop();
-				loadWindow.Stop();
-				mainWindow.Start(nation_name);
-			}else if (menuWindow.choice == "Load"||mainWindow.choice=="Load"){//going to the load saves window
-				mainWindow.Stop();
-				menuWindow.Stop();
-				loadWindow.Start();
-			}else if (menuWindow.choice == "Quit"||mainWindow.choice=="Quit"){//quitting the application
-				System.exit(0);
-			}
-		}
+			}			
+		}//END OF MAIN THREAD
 	}
-	
-	
-	/*
-	public MainThread() {
-		MainWindow window = new MainWindow();
-	}*/
-
 }

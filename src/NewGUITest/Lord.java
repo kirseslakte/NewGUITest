@@ -142,5 +142,4 @@ public class Lord {
 			this.hex = s;
 		}
 	}
-
 }

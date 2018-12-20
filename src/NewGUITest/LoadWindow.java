@@ -2,10 +2,13 @@ package NewGUITest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
+
+import javax.swing.JOptionPane;
 
 import java.awt.Dimension;
 import java.awt.Panel;
+import java.awt.TextField;
+import java.awt.Toolkit;
 import java.awt.Frame;
 import java.awt.Button;
 import java.awt.GridLayout;
@@ -16,15 +19,17 @@ import java.awt.event.WindowEvent;
 
 public class LoadWindow extends Frame {
 	private Frame loadFrame;
-	private Panel loadPnl;
-	public boolean running = false;
-	public String choice = "";
 	public String nation_name = "";
+	public String feedback = "";
+	public boolean running = false;
 	
 	public LoadWindow() {
 		ReadNWrite writer = new ReadNWrite();
 		loadFrame = new Frame("Load Nation");
-		loadFrame.setLocationRelativeTo(null);
+	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();//center frame on screen
+	    int x = (int) ((dimension.getWidth() - loadFrame.getWidth()) / 2);
+	    int y = (int) ((dimension.getHeight() - loadFrame.getHeight()) / 2);
+	    loadFrame.setLocation(x, y);
 		loadFrame.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				System.exit(0);
@@ -32,7 +37,7 @@ public class LoadWindow extends Frame {
 		});
 		ReadNWrite write = new ReadNWrite();
 		loadFrame.setSize(600, (int) Math.floor(write.n_saves/3+1)*75);//x,y
-		loadPnl = new Panel();
+		Panel loadPnl = new Panel();
 		loadPnl.setLayout(new GridLayout((int) Math.floor(write.n_saves/3+1),3));//setting up grid for loading buttons
 		List<Button> btnList = new ArrayList<Button>();
 		ActionListener listener = new ActionListener() {//creating standardized action listeners for all buttons in arraylist
@@ -40,8 +45,8 @@ public class LoadWindow extends Frame {
 				if (e.getSource() instanceof Button){
 					nation_name = ((Button) e.getSource()).getName();
 					writer.setSaveName(nation_name);
-					choice = "Main";
-					running = false;
+					stop();
+					feedback = "Load";
 				}
 			}
 		};
@@ -55,18 +60,30 @@ public class LoadWindow extends Frame {
 		loadFrame.add(loadPnl);	
 	}
 	
-	
-
-	
-	public void Start() {
-		nation_name = "";
+	public void start() {
 		running = true;
 		loadFrame.setVisible(true);
 	}
 	
-	public void Stop() {
-		choice = "";
-		nation_name = "";
+	public void stop() {
+		running = false;
 		loadFrame.setVisible(false);
+	}
+	// new nation pop-up
+	public void startNation() {
+		ReadNWrite writer = new ReadNWrite();
+		TextField name = new TextField("Type Nation Name Here");
+		Panel newNation = new Panel(new GridLayout(0,1));
+		newNation.add(name);
+		running = true;
+		int result = JOptionPane.showConfirmDialog(null, newNation, "Create a new nation",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (result==JOptionPane.OK_OPTION){
+			nation_name = name.getText();
+			writer.setSaveName(nation_name);
+			feedback = "New";
+		} else {
+			feedback = "Back";
+		}
 	}
 }
