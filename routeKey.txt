@@ -1,0 +1,6 @@
+name_of_route				1
+lord_of_route				2
+passive/active				3
+lord_TAR				4
+opposed_TAR				5
+opposed_BP				6

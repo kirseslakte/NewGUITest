@@ -11,11 +11,11 @@ public class Official {//initializing an 'official' object where you can create 
 		this.name = s[0];						//name
 		this.type = s[1];						//official action
 		this.roll = Integer.parseInt(s[2]);		//the roll/skill/whatever value is applicable
-		this.inhex = Boolean.parseBoolean(s[3]);//if the bonus is hex-specific
-		if (inhex)
-			this.hex = s[4];					//which hex the official is in
+		this.hex = s[3];						//which hex the official is in
+		if (s[3].equals("not_in_hex"))
+			this.inhex = false;					//if the bonus is hex-specific
 		else
-			this.hex = "";
+			this.inhex = true;
 	}
 	
 	public void changeName(String s) {//methods for changing the official attributes (some might be redundant)

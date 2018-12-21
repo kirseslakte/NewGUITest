@@ -13,10 +13,11 @@ institution1					12
 institution2					13
 institution3					14
 institution4					15
-culture_bonuses (22 doubles)			16
-last culture bonus				37
+culture_bonuses (22 doubles)			16-37
 number_of_officials				38
 tax_rate					39
 banked_rp					40
 banked_development				41
 tax_rate_overlord				42
+histocracy_bonus_tags				43-46
+histocracy_bonus_mods				47-50

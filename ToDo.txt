@@ -12,19 +12,19 @@ Add feats/unit feats&other unit related things
 on ReadNWrite:
 create the save file structure for 
 	lords---DONE!
-	hexes
-	units
-	routes
-	officials
+	hexes---DONE!
+	units---DONE!
+	routes---DONE!
+	officials---DONE!
 finish save mehtods for
 	lords---DONE!
-	hexes
+	hexes---DONE!
 	units
 	routes
 	officials
 finish load methods for
 	lords
-	hexes
+	hexes---STARTED: check method for some notes, I think I have a good idea of how to realize it!!
 	units
 	routes
 	officials
@@ -32,7 +32,7 @@ finish load methods for
 on mainthread:---DONE!
 fix loop so that all buttons have functionality---DONE!
 tidy up the mainthread so that it is a bit easier to overview wtf is going on. MORE COMMENTS!---DONE!
-set up a check to see if save_request? and then call NationHandler.properSave() or something
+set up a check to see if save_request? and then call NationHandler.properSave() or something---Will not do this!
 connect to nationhandler instead of mainwindow---DONE!
 
 NationHanler:
@@ -63,7 +63,8 @@ Add military things
 
 priorities:
 1. connect nationhandler to mainthread---DONE!
-2. fix what is under 'on ReadNWrite:'
-3. 
-9. set initializers of nationhandler so that both lordwindow and hexwindow are created (probs mil/trade aswell)
+2. finish outlining under 'on ReadNWrite:'---DONE!
+3. fininsh classes hex, unit, route, official---the bone is constructed for all of them except for units
+4. fix the rest of 'on ReadNWrite:'
+9. set initializers of nationhandler so that lordwindow, hexwindow, unitwindow and officialwindow are created
 10. create hex/mil/trade windows

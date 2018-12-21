@@ -41,11 +41,11 @@ public class NationHandler {
 	
 	public void loadNation (String s) {//only ever called from MainThread when an old nation is loaded
 		write.setNationName(s);//DONT CALL newLord!! handle the entire loading from here!!
-		for (Hex hex: write.loadHexes(write.directory)){
+		for (Hex hex: write.loadHexes()){
 			listofhexes.add(hex);//import hexes to nationhandler
 		}
 		//hexwindow.loadHexes(listofhexes);//load hexes
-		for (Lord lord: write.loadLords(write.directory)){
+		for (Lord lord: write.loadLords()){
 			listoflords.add(lord);//import lord in nationhandler
 			listoflords.get(listoflords.size()-1).loadLord();//load lordwindow
 			if (lord.is_vassal==false){
@@ -58,9 +58,7 @@ public class NationHandler {
 		for (Lord lord: listoflords) {
 			write.saveLord(lord);
 		}
-		for (Hex hex: listofhexes) {
-			write.saveHex(hex);
-		}
+		write.saveHexes(listofhexes);
 		for (Unit unit: listofunits) {
 			write.saveUnit(unit);
 		}

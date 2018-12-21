@@ -1,0 +1,4 @@
+name					1
+type					2
+roll					3
+hex					4 (if .equals("not_in_hex") ->inhex=false)

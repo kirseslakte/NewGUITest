@@ -1,0 +1,9 @@
+separator				1
+hexname					2
+hab					3
+culture					4
+religion				5
+pop_size				6
+unrest					7
+resource				8
+buildings				9-x
