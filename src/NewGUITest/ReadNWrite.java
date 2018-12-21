@@ -34,15 +34,15 @@ public class ReadNWrite {
 	
 	//load lords
 	
-	public List<Lord> loadLords(File k) {//reading a save file with nation file directory as input
+	public List<Lord> loadLords() {//reading a save file with nation file directory as input
 		List<Lord> listoflords = new ArrayList<Lord>();//list of all lords in the savefile
 		//overlord always exist and vassals go as vassal1, vassal2, ...
 		//vassals of vassals go as vassal1_1, vassal1_2,... or vassal1_1_1, vassal1_1_2,... and so on
-		for (String s: k.list()) {//time to import some lords bois
-			if (s.contains("lord")||s.contains("vassal")) {
+		//for (String s: k.list()) {//time to import some lords bois
+			//if (s.contains("lord")||s.contains("vassal")) {
 				//listoflords.add(lord);
-			}
-		}											
+			//}
+		//}											
 		return listoflords;
 	}
 	
