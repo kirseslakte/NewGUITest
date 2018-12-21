@@ -14,8 +14,9 @@ public class MainThread {
 		LoadWindow loadWindow = new LoadWindow();
 		NationHandler handler = new NationHandler();
 		menuWindow.start();
+		boolean thread_handover = true;
 		//THE MAIN THREAD
-		while(true){
+		while(thread_handover){
 			
 			//THE MAIN MENU LOOP
 			
@@ -25,13 +26,13 @@ public class MainThread {
 				}catch (InterruptedException e){
 					System.out.println(e);
 				}//three alternatives from main menu
-				if (menuWindow.feedback=="New"){//new->startNation in LoadWindow
+				if (menuWindow.feedback.equals("New")){//new->startNation in LoadWindow
 					loadWindow.startNation();
 					menuWindow.stop();
-				}else if (menuWindow.feedback=="Load"){//load->LoadWindow
+				}else if (menuWindow.feedback.equals("Load")){//load->LoadWindow
 					menuWindow.stop();
 					loadWindow.start();
-				}else if (menuWindow.feedback=="Quit")//quit
+				}else if (menuWindow.feedback.equals("Quit"))//quit
 					System.exit(0);
 			}
 			
@@ -43,15 +44,17 @@ public class MainThread {
 				}catch (InterruptedException e){
 					System.out.println(e);
 				}//three alternatives from load menu
-				if (loadWindow.feedback=="New"){//pass over responsibility to nationhandlers main thread
+				if (loadWindow.feedback.equals("New")){//pass over responsibility to nationhandlers main thread
 					handler.createNation(loadWindow.nation_name);//first we create a new nation
 					loadWindow.stop();
 					handler.mainThread();
-				}else if (loadWindow.feedback=="Load"){//pass over responsibility to nationhandlers main thread
+					thread_handover = false;
+				}else if (loadWindow.feedback.equals("Load")){//pass over responsibility to nationhandlers main thread
 					handler.loadNation(loadWindow.nation_name);
 					loadWindow.stop();
 					handler.mainThread();
-				}else if (loadWindow.feedback=="Back") {//quit
+					thread_handover = false;
+				}else if (loadWindow.feedback.equals("Back")) {//quit
 					loadWindow.stop();
 					menuWindow.start();
 				}

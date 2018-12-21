@@ -35,194 +35,194 @@ public class Governments {
 	}
 	
 	public void setNull() {//reset everything!
-		sys = "";
-		struc = "";
-		ruler = "";
-		style = "";
-		cent = "";
-		total_val = 0;
-		settlement_cost_mod = 1;
-		unit_training_cost_mod = 1;
-		tax_eff = 0;
-		prod_eff = 0;
-		trade_eff = 0;
-		vassal_inc_eff = 0;
-		bank_inc_eff = 0;
-		bank_dev_eff = 0;
-		plunder_eff = 0;
-		max_pop_size = 0;
-		move_pop_mod = 1;
-		unit_cap_mod = 1;
-		max_bank_dev_eff = 0;
-		min_unrest = 0;
-		max_tax_rate = 0;
+		this.sys = "";
+		this.struc = "";
+		this.ruler = "";
+		this.style = "";
+		this.cent = "";
+		this.total_val = 0;
+		this.settlement_cost_mod = 1;
+		this.unit_training_cost_mod = 1;
+		this.tax_eff = 0;
+		this.prod_eff = 0;
+		this.trade_eff = 0;
+		this.vassal_inc_eff = 0;
+		this.bank_inc_eff = 0;
+		this.bank_dev_eff = 0;
+		this.plunder_eff = 0;
+		this.max_pop_size = 0;
+		this.move_pop_mod = 1;
+		this.unit_cap_mod = 1;
+		this.max_bank_dev_eff = 0;
+		this.min_unrest = 0;
+		this.max_tax_rate = 0;
 	}
 		//START SYSTEMS!!
 	public void setSystem(String s) {//a method which sets the system of governance
 		if (s==systems[0]){
-			setDemocratic();
+			this.setDemocratic();
 		}else if (s==systems[1]){
-			setAutocratic();
+			this.setAutocratic();
 		}else if (s==systems[2]){
-			setMeritocratic();
+			this.setMeritocratic();
 		}else if (s==systems[3]){
-			setTheocratic();
+			this.setTheocratic();
 		}else if (s==systems[4]){
-			setHistocratic();
+			this.setHistocratic();
 		}else if (s==systems[5]){
-			setPlutocratic();
+			this.setPlutocratic();
 		}else if (s==systems[6]){
-			setHive();
+			this.setHive();
 		}else if (s==systems[7]){
-			setFederation();
+			this.setFederation();
 		}
 	}
 	public void setDemocratic() {//modifiers for the democratic system
-		sys = systems[0];
-		settlement_cost_mod *= 0.9;
-		tax_eff += 0.1;
-		prod_eff += 0.1;
-		bank_inc_eff += 0.2;
-		bank_dev_eff += 0.2;
-		trade_eff += 0.2;
+		this.sys = systems[0];
+		this.settlement_cost_mod *= 0.9;
+		this.tax_eff += 0.1;
+		this.prod_eff += 0.1;
+		this.bank_inc_eff += 0.2;
+		this.bank_dev_eff += 0.2;
+		this.trade_eff += 0.2;
 	}
 	public void setAutocratic() {//modifiers for the autocratic system
-		sys = systems[1];
-		unit_training_cost_mod *= 0.95;
-		tax_eff += 0.1;
-		bank_inc_eff += 0.2;
-		vassal_inc_eff += 0.2;
-		trade_eff += 0.2;
+		this.sys = systems[1];
+		this.unit_training_cost_mod *= 0.95;
+		this.tax_eff += 0.1;
+		this.bank_inc_eff += 0.2;
+		this.vassal_inc_eff += 0.2;
+		this.trade_eff += 0.2;
 	}
 	public void setMeritocratic() {//modifiers for the meritocratic system
-		sys = systems[2];
-		tax_eff += 0.1;
-		prod_eff += 0.3;
-		bank_dev_eff += 0.2;
+		this.sys = systems[2];
+		this.tax_eff += 0.1;
+		this.prod_eff += 0.3;
+		this.bank_dev_eff += 0.2;
 	}
 	public void setTheocratic() {//modifiers for the theocratic system
-		sys = systems[3];
-		tax_eff += 0.2;
-		prod_eff += 0.1;
-		bank_inc_eff += 0.2;
-		vassal_inc_eff += 0.1;
+		this.sys = systems[3];
+		this.tax_eff += 0.2;
+		this.prod_eff += 0.1;
+		this.bank_inc_eff += 0.2;
+		this.vassal_inc_eff += 0.1;
 	}
 	public void setHistocratic() {//modifiers for the histocratic system
-		sys = systems[4];
-		total_val = 0.4;
+		this.sys = systems[4];
+		this.total_val = 0.4;
 	}
 	public void setPlutocratic() {//modifiers for the plutocratic system
-		sys = systems[5];
-		tax_eff += 0.1;
-		prod_eff += 0.1;
-		bank_dev_eff += 0.2;
-		trade_eff += 0.4;
+		this.sys = systems[5];
+		this.tax_eff += 0.1;
+		this.prod_eff += 0.1;
+		this.bank_dev_eff += 0.2;
+		this.trade_eff += 0.4;
 	}
 	public void setHive() {//modifiers for the hive system
-		sys = systems[6];
-		max_tax_rate = 1;
+		this.sys = systems[6];
+		this.max_tax_rate = 1;
 	}
 	public void setFederation() {//modifiers for the federation system
-		sys = systems[7];
-		bank_inc_eff += 0.2;
-		vassal_inc_eff += 0.3;
-		trade_eff += 0.2;
+		this.sys = systems[7];
+		this.bank_inc_eff += 0.2;
+		this.vassal_inc_eff += 0.3;
+		this.trade_eff += 0.2;
 	}
 	//STOP SYSTEMS!!
 	//START SOC STRUC!!
 	public void setStruc(String s) {
 		if (s==strucs[0]){
-			setClassisist();
+			this.setClassisist();
 		}else if(s==strucs[1]){
-			setIndividualistic();
+			this.setIndividualistic();
 		}
 	}
 	public void setClassisist() {
-		struc = strucs[0];
+		this.struc = strucs[0];
 	}
 	public void setIndividualistic() {
-		struc = strucs[1];
-		min_unrest = -1;
+		this.struc = strucs[1];
+		this.min_unrest = -1;
 	}
 	//STOP SOC STRUC!!
 	//START RULER!!
 	public void setRuler(String s) {
 		if (s==rule[0]){
-			setMonarchy();
+			this.setMonarchy();
 		}else if(s==rule[1]){
-			setOligarchy();
+			this.setOligarchy();
 		}else if(s==rule[2]){
-			setPolyarchy();
+			this.setPolyarchy();
 		}
 	}
 	public void setMonarchy() {
-		ruler = rule[0];
+		this.ruler = rule[0];
 	}
 	public void setOligarchy() {
-		ruler = rule[1];
+		this.ruler = rule[1];
 	}
 	public void setPolyarchy() {
-		ruler = rule[2];
+		this.ruler = rule[2];
 	}
 	//STOP RULER!!
 	//START LIFE STYLE!!
 	public void setLifeStyle(String s) {
 		if (s==life[0]){
-			setSettled();
+			this.setSettled();
 		}else if(s==life[1]){
-			setTribalistic();
+			this.setTribalistic();
 		}else if(s==life[2]){
-			setNomadic();
+			this.setNomadic();
 		}
 	}
 	public void setSettled() {
-		style = life[0];
-		max_bank_dev_eff = 10;
-		bank_dev_eff += 0.1;
-		max_pop_size = 10;
-		move_pop_mod *= 16;
-		plunder_eff = 0.25;
+		this.style = life[0];
+		this.max_bank_dev_eff = 10;
+		this.bank_dev_eff += 0.1;
+		this.max_pop_size = 10;
+		this.move_pop_mod *= 16;
+		this.plunder_eff = 0.25;
 	}
 	public void setTribalistic() {
-		style = life[1];
-		max_bank_dev_eff = 0.5;
-		max_pop_size = 6;
-		move_pop_mod *= 4;
-		plunder_eff += 0.5;
+		this.style = life[1];
+		this.max_bank_dev_eff = 0.5;
+		this.max_pop_size = 6;
+		this.move_pop_mod *= 4;
+		this.plunder_eff += 0.5;
 	}
 	public void setNomadic() {
-		style = life[2];
-		max_bank_dev_eff = 0.3;
-		unit_training_cost_mod *= 0.9;
-		unit_cap_mod *= 0.9;
-		max_pop_size = 4;
-		move_pop_mod *= 1;
-		plunder_eff += 0.75;
+		this.style = life[2];
+		this.max_bank_dev_eff = 0.3;
+		this.unit_training_cost_mod *= 0.9;
+		this.unit_cap_mod *= 0.9;
+		this.max_pop_size = 4;
+		this.move_pop_mod *= 1;
+		this.plunder_eff += 0.75;
 	}
 	//STOP LIFE STYLE!!
 	//START CENTRALISATION!!
 	public void setCentralisation(String s) {
 		if (s==centralisation[0]){
-			setHighly();
+			this.setHighly();
 		}else if(s==centralisation[1]){
-			setModerately();
+			this.setModerately();
 		}else if(s==centralisation[2]){
-			setDecentralised();
+			this.setDecentralised();
 		}
 	}
 	public void setHighly() {
-		cent = centralisation[0];
-		prod_eff += -0.1;
-		max_tax_rate = Math.max(max_tax_rate,0.7);
+		this.cent = centralisation[0];
+		this.prod_eff += -0.1;
+		this.max_tax_rate = Math.max(max_tax_rate,0.7);
 	}
 	public void setModerately() {
-		cent = centralisation[1];
-		prod_eff += -0.5;
-		max_tax_rate = Math.max(max_tax_rate,0.5);
+		this.cent = centralisation[1];
+		this.prod_eff += -0.5;
+		this.max_tax_rate = Math.max(max_tax_rate,0.5);
 	}
 	public void setDecentralised() {
-		cent = centralisation[2];
-		max_tax_rate = Math.max(max_tax_rate,0.3);
+		this.cent = centralisation[2];
+		this.max_tax_rate = Math.max(max_tax_rate,0.3);
 	}
 	//STOP CENTRALISATION!!
 }

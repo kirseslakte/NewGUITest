@@ -1,9 +1,13 @@
 package NewGUITest;
 
-public class Lord {
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class Lord extends JFrame{
 	
-	public int max_number_of_institutions = 4;//rule variables
-	public int number_of_culture_bonuses = 22;
+	public final int max_number_of_institutions = 4;//rule variables
+	public final int number_of_culture_bonuses = 22;
 	
 	public String name;//government variables
 	public String sys;
@@ -22,7 +26,9 @@ public class Lord {
 	public double overlord_tax_rate;
 	public boolean is_vassal;
 	public String title;
-	Institutions institutes = new Institutions();
+	private Institutions institutes = new Institutions();
+	private Governments govn = new Governments();
+	//TradeWindow trade = new TradeWindow();
 	
 	public String[] institutions;//institutions
 	
@@ -52,12 +58,25 @@ public class Lord {
 	 * 													AT LEAST THESE ARE THE NESSESARY OFFICIAL ACTIONS
 	 *													THEY WILL BE ROLLED INTO THE OFFICIAL CLASS
 	 */
+	
+	//// THESE ARE THE variables FOR THE GUI ////
+	
+	private JFrame lordFrame;
+	ReadNWrite write = new ReadNWrite();
+	public boolean quit_request = false;
+	public boolean save_request = false;
+	public boolean change_lord_request = false;
+	public String window_request = "";
+	//public TradeWindow trade = new TradeWindow(); a trade window for each lord
+	
+	//// START OF METHODS ////
+	
 	public Lord(String s) {
 		this.name = s;
+		this.setFrame();
 	}
 	
 	public void setGovernment(String[] s) {			//requires following input
-		Governments govn = new Governments();
 		this.sys = s[0];									//system
 		this.society = s[1];								//societal structure
 		this.rule = s[2];								//ruler
@@ -87,7 +106,7 @@ public class Lord {
 	}
 	
 	public void setInstitutions(String[] in_institutions) {//set the institutions of the nation
-		institutions = in_institutions;
+		this.institutions = in_institutions;
 		for (String s: in_institutions) {
 			//check which institutions player wants
 			this.institutes.findInstitution(s);
@@ -101,45 +120,119 @@ public class Lord {
 	public void setEconomyAndOfficials(double[] e) {//set the economy settings fed from the front panel
 		this.eco = e;
 	}
+		
+	public void setFrame() {
+		lordFrame = new JFrame();		
+		lordFrame.setSize(1500,1000);//x,y
+	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+	    int x = (int) ((dimension.getWidth() - lordFrame.getWidth()) / 2);
+	    int y = (int) ((dimension.getHeight() - lordFrame.getHeight()) / 2);
+	    lordFrame.setLocation(x, y);
+	    lordFrame.addWindowListener(new WindowAdapter() {//close program on closing window
+			public void windowClosing(WindowEvent windowEvent){
+				System.exit(0);
+			}
+		});
+		lordFrame.setTitle(name);
+	    
+		////SETTING UP THE MENU BAR////
+	    
+		JMenuBar menuBar = new JMenuBar();
+		JMenu menu = new JMenu("File");		//file menu
+		JMenuItem menuItem;					
+		menuItem = new JMenuItem("Save");	//save button
+		Action saveAction = new AbstractAction("Save") {
+			public void actionPerformed(ActionEvent e) {
+				saveRequest();
+			}
+		};
+		saveAction.putValue(Action.ACCELERATOR_KEY, 
+				KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		menuItem.setAction(saveAction);//done setting the save button
+		
+		menuItem = new JMenuItem("Quit");	//quit button
+		Action quitAction = new AbstractAction("Quit") {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		};
+		menuItem.setAction(quitAction);//done setting the quit button
+		//lordFrame.setJMenuBar(menuBar);
+		
+	    ////DONE WITH THE MENU BAR////
+		////SETTING UP PANEL1////
+		
+		Panel mainPnl = new Panel();//set out panel
+		mainPnl.setLayout(new GridLayout(3,1));//set layout
+		Button newVassalBtn = new Button("New Vassal");//adding buttons
+		mainPnl.add(newVassalBtn);
+		Button saveBtn = new Button("Save Nation");
+		mainPnl.add(saveBtn);//new vassal and save nation still has no functionality to them.
+		Button quitBtn = new Button("Quit");
+		mainPnl.add(quitBtn);
+		lordFrame.add(mainPnl);
+		lordFrame.setJMenuBar(menuBar);
+		
+		////DONE SETTING UP PANEL1////
+		////BUTTON FUNCTIONALITIES////
+		newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
+			public void actionPerformed(ActionEvent e){
+				
+			}
+		});
+		saveBtn.addActionListener(new ActionListener() {//add action event to save button
+			public void actionPerformed(ActionEvent e){
+				save_request = true;
+			}
+		});
+		quitBtn.addActionListener(new ActionListener() {//add action event to quit button
+			public void actionPerformed(ActionEvent e){
+				System.exit(0);
+			}
+		});
+	}
+	
+	public void start(){
+		this.lordFrame.setVisible(true);
+	}
+	public void stop() {
+		this.lordFrame.setVisible(false);
+	}
+	
+	public void loadLord() {
+		
+	}
+	
+	////REQUEST METHODS WHICH REQUIRE NationHandler OBJECT TO TEMPORARILY BE CREATED////
+	
+	public void saveRequest() {
+		NationHandler temp = new NationHandler();
+		temp.saveNation();
+	}
+	
+	public void changeLordRequest() {
+		NationHandler temp = new NationHandler();
+	}
+	
+	public void hexRequest() {
+		NationHandler temp = new NationHandler();
+	}
+	
+	public void milRequest() {
+		NationHandler temp = new NationHandler();
+	}
+	
+	public void newVassalRequest() {
+		NationHandler temp = new NationHandler();
+	}
+	
+	public void swapLordRequest() {
+		NationHandler temp = new NationHandler();
+	}
 	
 	public Official assignOfficial(String[] s) {//create a new official object
 		Official official = new Official(s);
 		return official;
 	}
 	
-	//////HERE IS THE OFFICIAL CLASS///////
-	public class Official {//initializing an 'official' object where you can create 'characters'
-		public String name;
-		public String type;
-		public int roll;
-		public boolean inhex;
-		public String hex;
-		
-		public Official(String[] s){				//requires input:
-			this.name = s[0];						//name
-			this.type = s[1];						//official action
-			this.roll = Integer.parseInt(s[2]);		//the roll/skill/whatever value is applicable
-			this.inhex = Boolean.parseBoolean(s[3]);//if the bonus is hex-specific
-			if (inhex)
-				this.hex = s[4];					//which hex the official is in
-			else
-				this.hex = "";
-		}
-		
-		public void changeName(String s) {//methods for changing the official attributes (some might be redundant)
-			this.name = s;
-		}
-		public void changeType(String s) {
-			this.type = s;
-		}
-		public void changeRoll(int i) {
-			this.roll = i;
-		}
-		public void changeInHex(boolean b) {
-			this.inhex = b;
-		}
-		public void changeHex(String s) {
-			this.hex = s;
-		}
-	}
 }

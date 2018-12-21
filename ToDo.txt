@@ -9,16 +9,36 @@ add culture&religion tables
 add tradefunction
 Add feats/unit feats&other unit related things
 
-on mainthread:
+on ReadNWrite:
+create the save file structure for 
+	lords---DONE!
+	hexes
+	units
+	routes
+	officials
+finish save mehtods for
+	lords---DONE!
+	hexes
+	units
+	routes
+	officials
+finish load methods for
+	lords
+	hexes
+	units
+	routes
+	officials
+
+on mainthread:---DONE!
 fix loop so that all buttons have functionality---DONE!
 tidy up the mainthread so that it is a bit easier to overview wtf is going on. MORE COMMENTS!---DONE!
 set up a check to see if save_request? and then call NationHandler.properSave() or something
-connect to nationhandler instead of mainwindow---save is handled from the nationhandler
+connect to nationhandler instead of mainwindow---DONE!
 
 NationHanler:
-connect to the mainthread in a proper way.
-initializer must set overlord window to visible and set that up properly
-set up methods for showing (or unshowing) lord windows
+connect to the mainthread in a proper way.---DONE!
+initializer must set overlord window to visible and set that up properly---DONE!
+set up methods for showing (or unshowing) lord windows---DONE!
 
 LordWindow:
 governmentpanel
@@ -26,10 +46,9 @@ nationstatspanel
 culture/portfoliopanel
 set up pages for vassaltree and notes
 set up buttons (maybe nex to file?) for hexes, military, trade
-
-on mainwindow:
+lordwindow and lord needs to merge into the same class---DONE!
 add layouts so that we can actually start testing functionality
-fix the save button so that we can start trying to read/write save files!
+fix the save button so that we can start trying to read/write save files!---DONE!
 
 on nation:
 total bpm, tax income, total trade value and overlord tax must be global and accessible, bake them into the nation object---DONE!
@@ -44,12 +63,7 @@ Add military things
 
 priorities:
 1. connect nationhandler to mainthread---DONE!
-2. set initializers of nationhandler so that both lordwindow and hexwindow are created (probs mil/trade aswell)
-3. create hex/mil/trade windows
-
-NOTES:
-Complete classes:
-MainThread
-These might also need some visual tweaking (but are still 'complete'):
-MainMenu
-LoadWindow
+2. fix what is under 'on ReadNWrite:'
+3. 
+9. set initializers of nationhandler so that both lordwindow and hexwindow are created (probs mil/trade aswell)
+10. create hex/mil/trade windows

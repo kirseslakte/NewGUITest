@@ -22,9 +22,9 @@ public class LoadWindow extends Frame {
 	public String nation_name = "";
 	public String feedback = "";
 	public boolean running = false;
+	ReadNWrite writer = new ReadNWrite();
 	
 	public LoadWindow() {
-		ReadNWrite writer = new ReadNWrite();
 		loadFrame = new Frame("Load Nation");
 	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();//center frame on screen
 	    int x = (int) ((dimension.getWidth() - loadFrame.getWidth()) / 2);
@@ -44,7 +44,7 @@ public class LoadWindow extends Frame {
 			public void actionPerformed(ActionEvent e){
 				if (e.getSource() instanceof Button){
 					nation_name = ((Button) e.getSource()).getName();
-					writer.setSaveName(nation_name);
+					writer.setNationName(nation_name);
 					stop();
 					feedback = "Load";
 				}
@@ -76,12 +76,24 @@ public class LoadWindow extends Frame {
 		Panel newNation = new Panel(new GridLayout(0,1));
 		newNation.add(name);
 		running = true;
+		boolean new_nation_creation = true;
+		writer.updateSaves();
 		int result = JOptionPane.showConfirmDialog(null, newNation, "Create a new nation",
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (result==JOptionPane.OK_OPTION){
 			nation_name = name.getText();
-			writer.setSaveName(nation_name);
-			feedback = "New";
+			for (String s: writer.save_names) {
+				if (s.equals(nation_name)) {
+					JOptionPane.showMessageDialog(null, "That Nation already exists!","Save error",
+							JOptionPane.INFORMATION_MESSAGE);
+					feedback = "Back";
+					new_nation_creation = false;
+				}
+			}
+			if (new_nation_creation) {
+				writer.setNationName(nation_name);
+				feedback = "New";
+			}
 		} else {
 			feedback = "Back";
 		}

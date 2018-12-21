@@ -23,55 +23,106 @@ public class ReadNWrite {
 		return n_saves;
 	}
 	
-	public void setSaveName(String s) {//create and name the current nation save
+	public void setNationName(String s) {//create and name the current nation save
 		directory = new File("Nations/"+s);
 		directory.mkdir();
 	}
 	
 	////LOAD METHODS////
-	public List<Lord> readSaveFile(File k) {//reading a save file with nation file directory as input
+	
+	//load lords
+	
+	public List<Lord> loadLords(File k) {//reading a save file with nation file directory as input
 		List<Lord> listoflords = new ArrayList<Lord>();//list of all lords in the savefile
 		//overlord always exist and vassals go as vassal1, vassal2, ...
 		//vassals of vassals go as vassal1_1, vassal1_2,... or vassal1_1_1, vassal1_1_2,... and so on
-		List<Hex> listofhexes = new ArrayList<Hex>();
-		for (String s: k.list()) {//call the method readLordFile for each lord in the file directory
-			if (s.contains("lord")||s.contains("vassal"))//only import lords and not hexes into listoflords
-				listoflords.add(readLordFile(k,s));		//ADD MORE EXCEPTIONS AS THEY DEVELOP
-			else if (s.contains("hex")==true)			//PROBABLY BUILDINGS UNLESS THEY ARE PART OF Hex OBJECT
-				listofhexes.add(readHexFile(k));		//onlyimport the hexes into listofhexes
+		for (String s: k.list()) {//time to import some lords bois
+			if (s.contains("lord")||s.contains("vassal")) {
+				//listoflords.add(lord);
+			}
 		}											
 		return listoflords;
 	}
-	//load lord
-	private Lord readLordFile(File k, String s) {//read a lord file (only ever called from readSaveFile
-		Lord lord = new Lord(s);//import the lord
-		return lord;
+	
+	//load hexes
+	
+	public List<Hex> loadHexes(File k) {
+		List<Hex> listofhexes = new ArrayList<Hex>();
+		for (String s: k.list()){
+			if (s.contains("hex")){//find the file called hexes
+				s = directory+"/hexes"+filetype;
+				k = new File(s);
+			}
+		}
+		boolean more = true;//are there more hexes to load
+		while(more){
+			//listofhexes.add(hex);
+		}
+		return listofhexes;
 	}
-	//Load hex
-	private Hex readHexFile(File k) {//reads the hex-file and imports a hex. will have to call this once for every hex probs
-		Hex hex = new Hex();//import the hex
-		
-		return hex;
+	
+	//load units
+	
+	public List<Unit> loadUnits(File k){
+		List<Unit> listofunits = new ArrayList<Unit>();
+		for (String s: k.list()){
+			if (s.contains("unit")){
+				s = directory+"/units"+filetype;
+				k = new File(s);
+			}
+		}
+		boolean more = true;//are there more units to load
+		while(more) {
+			//listofunits.add(unit);
+		}
+		return listofunits;
 	}
+	
+	//load routes
+	
+	public List<Route> loadRoutes(File k) {
+		List<Route> listofroutes = new ArrayList<Route>();
+		for (String s: k.list()){
+			if (s.contains("route")){
+				s = directory+"/routes"+filetype;
+				k = new File(s);
+			}
+		}
+		boolean more = true;//are there more routes to load
+		while(more) {
+			//listofroute.add(route);
+		}
+		return listofroutes;
+	}
+	
+	//load officials
+	
+	public List<Official> loadOfficials(File k) {
+		List<Official> listofofficials = new ArrayList<Official>();
+		for (String s: k.list()){
+			if (s.contains("official")){
+				s = directory+"/officials"+filetype;
+				k = new File(s);
+			}
+		}
+		boolean more = true;//are there more officials to load
+		while(more) {
+			//listofofficials.add(official);
+		}
+		return listofofficials;
+	}
+	
 	////SAVE METHODS////
-	public void writeSaveFile(File k, List<Lord> listoflords, List<Hex> listofhexes) {//the 'proper save method' which
-												//properly clears the directory and then saves.
-	}											//called when the user presses 'save nation' button
-	//the quick save which is called every x secs
-	public void quickSaveFile(File k, List<Lord> listoflords, List<Hex> listofhexes) {
-		for (Lord lord: listoflords){
-			writeLordFile(lord);
-		}
-		for (Hex hex: listofhexes){
-			writeHexFile(hex);
-		}
-	}
+	
 	//Saving hex
-	public void writeHexFile(Hex hex) {//writing 
+	
+	public void saveHex(Hex hex) {//writing 
 		
 	}
+	
 	//saving lord
-	public void writeLordFile(Lord lord) {//Writing the save file. needs to be called for each vassal?
+	
+	public void saveLord(Lord lord) {//Writing the save file. needs to be called for each vassal?
 		String s = directory+"\\"+lord.title+filetype;
 		File file = new File(s);
 		try {
@@ -105,5 +156,23 @@ public class ReadNWrite {
 		} catch (Exception e){
 			System.out.println(e);
 		}
+	}
+	
+	//saving units
+	
+	public void saveUnit(Unit unit) {
+		
+	}
+	
+	//save routes
+	
+	public void saveRoute(Route route){
+		
+	}
+	
+	//save officials
+	
+	public void saveOfficail(Official official) {
+		
 	}
 }
