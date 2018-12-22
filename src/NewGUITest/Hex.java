@@ -1,5 +1,6 @@
 package NewGUITest;
 
+import java.util.List;
 import java.util.Arrays;
 
 public class Hex {
@@ -24,7 +25,9 @@ public class Hex {
 
 	}
 	
-	public void setHex(String[] s){
+	public void setHex(List<String> list){//assumes you have erased the separator
+		String[] s = new String[list.size()];
+		s = list.toArray(s);
 		this.name = s[0];
 		this.habitability = Double.parseDouble(s[1]);
 		this.alignment = s[2];

@@ -48,34 +48,33 @@ public class ReadNWrite {
 	
 	//load hexes
 	
-	public List<Hex> loadHexes() {//this is a hot mess!
-		List<Hex> listofhexes = new ArrayList<Hex>();//since we don't know exactly the length of each saved hex
-		String s = directory+"/hexes"+filetype;		//it is difficult to extract them in a predictable manner
-		File file = new File(s);					//this is causing some issues. I will try commenting as best I can
-		Hex hex = new Hex();
-		List<String> hexlist = new ArrayList<String>();//what we feed from input file it is an array since we don't know the size of each hex
-		List<String[]> hexstring = new ArrayList<String[]>();//what we want to go into the hex generator
-		boolean same_hex;//triggers on the hex separator
-		int i;//counting the number of lines in each hex save
-		s = "";//placeholder feeder to check for the separator
+	public List<Hex> loadHexes() {//loading hexes!
+		List<Hex> listofhexes = new ArrayList<Hex>();
+		String s = directory+"/hexes"+filetype;
+		File file = new File(s);
+		List<String> hexreader = new ArrayList<String>();//what we feed from input file it is an array since we don't know the size of each hex
 		try {
 			Scanner sc = new Scanner(file);
-			i = 0;
-			while(sc.hasNextLine()){//okok I must stop now or else I will go crazy, but I had a crazy idea
-				same_hex = true;	//maybe it is possible to read all the lines into an array (which we then know the size of)
-				while (same_hex) {	//then count the number of hexes in the array, and the 'length' of each hex
-					s = sc.nextLine();//and then create String s = new String[lenght_of_the_hex] which will then work, and it
-					if (s.equals(separator)){//will only take longer to execute, but will drain less memory, which is the big issue
-						same_hex = false;
-					}else {
-						hexlist.add(s);
-					}
+			int number_of_hexes = 0;
+			while(sc.hasNextLine()){
+				s = sc.nextLine();
+				hexreader.add(s);			//scanning the entire document into hexlist
+				if (s.equals(separator)){
+					number_of_hexes++;	//count the number of hexes
 				}
-				//hexstring. = new String[hexlist.size()];
-				hex.setHex(hexstring.get(i));
-				listofhexes.add(hex);
-				hexlist.removeAll(hexlist);
-				i++;
+			}
+			sc.close();
+			List<String>[] hexstring = new List[number_of_hexes];//what we want to go into the Hex method
+			number_of_hexes = 0;//reset the counter
+			for (int i=0;i<hexreader.size();i++) {//track the positions of the hexes
+				if (hexreader.get(i).equals(separator)){
+					number_of_hexes++;//count the number of hexes
+				} else
+					hexstring[number_of_hexes].add(hexreader.get(i));//put all but the separator into a string array
+			}
+			for (int i=0;i<number_of_hexes;i++) {//loop over all the hexes
+				listofhexes.add(new Hex());				//add the hex to the list
+				listofhexes.get(i).setHex(hexstring[i]);//fill the hex with the loaded data
 			}
 		} catch(Exception e){
 			System.out.println(e);
@@ -149,7 +148,6 @@ public class ReadNWrite {
 			file.createNewFile();
 			FileWriter fw = new FileWriter(file);//write all the data for the lord in order (see hexKey.txt)
 			for (Hex hex: listofhexes){
-				fw.write(separator+System.getProperty("line.separator"));
 				fw.write(hex.name+System.getProperty("line.separator"));
 				fw.write(hex.habitability+System.getProperty("line.separator"));
 				fw.write(hex.alignment+System.getProperty("line.separator"));
@@ -160,6 +158,7 @@ public class ReadNWrite {
 				for (String building: hex.buildings){
 					fw.write(building+System.getProperty("line.separator"));					
 				}
+				fw.write(separator+System.getProperty("line.separator"));
 			}
 			fw.close();
 		} catch (Exception e){

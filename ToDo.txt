@@ -24,7 +24,7 @@ finish save mehtods for
 	officials
 finish load methods for
 	lords
-	hexes---STARTED: check method for some notes, I think I have a good idea of how to realize it!!
+	hexes---DONE? Test required!
 	units
 	routes
 	officials
