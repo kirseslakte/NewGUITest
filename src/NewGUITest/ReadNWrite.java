@@ -12,6 +12,7 @@ public class ReadNWrite {
 	private String separator = "xxxxxx";
 	public String[] save_names;
 	public int n_saves = 0;
+	public int number_of_building_slots = 18;
 	public File directory = new File("");
 	
 	public ReadNWrite() {
@@ -52,18 +53,30 @@ public class ReadNWrite {
 		List<Hex> listofhexes = new ArrayList<Hex>();
 		String s = directory+"/hexes"+filetype;
 		File file = new File(s);
-		List<String> hexreader = new ArrayList<String>();//what we feed from input file it is an array since we don't know the size of each hex
+		List<String> hexreader = new ArrayList<String>();
+		int max_hex_length = number_of_building_slots+7;
+		String[] hex_input = new String[max_hex_length];
+		int hex_length = 0;
+		//int number_of_hexes = 0;
+		Hex hex = new Hex();
 		try {
 			Scanner sc = new Scanner(file);
-			int number_of_hexes = 0;
 			while(sc.hasNextLine()){
 				s = sc.nextLine();
 				hexreader.add(s);			//scanning the entire document into hexlist
 				if (s.equals(separator)){
-					number_of_hexes++;	//count the number of hexes
+					hex.setHex(hex_input);
+					listofhexes.add(hex);
+					//number_of_hexes++;	//count the number of hexes
+					for (int i=0;i<hex_input.length;i++) {
+						hex_input[i] = "";//reset the hex_input
+					}
+				}else {
+					hex_input[hex_length] = s;
+					hex_length++;
 				}
 			}
-			sc.close();
+			sc.close();/*
 			List<String>[] hexstring = new List[number_of_hexes];//what we want to go into the Hex method
 			number_of_hexes = 0;//reset the counter
 			for (int i=0;i<hexreader.size();i++) {//track the positions of the hexes
@@ -74,8 +87,8 @@ public class ReadNWrite {
 			}
 			for (int i=0;i<number_of_hexes;i++) {//loop over all the hexes
 				listofhexes.add(new Hex());				//add the hex to the list
-				listofhexes.get(i).setHex(hexstring[i]);//fill the hex with the loaded data
-			}
+				//listofhexes.get(i).setHex(hexstring[i]);//fill the hex with the loaded data
+			}*/
 		} catch(Exception e){
 			System.out.println(e);
 		}
@@ -141,11 +154,12 @@ public class ReadNWrite {
 	//Saving hex
 	
 	public void saveHexes(List<Hex> listofhexes) {//writing 
-		String s = directory+"/hexes"+filetype;
+		String s = directory+"\\hexes"+filetype;
 		File file = new File(s);
 		file.delete();
 		try {
 			file.createNewFile();
+			System.out.println("created "+s);
 			FileWriter fw = new FileWriter(file);//write all the data for the lord in order (see hexKey.txt)
 			for (Hex hex: listofhexes){
 				fw.write(hex.name+System.getProperty("line.separator"));
@@ -156,7 +170,7 @@ public class ReadNWrite {
 				fw.write(hex.unrest+System.getProperty("line.separator"));
 				fw.write(hex.resource+System.getProperty("line.separator"));
 				for (String building: hex.buildings){
-					fw.write(building+System.getProperty("line.separator"));					
+					fw.write(building+System.getProperty("line.separator"));
 				}
 				fw.write(separator+System.getProperty("line.separator"));
 			}
@@ -207,19 +221,56 @@ public class ReadNWrite {
 	
 	//saving units
 	
-	public void saveUnit(Unit unit) {
+	public void saveUnit(List<Unit> listofunits) {
 		
 	}
 	
 	//save routes
 	
-	public void saveRoute(Route route){
-		
+	public void saveRoute(List<Route> listofroutes){//self-explanatory save procedure
+		String s = directory+"\\routes"+filetype;
+		File file = new File(s);
+		file.delete();
+		try {
+			file.createNewFile();
+			System.out.println("created "+s);
+			FileWriter fw = new FileWriter(file);
+			for (Route route:listofroutes){
+				fw.write(route.name+System.getProperty("line.separator"));
+				fw.write(route.lord+System.getProperty("line.separator"));
+				fw.write(Boolean.toString(route.active)+System.getProperty("line.separator"));
+				fw.write(Integer.toString(route.lord_TAR)+System.getProperty("line.separator"));
+				fw.write(Integer.toString(route.partner_TAR)+System.getProperty("line.separator"));
+				fw.write(Integer.toString(route.partner_BP)+System.getProperty("line.separator"));
+				fw.write(separator+System.getProperty("line.separator"));//might remove this, depends on how writing load methods go
+			}
+			fw.close();
+		} catch (Exception e){
+			System.out.println(e);
+		}
 	}
 	
 	//save officials
 	
-	public void saveOfficail(Official official) {
-		
+	public void saveOfficail(List<Official> listofofficials) {//self-explanatory save procedure
+		String s = directory+"\\officials"+filetype;
+		File file = new File(s);
+		file.delete();
+		try {
+			file.createNewFile();
+			System.out.println("created "+s);
+			FileWriter fw = new FileWriter(file);
+			for (Official official:listofofficials){
+				fw.write(official.name+System.getProperty("line.separator"));
+				fw.write(official.type+System.getProperty("line.separator"));
+				fw.write(Integer.toString(official.roll)+System.getProperty("line.separator"));
+				fw.write(official.hex+System.getProperty("line.separator"));
+				fw.write(official.lord+System.getProperty("line.separator"));
+				fw.write(separator+System.getProperty("line.separator"));//use separator since that might be easier to load?
+			}						//might not be, but just remove it then
+			fw.close();
+		} catch (Exception e){
+			System.out.println(e);
+		}
 	}
 }

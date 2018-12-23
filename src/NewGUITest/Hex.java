@@ -2,6 +2,7 @@ package NewGUITest;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 public class Hex {
 	public String name;//all of these are in a sense input variables
@@ -11,6 +12,7 @@ public class Hex {
 	public int pop_size;
 	public int unrest;
 	public String resource;
+	//public List<String> buildings = new ArrayList<String>();
 	public String[] buildings;
 	
 	public int[] building_cost;	//all of these are in a sense read variables
@@ -25,9 +27,7 @@ public class Hex {
 
 	}
 	
-	public void setHex(List<String> list){//assumes you have erased the separator
-		String[] s = new String[list.size()];
-		s = list.toArray(s);
+	public void setHex(String[] s){//assumes you have erased the separator
 		this.name = s[0];
 		this.habitability = Double.parseDouble(s[1]);
 		this.alignment = s[2];
@@ -35,6 +35,18 @@ public class Hex {
 		this.pop_size = Integer.parseInt(s[4]);
 		this.unrest = Integer.parseInt(s[5]);
 		this.resource = s[6];
-		this.buildings = Arrays.copyOfRange(s, 7, s.length);//by passing a string to Hex it will automatically create the hex
+		String[] build_holder = Arrays.copyOfRange(s, 7, s.length);
+		int number_of_buildings = 0;
+		for (int i=0;i<build_holder.length;i++){
+			if (build_holder[i].equals("")){
+				number_of_buildings = i;
+				break;
+			}		//buildings look like this String building Int tier
+		}			//fortifications look like this String fortification Int tier String 
+		this.buildings = new String[number_of_buildings];
+		for (int i=0;i<number_of_buildings;i++){
+			this.buildings[i] = build_holder[i];
+		}
+		//by passing a string to Hex it will automatically create the hex
 	}
 }

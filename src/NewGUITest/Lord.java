@@ -63,10 +63,10 @@ public class Lord extends JFrame{
 	
 	private JFrame lordFrame;
 	ReadNWrite write = new ReadNWrite();
-	public boolean quit_request = false;
+	public boolean request_flag = false;
 	public boolean save_request = false;
-	public boolean change_lord_request = false;
-	public String window_request = "";
+	public boolean generate_request = false;
+	public boolean new_request = false;
 	//public TradeWindow trade = new TradeWindow(); a trade window for each lord
 	
 	//// START OF METHODS ////
@@ -143,7 +143,8 @@ public class Lord extends JFrame{
 		menuItem = new JMenuItem("Save");	//save button
 		Action saveAction = new AbstractAction("Save") {
 			public void actionPerformed(ActionEvent e) {
-				saveRequest();
+				NationHandler temp = new NationHandler();
+				temp.saveNation();
 			}
 		};
 		saveAction.putValue(Action.ACCELERATOR_KEY, 
@@ -163,13 +164,15 @@ public class Lord extends JFrame{
 		////SETTING UP PANEL1////
 		
 		Panel mainPnl = new Panel();//set out panel
-		mainPnl.setLayout(new GridLayout(3,1));//set layout
+		mainPnl.setLayout(new GridLayout(4,1));//set layout
 		Button newVassalBtn = new Button("New Vassal");//adding buttons
 		mainPnl.add(newVassalBtn);
 		Button saveBtn = new Button("Save Nation");
 		mainPnl.add(saveBtn);//new vassal and save nation still has no functionality to them.
 		Button quitBtn = new Button("Quit");
 		mainPnl.add(quitBtn);
+		Button dummy = new Button("Dummy");
+		mainPnl.add(dummy);
 		lordFrame.add(mainPnl);
 		lordFrame.setJMenuBar(menuBar);
 		
@@ -177,11 +180,13 @@ public class Lord extends JFrame{
 		////BUTTON FUNCTIONALITIES////
 		newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
 			public void actionPerformed(ActionEvent e){
-				
+				request_flag = true;
+				new_request = true;
 			}
 		});
 		saveBtn.addActionListener(new ActionListener() {//add action event to save button
 			public void actionPerformed(ActionEvent e){
+				request_flag = true;
 				save_request = true;
 			}
 		});
@@ -190,6 +195,18 @@ public class Lord extends JFrame{
 				System.exit(0);
 			}
 		});
+		dummy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				request_flag = true;
+				generate_request = true;
+			}
+		});
+	}
+	public void resetRequest() {
+		request_flag = false;
+		new_request = false;
+		save_request = false;
+		generate_request = false;
 	}
 	
 	public void start(){
@@ -201,38 +218,5 @@ public class Lord extends JFrame{
 	
 	public void loadLord() {
 		
-	}
-	
-	////REQUEST METHODS WHICH REQUIRE NationHandler OBJECT TO TEMPORARILY BE CREATED////
-	
-	public void saveRequest() {
-		NationHandler temp = new NationHandler();
-		temp.saveNation();
-	}
-	
-	public void changeLordRequest() {
-		NationHandler temp = new NationHandler();
-	}
-	
-	public void hexRequest() {
-		NationHandler temp = new NationHandler();
-	}
-	
-	public void milRequest() {
-		NationHandler temp = new NationHandler();
-	}
-	
-	public void newVassalRequest() {
-		NationHandler temp = new NationHandler();
-	}
-	
-	public void swapLordRequest() {
-		NationHandler temp = new NationHandler();
-	}
-	
-	public Official assignOfficial(String[] s) {//create a new official object
-		Official official = new Official(s);
-		return official;
-	}
-	
+	}	
 }

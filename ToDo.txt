@@ -2,6 +2,10 @@ general:
 construct the save/load methods so that they... *gasp* work!
 when a new vassal is created make a new window, and simply make the 'inactive ones' invisible, so that their states can still be accessed.
 
+For some reason whenever I try saving I get an access denied IOException. Add system outs in save to isolate the issue (maybe even in nationhandler to see which method(s) generate the error quickly) 
+The dummy button should probably be there for a while, it is very very very useful for debugging and since I can write a day of coding without ever testing it, that is sorely needed.
+Whenever I go from an instance of Lord within NationHandler and go back to access variables within NationHandler the variables have been reset. This is because I generate a new instance of NationHandler whenever I inside Lord try to directly access it. There must be a better way of sending information between the classes. Maybe requests is the best option? This is something that I should continue investigating. Like now.
+
 rule-wize:
 Add Buildings
 Add Institutions
@@ -20,8 +24,8 @@ finish save mehtods for
 	lords---DONE!
 	hexes---DONE!
 	units
-	routes
-	officials
+	routes---DONE!
+	officials---DONE!
 finish load methods for
 	lords
 	hexes---DONE? Test required!
@@ -65,6 +69,11 @@ priorities:
 1. connect nationhandler to mainthread---DONE!
 2. finish outlining under 'on ReadNWrite:'---DONE!
 3. fininsh classes hex, unit, route, official---the bone is constructed for all of them except for units
-4. fix the rest of 'on ReadNWrite:'
-9. set initializers of nationhandler so that lordwindow, hexwindow, unitwindow and officialwindow are created
-10. create hex/mil/trade windows
+4. fix the save part of 'on ReadNWrite:'
+5. finish lord layout
+6. finish hex layout
+7. finish routes layout
+8. finish officials layout
+9. finish load part of 'on ReadNWrite:'
+10. finish units layout
+11. set initializers of nationhandler so that lordwindow, hexwindow, unitwindow and officialwindow are created

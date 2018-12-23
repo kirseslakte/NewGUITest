@@ -12,7 +12,7 @@ public class NationHandler {
 	public List<Unit> listofunits = new ArrayList<Unit>();
 	public List<Route> listofroutes = new ArrayList<Route>();
 	public List<Official> listofofficials = new ArrayList<Official>();
-	private Lord active_lord;
+	public Lord active_lord;
 	private int min = 0;
 	private ReadNWrite write = new ReadNWrite();
 	//private MilitaryWindow milwindow = new MilitaryWindw();
@@ -22,16 +22,33 @@ public class NationHandler {
 		
 	}
 	
-	public void mainThread() {/*
-		try {
-			TimeUnit.SECONDS.sleep(1);
-			min++;
-			if (min==3600)//reset every hour
-				min = 0;
-		}catch (InterruptedException e){
-			System.out.println(e);
+	public void mainThread() {
+		while(true) {
+			try {
+				TimeUnit.SECONDS.sleep(1);
+				min++;
+				if (min==3600)//reset every hour
+					min = 0;
+				for (int i=0;i<listoflords.size();i++) {
+					if (listoflords.get(i).request_flag) {
+						if (listoflords.get(i).new_request){
+
+							listoflords.get(i).resetRequest();						
+						}else if (listoflords.get(i).save_request) {
+							saveNation();
+							System.out.println("saving");
+							listoflords.get(i).resetRequest();
+						}else if (listoflords.get(i).generate_request) {
+							generateLord();
+							System.out.println("generating");
+							listoflords.get(i).resetRequest();
+						}
+					}
+				}
+			}catch (InterruptedException e){
+				System.out.println(e);
+			}
 		}
-		}*/
 	}
 	
 	public void createNation(String s) {//only ever called from MainThread when a new nation is created
@@ -59,15 +76,9 @@ public class NationHandler {
 			write.saveLord(lord);
 		}
 		write.saveHexes(listofhexes);
-		for (Unit unit: listofunits) {
-			write.saveUnit(unit);
-		}
-		for (Route route: listofroutes) {
-			write.saveRoute(route);
-		}
-		for (Official official: listofofficials) {
-			write.saveOfficail(official);
-		}
+		write.saveUnit(listofunits);
+		write.saveRoute(listofroutes);
+		write.saveOfficail(listofofficials);
 	}//that was pretty straight forward, right?
 	
 	public void changeActiveLord(Lord active,Lord new_active) {//just changing which frame to show
@@ -76,10 +87,12 @@ public class NationHandler {
 	}
 	
 	public void newLord(String s,boolean new_nation) {//create a new lordWindow
-		if (new_nation){//NOT SURE WHAT TO DO HERE, LOADS WILL PROBABLY BE HANDLED FROM loadNation!!
+		if (new_nation){//this is a new nation
 			System.out.println(s);
 			listoflords.add(new Lord(s));//add lord
 			listoflords.get(0).start();
+			active_lord = listoflords.get(0);
+			System.out.println(listoflords.size());
 		}else {//if creating a new vassal
 			for (String existing_lords:write.save_names) {
 				if (s==existing_lords)//if lord with same name already exist
@@ -92,4 +105,36 @@ public class NationHandler {
 		}
 	}
 	
+	//THIS IS A DUMMY METHOD WHICH GENERATES A LORD TO CHECK IF SAVE/LOAD WORKS PROPERLY//
+	public void generateLord() {
+		String[] govern = {"Histocratic","Classisist","Monarchy","Settled","Highly","LE","NE","Dennis","10","3","1","100","3",
+				"0.9","overlord"};//starting with lord
+		listoflords.get(0).setGovernment(govern);
+		String[] insti = new String[listoflords.get(0).max_number_of_institutions];
+		for (int i=0;i<listoflords.get(0).max_number_of_institutions;i++) {
+			insti[i] = "";
+		}
+		listoflords.get(0).setInstitutions(insti);
+		double[] cult = new double[listoflords.get(0).number_of_culture_bonuses];
+		for (int i=0;i<listoflords.get(0).number_of_culture_bonuses;i++) {
+			cult[i] = i;
+		}
+		listoflords.get(0).setCultureBonuses(cult);
+		double[] eco = {2.1,1.6,7.6,0.0,5.1};
+		listoflords.get(0).setEconomyAndOfficials(eco);
+		String[] hex1 = {"StrangTown","8","LE","CE","4","2","Gold","RGO_Level1","Manor","","","","",""};//hexes
+		String[] hex2 = {"DangeTown","9","LN","NE","2","0","Emeralds","RGO_Level2","Work Camp","Mega Store","","","",""};
+		listofhexes.add(new Hex());
+		listofhexes.add(new Hex());
+		listofhexes.get(0).setHex(hex1);;
+		listofhexes.get(1).setHex(hex2);
+		String[] official1 = {"Roger Bättrerumpa","Tax Collector","23","StrangTown","overlord"};//officials
+		String[] official2 = {"Peter Snopen","High Priesting","19","Not_in_hex","overlord"};
+		listofofficials.add(new Official(official1));
+		listofofficials.add(new Official(official2));
+		String[] route1 = {"handelsled1","overlord","active","23","19","2054"};//routes
+		String[] route2 = {"handelsled2","overlord","passive","21","8","1527"};
+		listofroutes.add(new Route(route1));
+		listofroutes.add(new Route(route2));
+	}	
 }
