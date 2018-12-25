@@ -23,7 +23,7 @@ create the save file structure for
 finish save mehtods for
 	lords---DONE!
 	hexes---DONE!
-	units
+	units---DONE?
 	routes---DONE!
 	officials---DONE!
 finish load methods for
@@ -68,12 +68,13 @@ Add military things
 priorities:
 1. connect nationhandler to mainthread---DONE!
 2. finish outlining under 'on ReadNWrite:'---DONE!
-3. fininsh classes hex, unit, route, official---the bone is constructed for all of them except for units
+3. fininsh input part of classes hex, unit, route, official---the bone is constructed for all of them except for units
 4. fix the save part of 'on ReadNWrite:'
 5. finish lord layout
 6. finish hex layout
 7. finish routes layout
 8. finish officials layout
 9. finish load part of 'on ReadNWrite:'
-10. finish units layout
-11. set initializers of nationhandler so that lordwindow, hexwindow, unitwindow and officialwindow are created
+10. finish classes hex, unit, route, official
+11. finish units layout
+12. set initializers of nationhandler so that lordwindow, hexwindow, unitwindow and officialwindow are created

@@ -1,12 +1,13 @@
 package NewGUITest;
 
 public class Official {//initializing an 'official' object where you can create 'characters'
-	public String name;
+	public String name;//these are the input variables:
 	public String type;
 	public int roll;
 	public String hex;
 	public String lord;
-	public boolean inhex;
+
+	public boolean inhex;//non-input variables
 	
 	public Official(String[] s){				//requires input:
 		this.name = s[0];						//name
@@ -14,10 +15,7 @@ public class Official {//initializing an 'official' object where you can create 
 		this.roll = Integer.parseInt(s[2]);		//the roll/skill/whatever value is applicable
 		this.hex = s[3];						//which hex the official is in
 		this.lord = s[4];						//which lord the official belongs to (title)
-		if (s[3].equals("not_in_hex"))
-			this.inhex = false;					//if the bonus is hex-specific
-		else
-			this.inhex = true;
+		this.inhex = !s[3].equals("not_in_hex");//if the bonus is hex-specific
 	}
 	
 	public void changeName(String s) {//methods for changing the official attributes (some might be redundant)

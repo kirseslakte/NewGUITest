@@ -29,20 +29,18 @@ public class NationHandler {
 				min++;
 				if (min==3600)//reset every hour
 					min = 0;
-				for (int i=0;i<listoflords.size();i++) {
-					if (listoflords.get(i).request_flag) {
-						if (listoflords.get(i).new_request){
+				if (active_lord.request_flag) {
+					if (active_lord.new_request){
 
-							listoflords.get(i).resetRequest();						
-						}else if (listoflords.get(i).save_request) {
-							saveNation();
-							System.out.println("saving");
-							listoflords.get(i).resetRequest();
-						}else if (listoflords.get(i).generate_request) {
-							generateLord();
-							System.out.println("generating");
-							listoflords.get(i).resetRequest();
-						}
+						active_lord.resetRequest();						
+					}else if (active_lord.save_request) {
+						saveNation();
+						System.out.println("saving");
+						active_lord.resetRequest();
+					}else if (active_lord.generate_request) {
+						generateLord();
+						System.out.println("generating");
+						active_lord.resetRequest();
 					}
 				}
 			}catch (InterruptedException e){
@@ -84,6 +82,7 @@ public class NationHandler {
 	public void changeActiveLord(Lord active,Lord new_active) {//just changing which frame to show
 		listoflords.get(listoflords.indexOf(active)).stop();
 		listoflords.get(listoflords.indexOf(new_active)).start();
+		active_lord = new_active;
 	}
 	
 	public void newLord(String s,boolean new_nation) {//create a new lordWindow
@@ -126,15 +125,18 @@ public class NationHandler {
 		String[] hex2 = {"DangeTown","9","LN","NE","2","0","Emeralds","RGO_Level2","Work Camp","Mega Store","","","",""};
 		listofhexes.add(new Hex());
 		listofhexes.add(new Hex());
-		listofhexes.get(0).setHex(hex1);;
+		listofhexes.get(0).setHex(hex1);
 		listofhexes.get(1).setHex(hex2);
 		String[] official1 = {"Roger Bättrerumpa","Tax Collector","23","StrangTown","overlord"};//officials
-		String[] official2 = {"Peter Snopen","High Priesting","19","Not_in_hex","overlord"};
+		String[] official2 = {"Peter Snopen","High Priesting","19","not_in_hex","overlord"};
 		listofofficials.add(new Official(official1));
 		listofofficials.add(new Official(official2));
-		String[] route1 = {"handelsled1","overlord","active","23","19","2054"};//routes
-		String[] route2 = {"handelsled2","overlord","passive","21","8","1527"};
+		String[] route1 = {"handelsled1","overlord","true","23","19","2054"};//routes
+		String[] route2 = {"handelsled2","overlord","false","21","8","1527"};
 		listofroutes.add(new Route(route1));
-		listofroutes.add(new Route(route2));
+		listofroutes.add(new Route(route2));/*generate unit (though that will be long as f**k, its still doable
+		String[] unit1 = new String[96];//unit //just maybe nothing i want to pour time and effort into atm
+		listofunits.add(new Unit());
+		listofunits.get(0).setUnit(unit1);*/
 	}	
 }

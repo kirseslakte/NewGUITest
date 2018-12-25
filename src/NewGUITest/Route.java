@@ -1,8 +1,8 @@
 package NewGUITest;
 
-public class Route {
+public class Route{//trade route object
 	
-	public String name;//trade route object
+	public String name;//input variables
 	public String lord;
 	public boolean active;
 	public int lord_TAR;
@@ -16,7 +16,5 @@ public class Route {
 		this.lord_TAR = Integer.parseInt(s[3]);//the trade agreement roll of lord
 		this.partner_TAR = Integer.parseInt(s[4]);//the trade agreement roll of partner
 		this.partner_BP = Integer.parseInt(s[5]);//bp of partner
-	}
-	
-	
+	}	
 }

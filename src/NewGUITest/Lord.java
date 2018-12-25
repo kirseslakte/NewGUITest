@@ -60,14 +60,12 @@ public class Lord extends JFrame{
 	 */
 	
 	//// THESE ARE THE variables FOR THE GUI ////
-	
-	private JFrame lordFrame;
 	ReadNWrite write = new ReadNWrite();
 	public boolean request_flag = false;
 	public boolean save_request = false;
 	public boolean generate_request = false;
 	public boolean new_request = false;
-	//public TradeWindow trade = new TradeWindow(); a trade window for each lord
+	//public TradeWindow trade = new TradeWindow(this);//a trade window for each lord
 	
 	//// START OF METHODS ////
 	
@@ -122,61 +120,80 @@ public class Lord extends JFrame{
 	}
 		
 	public void setFrame() {
-		lordFrame = new JFrame();		
-		lordFrame.setSize(1500,1000);//x,y
+		this.setSize(1500,1000);//x,y
 	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dimension.getWidth() - lordFrame.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - lordFrame.getHeight()) / 2);
-	    lordFrame.setLocation(x, y);
-	    lordFrame.addWindowListener(new WindowAdapter() {//close program on closing window
+	    int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
+	    int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
+	    this.setLocation(x, y);
+	    this.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				System.exit(0);
 			}
 		});
-		lordFrame.setTitle(name);
+		this.setTitle(name);
 	    
 		////SETTING UP THE MENU BAR////
 	    
 		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("File");		//file menu
-		JMenuItem menuItem;					
-		menuItem = new JMenuItem("Save");	//save button
+		JMenu filemenu = new JMenu("File");		//file menu		
+		JMenuItem menuSave = new JMenuItem("Save");	//save button
 		Action saveAction = new AbstractAction("Save") {
 			public void actionPerformed(ActionEvent e) {
-				NationHandler temp = new NationHandler();
-				temp.saveNation();
+				request_flag = true;
+				save_request = true;
 			}
 		};
 		saveAction.putValue(Action.ACCELERATOR_KEY, 
 				KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
-		menuItem.setAction(saveAction);//done setting the save button
+		menuSave.setAction(saveAction);//done setting the save button
 		
-		menuItem = new JMenuItem("Quit");	//quit button
+		JMenuItem menuQuit = new JMenuItem("Quit");	//quit button
 		Action quitAction = new AbstractAction("Quit") {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
 		};
-		menuItem.setAction(quitAction);//done setting the quit button
-		//lordFrame.setJMenuBar(menuBar);
+		menuQuit.setAction(quitAction);//done setting the quit button
+		filemenu.add(menuSave);
+		filemenu.add(menuQuit);
+		menuBar.add(filemenu);
+		this.setJMenuBar(menuBar);
 		
 	    ////DONE WITH THE MENU BAR////
-		////SETTING UP PANEL1////
+		////SETTING UP MAIN PANEL////
 		
-		Panel mainPnl = new Panel();//set out panel
-		mainPnl.setLayout(new GridLayout(4,1));//set layout
+		Panel mainPnl = new Panel(new GridLayout(2,2));//set out panel
+		//government panel
+		Panel govPnl = new Panel(new GridLayout(0,2));//will use a lot of JComboBox! will be cool
+		govPnl.add(new JTextField("Shitslityo"));
+		govPnl.add(new JTextField(""));
+		govPnl.add(new JTextField("Nexlitthing"));
+		govPnl.add(new JTextField(""));
+		mainPnl.add(govPnl);
+		//nationstats panel
+		Panel statsPnl = new Panel(new GridLayout(10,2));
+		mainPnl.add(statsPnl);
+		//anotherpanel
+		Panel pnl3 = new Panel(new GridLayout(1,1));
+		mainPnl.add(pnl3);
+		//lastpanel
+		Panel pnl4 = new Panel(new GridLayout(1,1));
 		Button newVassalBtn = new Button("New Vassal");//adding buttons
-		mainPnl.add(newVassalBtn);
 		Button saveBtn = new Button("Save Nation");
-		mainPnl.add(saveBtn);//new vassal and save nation still has no functionality to them.
 		Button quitBtn = new Button("Quit");
-		mainPnl.add(quitBtn);
 		Button dummy = new Button("Dummy");
-		mainPnl.add(dummy);
-		lordFrame.add(mainPnl);
-		lordFrame.setJMenuBar(menuBar);
+		pnl4.add(dummy);
+		pnl4.add(saveBtn);
+		pnl4.add(quitBtn);
+		mainPnl.add(pnl4);
+		JTabbedPane mainPane = new JTabbedPane();
+		mainPane.addTab("Government",mainPnl);
 		
-		////DONE SETTING UP PANEL1////
+		////DONE SETTING UP MAIN PANEL////
+		////SETTING UP THE TABBED PANES////
+		
+		this.add(mainPane);
+		
 		////BUTTON FUNCTIONALITIES////
 		newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
 			public void actionPerformed(ActionEvent e){
@@ -210,10 +227,10 @@ public class Lord extends JFrame{
 	}
 	
 	public void start(){
-		this.lordFrame.setVisible(true);
+		this.setVisible(true);
 	}
 	public void stop() {
-		this.lordFrame.setVisible(false);
+		this.setVisible(false);
 	}
 	
 	public void loadLord() {
