@@ -70,7 +70,7 @@ priorities:
 2. finish outlining under 'on ReadNWrite:'---DONE!
 3. fininsh input part of classes hex, unit, route, official---the bone is constructed for all of them except for units
 4. fix the save part of 'on ReadNWrite:'
-5. finish lord layout
+5. finish lord layout---put the different tabs in their of classes? and pull them from there so that they are more easily accessible and updatable. Take the important information (the three in the left tab and all of the right) and make them named variables which can be retreived (also need to update load/save so that the last three on the left are included)
 6. finish hex layout
 7. finish routes layout
 8. finish officials layout

@@ -2,12 +2,15 @@ package NewGUITest;
 
 
 public class Governments {
-	public String[] systems = {"Democratic","Autocratic","Meritocratic","Theocratic","Histocratic","Plutocratic","Hive","Federation"};
+	public String[] systems = {"Democratic","Autocratic","Meritocratic","Theocratic","Histocratic","Plutocratic","Hive"
+			,"Federation"};
 	public String[] strucs = {"Classisist","Individualistic"};
 	public String[] rule = {"Monarchy","Oligarchy","Polyarchy"};
 	public String[] life = {"Settled","Tribalistic","Nomadic"};
 	public String[] centralisation = {"Highly","Moderately","Decentralised"};
-	//If you ever want to add anything above, just add it at the end and look in the appropriate section below to add the method for it!
+	public String[] alignments = {"LG","NG","CG","LN","NN","CN","LE","NE","CE"};
+	//If you ever want to add anything above, just add it at the end and 
+	//look in the appropriate section below to add the method for it!
 	public String sys = "";
 	public String struc = "";
 	public String ruler = "";
