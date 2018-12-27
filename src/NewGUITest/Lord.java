@@ -163,79 +163,12 @@ public class Lord extends JFrame{
 		////SETTING UP MAIN PANEL////
 		
 		Panel mainPnl = new Panel(new GridLayout(2,2));//set out panel
+		LordPanes panes = new LordPanes();
 		//nation stats panel
-		Panel nation_panel = new Panel(new GridLayout(0,4));//will use a lot of JComboBox! will be cool
-		nation_panel.add(new JLabel("Tax Efficiency"));
-		nation_panel.add(new JLabel(Integer.toString((int)Math.rint(government.tax_eff))));
-		nation_panel.add(new JLabel("Production of Hexes"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Production Efficiency"));
-		nation_panel.add(new JLabel(Integer.toString((int)Math.rint(government.prod_eff))));
-		nation_panel.add(new JLabel("Province Income"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Trade Efficiency"));
-		nation_panel.add(new JLabel(Integer.toString((int)Math.rint(government.trade_eff))));
-		nation_panel.add(new JLabel("Province Upkeep"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Vassal Income Efficiency"));
-		nation_panel.add(new JLabel(Integer.toString((int)Math.rint(government.vassal_inc_eff))));
-		nation_panel.add(new JLabel("Development"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Bank Income Efficiency"));
-		nation_panel.add(new JLabel(Integer.toString((int)Math.rint(government.bank_inc_eff))));
-		nation_panel.add(new JLabel("Population (%)"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Bank Development Efficiency"));
-		nation_panel.add(new JLabel(Integer.toString((int)Math.rint(government.bank_dev_eff))));
-		nation_panel.add(new JLabel("Vassal Tax Income"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Guild Upkeep"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Trade Income"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Army Upkeep"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Government Upkeep"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Trade Value"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Total Income"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Total Upkeep"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Total Production"));
-		nation_panel.add(new JLabel(""));
-		nation_panel.add(new JLabel("Banked Development"));
-		nation_panel.add(new JTextField(""));
-		nation_panel.add(new JLabel("Banked RP"));
-		nation_panel.add(new JTextField(""));
-		nation_panel.add(new JLabel("Taxation Level"));
-		nation_panel.add(new JTextField(""));
-		mainPnl.add(nation_panel);
+		mainPnl.add(panes.nationPanel(government,is_vassal));
 		//government panel
-		Panel government_panel = new Panel(new GridLayout(0,4));
-		government_panel.add(new JLabel("Culture"));
-		government_panel.add(new JComboBox(government.alignments));
-		government_panel.add(new JLabel("Legitimacy"));
-		government_panel.add(new JTextField(""));
-		government_panel.add(new JLabel("Religion"));
-		government_panel.add(new JComboBox(government.alignments));
-		government_panel.add(new JLabel("System"));
-		government_panel.add(new JComboBox(government.systems));
-		government_panel.add(new JLabel("Social Structure"));
-		government_panel.add(new JComboBox(government.strucs));
-		government_panel.add(new JLabel("Rule"));
-		government_panel.add(new JComboBox(government.rule));
-		government_panel.add(new JLabel("Life Style"));
-		government_panel.add(new JComboBox(government.life));
-		government_panel.add(new JLabel("Centralisation"));
-		government_panel.add(new JComboBox(government.centralisation));
-		for (int i=0;i<4;i++){
-			government_panel.add(new JLabel("Institution"));
-			government_panel.add(new JComboBox(institutes.institution_names));
-		}
-		mainPnl.add(government_panel);
-		//anotherpanel
+		mainPnl.add(panes.governmentPane(government, institutes));
+		//culture
 		Panel pnl3 = new Panel(new GridLayout(1,1));
 		mainPnl.add(pnl3);
 		//lastpanel
