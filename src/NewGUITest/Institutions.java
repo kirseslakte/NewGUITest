@@ -3,48 +3,48 @@ package NewGUITest;
 
 public class Institutions {
 	public int number_of_institutions;
-	public String[] institution_names = { "Arts","Church","Courts","Druids","Education","Foreign Office","Interior","Mages","Merchants",
+	public String[] institution_names = { "","Arts","Church","Courts","Druids","Education","Foreign Office","Interior","Mages","Merchants",
 			"Military","Monstrologist","Parliament","Psions","Secret Service","Slavery","Tinkers","Treasury","Welfare"};
 	public Institutions() {//whenever an object is created from this class we reset all the modifiers from them
 		resetModifiers();
 	}
 	
-	public void findInstitution(String s) {//input is institute and it executes that institue method
-		if (s==institution_names[0])
+	public void setInstitution(String s) {//input is institute and it executes that institue method
+		if (s==institution_names[1])
 			arts();
-		else if (s==institution_names[1])
-			church();
 		else if (s==institution_names[2])
-			courts();
+			church();
 		else if (s==institution_names[3])
-			druids();
+			courts();
 		else if (s==institution_names[4])
-			education();
+			druids();
 		else if (s==institution_names[5])
-			foreignOffice();
+			education();
 		else if (s==institution_names[6])
-			interior();
+			foreignOffice();
 		else if (s==institution_names[7])
-			mages();
+			interior();
 		else if (s==institution_names[8])
-			merchants();
+			mages();
 		else if (s==institution_names[9])
-			military();
+			merchants();
 		else if (s==institution_names[10])
-			monstrologist();
+			military();
 		else if (s==institution_names[11])
-			parliament();
+			monstrologist();
 		else if (s==institution_names[12])
-			psions();
+			parliament();
 		else if (s==institution_names[13])
-			secretService();
+			psions();
 		else if (s==institution_names[14])
-			slavery();
+			secretService();
 		else if (s==institution_names[15])
-			tinkers();
+			slavery();
 		else if (s==institution_names[16])
-			treasury();
+			tinkers();
 		else if (s==institution_names[17])
+			treasury();
+		else if (s==institution_names[18])
 			welfare();
 		else
 			//nothing

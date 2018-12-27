@@ -9,6 +9,7 @@ public class Governments {
 	public String[] life = {"Settled","Tribalistic","Nomadic"};
 	public String[] centralisation = {"Highly","Moderately","Decentralised"};
 	public String[] alignments = {"LG","NG","CG","LN","NN","CN","LE","NE","CE"};
+	public String[] histocracy_options = {"",""};
 	//If you ever want to add anything above, just add it at the end and 
 	//look in the appropriate section below to add the method for it!
 	public String sys = "";

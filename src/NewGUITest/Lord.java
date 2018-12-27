@@ -32,21 +32,14 @@ public class Lord extends JFrame{
 	
 	public String[] institutions;//institutions
 	
-	public double[] culture_bonuses;//culture bonuses (22 of them)
-	public String[] culture_bonus_names = {"Unit Training Cost","Unit Equipment Cost","Unit Cap",
-			"Undead Unit Cap","Hit Modifier","AC Modifier","Morale Modifier","Command Modifier",
-			"Ranged Hit Modifier","Fortification Cost","Settlement Cost","Settlement Upgrade",
-			"Base Production Modifier","Production Efficiency","Tax Efficiency","Banking Efficiency",
-			"Trade Efficiency","Vassal Income Efficiency","Magic Guild Cost","Tinker Guild Cost",
-			"Spy Guild Cost","All Guild Cost"};
+	public int[] culture_bonuses;//culture bonuses (22 of them)
 
 	public double[] eco;//economy
 	/* key for eco:
-	 * extra officials								0
-	 * tax rate										1
-	 * banked rp									2
-	 * banked dev									3	
-	 * tax rate overlord (=0 if overlord)			4
+	 * tax rate										0
+	 * banked rp									1
+	 * banked dev									2	
+	 * tax rate overlord (=0 if overlord)			3
 	 */
 	/*													MAYBE ROLL ALL THESE OFFICALS INTO SEPARATE CLASS
 	 * bank income roll								4	OFFICIAL
@@ -65,6 +58,7 @@ public class Lord extends JFrame{
 	public boolean save_request = false;
 	public boolean generate_request = false;
 	public boolean new_request = false;
+	public LordPanes panes = new LordPanes();
 	//public TradeWindow trade = new TradeWindow(this);//a trade window for each lord
 	
 	//// START OF METHODS ////
@@ -107,11 +101,11 @@ public class Lord extends JFrame{
 		this.institutions = in_institutions;
 		for (String s: in_institutions) {
 			//check which institutions player wants
-			this.institutes.findInstitution(s);
+			this.institutes.setInstitution(s);
 		}
 	}
 	
-	public void setCultureBonuses(double[] input_bonuses) {//set the culture bonuses fed from front panel
+	public void setCultureBonuses(int[] input_bonuses) {//set the culture bonuses fed from front panel
 		this.culture_bonuses = input_bonuses;
 	}
 	
@@ -163,14 +157,12 @@ public class Lord extends JFrame{
 		////SETTING UP MAIN PANEL////
 		
 		Panel mainPnl = new Panel(new GridLayout(2,2));//set out panel
-		LordPanes panes = new LordPanes();
 		//nation stats panel
 		mainPnl.add(panes.nationPanel(government,is_vassal));
 		//government panel
 		mainPnl.add(panes.governmentPane(government, institutes));
 		//culture
-		Panel pnl3 = new Panel(new GridLayout(1,1));
-		mainPnl.add(pnl3);
+		mainPnl.add(panes.culturePane());
 		//lastpanel
 		Panel pnl4 = new Panel(new GridLayout(1,1));
 		Button newVassalBtn = new Button("New Vassal");//adding buttons
@@ -183,14 +175,14 @@ public class Lord extends JFrame{
 		mainPnl.add(pnl4);
 		JTabbedPane mainPane = new JTabbedPane();
 		mainPane.addTab("Government",mainPnl);
+		//mainPane.addTab("Officials");
+		//mainPane.addTab("Units");
 		//mainPane.addTab("TradeMap");
 		//mainPane.addTab("VassalMap");
 		//mainPane.addTab("Notes");
+		this.add(mainPane);
 		
 		////DONE SETTING UP MAIN PANEL////
-		////SETTING UP THE TABBED PANES////
-		
-		this.add(mainPane);
 		
 		////BUTTON FUNCTIONALITIES////
 		newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
@@ -217,6 +209,21 @@ public class Lord extends JFrame{
 			}
 		});
 	}
+	
+	public void getGovernment() {
+		eco[0] = Integer.parseInt(panes.bank_rp.getText());
+		eco[1] = Integer.parseInt(panes.bank_dev.getText());
+		eco[2] = Integer.parseInt(panes.tax_rate.getText());
+		government.setSystem((String) panes.system.getSelectedItem());
+		government.setStruc((String) panes.soc_structure.getSelectedItem());
+		government.setRuler((String) panes.rule.getSelectedItem());
+		government.setLifeStyle((String) panes.life_style.getSelectedItem());
+		government.setCentralisation((String) panes.centralisation.getSelectedItem());
+		for (int i=0;i<4;i++) {
+			institutes.setInstitution((String) panes.institutions[i].getSelectedItem());
+		}
+	}
+	
 	public void resetRequest() {
 		request_flag = false;
 		new_request = false;
