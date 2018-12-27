@@ -16,7 +16,7 @@ public class LordPanes {
 	public JTextField legitimacy;
 	//culture variables
 	public JTextField unit_training_cost,undead_unit_cap,unit_cap,unit_equipment_cost,hit_mod,ac_mod,m_mod,c_mod,
-	ranged_hit_mod,settlement_ukp,fortification_cost,settlement_upgrade,bp_mod,prod_mod,tax_mod,bank_mod,trade_mod,
+	ranged_hit_mod,settlement_upk,fortification_cost,settlement_upgrade,bp_mod,prod_mod,tax_mod,bank_mod,trade_mod,
 	vassal_mod,magic_mod,tinker_mod,spy_mod,guild_mod;
 	
 	//TODO:
@@ -127,10 +127,14 @@ public class LordPanes {
 		culture_panel.add(hit_mod = new JTextField("0"));
 		culture_panel.add(new JLabel("AC"));
 		culture_panel.add(ac_mod = new JTextField("0"));
+		culture_panel.add(new JLabel("Morale"));
+		culture_panel.add(m_mod = new JTextField("0"));
+		culture_panel.add(new JLabel("Command"));
+		culture_panel.add(c_mod = new JTextField("0"));
 		culture_panel.add(new JLabel("Ranged Hit"));
 		culture_panel.add(ranged_hit_mod = new JTextField("0"));
 		culture_panel.add(new JLabel("Settlement Upkeep Cost"));
-		culture_panel.add(settlement_ukp = new JTextField("0"));
+		culture_panel.add(settlement_upk = new JTextField("100"));
 		culture_panel.add(new JLabel("Fortification Cost"));
 		culture_panel.add(fortification_cost = new JTextField("100"));
 		culture_panel.add(new JLabel("Settlement Upgrade Cost"));
@@ -148,13 +152,13 @@ public class LordPanes {
 		culture_panel.add(new JLabel("Vassal Income Efficiency"));
 		culture_panel.add(vassal_mod = new JTextField("0"));
 		culture_panel.add(new JLabel("Magic Guild Cost"));
-		culture_panel.add(magic_mod = new JTextField("0"));
+		culture_panel.add(magic_mod = new JTextField("100"));
 		culture_panel.add(new JLabel("Tinker Guild Cost"));
-		culture_panel.add(tinker_mod = new JTextField("0"));
+		culture_panel.add(tinker_mod = new JTextField("100"));
 		culture_panel.add(new JLabel("Spy Guild Cost"));
-		culture_panel.add(spy_mod = new JTextField("0"));
+		culture_panel.add(spy_mod = new JTextField("100"));
 		culture_panel.add(new JLabel("All Guild Cost"));
-		culture_panel.add(guild_mod = new JTextField("0"));
+		culture_panel.add(guild_mod = new JTextField("100"));
 		return culture_panel;
 	}
 }

@@ -26,15 +26,13 @@ public class Lord extends JFrame{
 	public double overlord_tax_rate;
 	public boolean is_vassal;
 	public String title;
-	private Institutions institutes = new Institutions();
-	private Governments government = new Governments();
+	public Institutions institutes = new Institutions();
+	public Governments government = new Governments();
 	//TradeWindow trade = new TradeWindow();
 	
-	public String[] institutions;//institutions
-	
-	public int[] culture_bonuses;//culture bonuses (22 of them)
+	public int[] culture_bonuses = new int[22];//culture bonuses (22 of them)
 
-	public double[] eco;//economy
+	public double[] eco = new double[4];//economy
 	/* key for eco:
 	 * tax rate										0
 	 * banked rp									1
@@ -89,30 +87,13 @@ public class Lord extends JFrame{
 		else{
 			this.is_vassal = true;
 		}
-		government.setNull();
-		government.setSystem(this.sys);
-		government.setStruc(this.society);
-		government.setRuler(this.rule);
-		government.setLifeStyle(this.life);
-		government.setCentralisation(this.cent);
-	}
-	
-	public void setInstitutions(String[] in_institutions) {//set the institutions of the nation
-		this.institutions = in_institutions;
-		for (String s: in_institutions) {
-			//check which institutions player wants
-			this.institutes.setInstitution(s);
-		}
-	}
-	
-	public void setCultureBonuses(int[] input_bonuses) {//set the culture bonuses fed from front panel
-		this.culture_bonuses = input_bonuses;
-	}
-	
-	public void setEconomyAndOfficials(double[] e) {//set the economy settings fed from the front panel
-		this.eco = e;
-	}
-		
+		this.government.setNull();
+		this.government.setSystem(this.sys);
+		this.government.setStruc(this.society);
+		this.government.setRuler(this.rule);
+		this.government.setLifeStyle(this.life);
+		this.government.setCentralisation(this.cent);
+	}	
 	public void setFrame() {
 		this.setSize(1500,1000);//x,y
 	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -125,35 +106,6 @@ public class Lord extends JFrame{
 			}
 		});
 		this.setTitle(name);
-	    
-		////SETTING UP THE MENU BAR////
-	    
-		JMenuBar menuBar = new JMenuBar();
-		JMenu filemenu = new JMenu("File");		//file menu		
-		JMenuItem menuSave = new JMenuItem("Save");	//save button
-		Action saveAction = new AbstractAction("Save") {
-			public void actionPerformed(ActionEvent e) {
-				request_flag = true;
-				save_request = true;
-			}
-		};
-		saveAction.putValue(Action.ACCELERATOR_KEY, 
-				KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
-		menuSave.setAction(saveAction);//done setting the save button
-		
-		JMenuItem menuQuit = new JMenuItem("Quit");	//quit button
-		Action quitAction = new AbstractAction("Quit") {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		};
-		menuQuit.setAction(quitAction);//done setting the quit button
-		filemenu.add(menuSave);
-		filemenu.add(menuQuit);
-		menuBar.add(filemenu);
-		this.setJMenuBar(menuBar);
-		
-	    ////DONE WITH THE MENU BAR////
 		////SETTING UP MAIN PANEL////
 		
 		Panel mainPnl = new Panel(new GridLayout(2,2));//set out panel
@@ -203,25 +155,55 @@ public class Lord extends JFrame{
 			}
 		});
 		dummy.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {/*
 				request_flag = true;
-				generate_request = true;
+				generate_request = true;*/
+				getGovernment();
+				getCulture();
 			}
 		});
 	}
 	
-	public void getGovernment() {
-		eco[0] = Integer.parseInt(panes.bank_rp.getText());
-		eco[1] = Integer.parseInt(panes.bank_dev.getText());
-		eco[2] = Integer.parseInt(panes.tax_rate.getText());
-		government.setSystem((String) panes.system.getSelectedItem());
-		government.setStruc((String) panes.soc_structure.getSelectedItem());
-		government.setRuler((String) panes.rule.getSelectedItem());
-		government.setLifeStyle((String) panes.life_style.getSelectedItem());
-		government.setCentralisation((String) panes.centralisation.getSelectedItem());
+	public void getGovernment() {//getting and setting the government tab things
+		this.eco[0] = Integer.parseInt(panes.bank_rp.getText());
+		this.eco[1] = Integer.parseInt(panes.bank_dev.getText());
+		this.eco[2] = Integer.parseInt(panes.tax_rate.getText());
+		this.government.setSystem((String) panes.system.getSelectedItem());
+		this.government.setStruc((String) panes.soc_structure.getSelectedItem());
+		this.government.setRuler((String) panes.rule.getSelectedItem());
+		this.government.setLifeStyle((String) panes.life_style.getSelectedItem());
+		this.government.setCentralisation((String) panes.centralisation.getSelectedItem());
+		this.government.culture = ((String) panes.culture.getSelectedItem());
+		this.government.religion = ((String) panes.religion.getSelectedItem());
+		this.government.legitimacy = Integer.parseInt(panes.legitimacy.getText());
 		for (int i=0;i<4;i++) {
-			institutes.setInstitution((String) panes.institutions[i].getSelectedItem());
+			this.institutes.setInstitution((String) panes.institutions[i].getSelectedItem(),i);
 		}
+	}
+	
+	public void getCulture() {//extracting all the culture modifiers
+		this.culture_bonuses[0] = Integer.parseInt(panes.unit_training_cost.getText());
+		this.culture_bonuses[1] = Integer.parseInt(panes.undead_unit_cap.getText());
+		this.culture_bonuses[2] = Integer.parseInt(panes.unit_cap.getText());
+		this.culture_bonuses[3] = Integer.parseInt(panes.unit_equipment_cost.getText());
+		this.culture_bonuses[4] = Integer.parseInt(panes.hit_mod.getText());
+		this.culture_bonuses[5] = Integer.parseInt(panes.ac_mod.getText());
+		this.culture_bonuses[6] = Integer.parseInt(panes.m_mod.getText());
+		this.culture_bonuses[7] = Integer.parseInt(panes.c_mod.getText());
+		this.culture_bonuses[8] = Integer.parseInt(panes.ranged_hit_mod.getText());
+		this.culture_bonuses[9] = Integer.parseInt(panes.settlement_upk.getText());
+		this.culture_bonuses[10] = Integer.parseInt(panes.fortification_cost.getText());
+		this.culture_bonuses[11] = Integer.parseInt(panes.settlement_upgrade.getText());
+		this.culture_bonuses[12] = Integer.parseInt(panes.bp_mod.getText());
+		this.culture_bonuses[13] = Integer.parseInt(panes.prod_mod.getText());
+		this.culture_bonuses[14] = Integer.parseInt(panes.tax_mod.getText());
+		this.culture_bonuses[15] = Integer.parseInt(panes.bank_mod.getText());
+		this.culture_bonuses[16] = Integer.parseInt(panes.trade_mod.getText());
+		this.culture_bonuses[17] = Integer.parseInt(panes.vassal_mod.getText());
+		this.culture_bonuses[18] = Integer.parseInt(panes.magic_mod.getText());
+		this.culture_bonuses[19] = Integer.parseInt(panes.tinker_mod.getText());
+		this.culture_bonuses[20] = Integer.parseInt(panes.spy_mod.getText());
+		this.culture_bonuses[21] = Integer.parseInt(panes.guild_mod.getText());
 	}
 	
 	public void resetRequest() {

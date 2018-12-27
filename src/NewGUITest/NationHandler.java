@@ -38,7 +38,6 @@ public class NationHandler {
 						System.out.println("saving");
 						active_lord.resetRequest();
 					}else if (active_lord.generate_request) {
-						generateLord();
 						System.out.println("generating");
 						active_lord.resetRequest();
 					}
@@ -87,13 +86,11 @@ public class NationHandler {
 	
 	public void newLord(String s,boolean new_nation) {//create a new lordWindow
 		if (new_nation){//this is a new nation
-			System.out.println(s);
 			listoflords.add(new Lord(s));//add lord
 			listoflords.get(0).start();
 			active_lord = listoflords.get(0);
-			System.out.println(listoflords.size());
 		}else {//if creating a new vassal
-			for (String existing_lords:write.save_names) {
+			for (String existing_lords:write.save_names) {//is this really correct?
 				if (s==existing_lords)//if lord with same name already exist
 					JOptionPane.showMessageDialog(new Frame(),"That Lord already exist!","Vassal allocation error",JOptionPane.PLAIN_MESSAGE);
 				else {
@@ -102,41 +99,5 @@ public class NationHandler {
 				}
 			}
 		}
-	}
-	
-	//THIS IS A DUMMY METHOD WHICH GENERATES A LORD TO CHECK IF SAVE/LOAD WORKS PROPERLY//
-	public void generateLord() {
-		String[] govern = {"Histocratic","Classisist","Monarchy","Settled","Highly","LE","NE","Dennis","10","3","1","100","3",
-				"0.9","overlord"};//starting with lord
-		listoflords.get(0).setGovernment(govern);
-		String[] insti = new String[listoflords.get(0).max_number_of_institutions];
-		for (int i=0;i<listoflords.get(0).max_number_of_institutions;i++) {
-			insti[i] = "";
-		}
-		listoflords.get(0).setInstitutions(insti);
-		double[] cult = new double[listoflords.get(0).number_of_culture_bonuses];
-		for (int i=0;i<listoflords.get(0).number_of_culture_bonuses;i++) {
-			cult[i] = i;
-		}
-		listoflords.get(0).setCultureBonuses(cult);
-		double[] eco = {2.1,1.6,7.6,0.0,5.1};
-		listoflords.get(0).setEconomyAndOfficials(eco);
-		String[] hex1 = {"StrangTown","8","LE","CE","4","2","Gold","RGO_Level1","Manor","","","","",""};//hexes
-		String[] hex2 = {"DangeTown","9","LN","NE","2","0","Emeralds","RGO_Level2","Work Camp","Mega Store","","","",""};
-		listofhexes.add(new Hex());
-		listofhexes.add(new Hex());
-		listofhexes.get(0).setHex(hex1);
-		listofhexes.get(1).setHex(hex2);
-		String[] official1 = {"Roger Bättrerumpa","Tax Collector","23","StrangTown","overlord"};//officials
-		String[] official2 = {"Peter Snopen","High Priesting","19","not_in_hex","overlord"};
-		listofofficials.add(new Official(official1));
-		listofofficials.add(new Official(official2));
-		String[] route1 = {"handelsled1","overlord","true","23","19","2054"};//routes
-		String[] route2 = {"handelsled2","overlord","false","21","8","1527"};
-		listofroutes.add(new Route(route1));
-		listofroutes.add(new Route(route2));/*generate unit (though that will be long as f**k, its still doable
-		String[] unit1 = new String[96];//unit //just maybe nothing i want to pour time and effort into atm
-		listofunits.add(new Unit());
-		listofunits.get(0).setUnit(unit1);*/
 	}	
 }

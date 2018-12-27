@@ -9,7 +9,7 @@ public class Governments {
 	public String[] life = {"Settled","Tribalistic","Nomadic"};
 	public String[] centralisation = {"Highly","Moderately","Decentralised"};
 	public String[] alignments = {"LG","NG","CG","LN","NN","CN","LE","NE","CE"};
-	public String[] histocracy_options = {"",""};
+	public String[] histocracy_options = {"",""};//THESE OPTIONS NEED TO BE FILLED OUT!!
 	//If you ever want to add anything above, just add it at the end and 
 	//look in the appropriate section below to add the method for it!
 	public String sys = "";
@@ -17,6 +17,9 @@ public class Governments {
 	public String ruler = "";
 	public String style = "";
 	public String cent = "";
+	public String culture = "";
+	public String religion = "";
+	int legitimacy = 0;
 	double total_val = 0;
 	double settlement_cost_mod = 1;
 	double unit_training_cost_mod = 1;
@@ -44,6 +47,8 @@ public class Governments {
 		this.ruler = "";
 		this.style = "";
 		this.cent = "";
+		this.culture = "";
+		this.religion = "";
 		this.total_val = 0;
 		this.settlement_cost_mod = 1;
 		this.unit_training_cost_mod = 1;

@@ -191,21 +191,18 @@ public class ReadNWrite {
 			System.out.println("created "+s);
 			FileWriter fw = new FileWriter(file);//write all the data for the lord in order (see lordKey.txt)
 			fw.write(lord.name+System.getProperty("line.separator"));
-			fw.write(lord.sys+System.getProperty("line.separator"));
-			fw.write(lord.society+System.getProperty("line.separator"));
-			fw.write(lord.rule+System.getProperty("line.separator"));
-			fw.write(lord.life+System.getProperty("line.separator"));
-			fw.write(lord.cent+System.getProperty("line.separator"));
-			fw.write(lord.alignment+System.getProperty("line.separator"));
-			fw.write(lord.religion+System.getProperty("line.separator"));
+			fw.write(lord.government.sys+System.getProperty("line.separator"));
+			fw.write(lord.government.struc+System.getProperty("line.separator"));
+			fw.write(lord.government.ruler+System.getProperty("line.separator"));
+			fw.write(lord.government.style+System.getProperty("line.separator"));
+			fw.write(lord.government.cent+System.getProperty("line.separator"));
+			fw.write(lord.government.culture+System.getProperty("line.separator"));
+			fw.write(lord.government.religion+System.getProperty("line.separator"));
 			fw.write(lord.ruler_name+System.getProperty("line.separator"));
-			fw.write(lord.legitimacy+System.getProperty("line.separator"));
+			fw.write(lord.government.legitimacy+System.getProperty("line.separator"));
 			fw.write(Boolean.toString(lord.is_vassal)+System.getProperty("line.separator"));
-			for (int i=0;i<lord.max_number_of_institutions;i++){//here an error is generated
-				if (i<lord.institutions.length)					//there is??!?
-					fw.write(lord.institutions[i]+System.getProperty("line.separator"));
-				else
-					fw.write("None"+System.getProperty("line.separator"));
+			for (int i=0;i<lord.max_number_of_institutions;i++){
+				fw.write(lord.institutes.active_institutions[i]+System.getProperty("line.separator"));
 			}
 			for (int i=0;i<lord.number_of_culture_bonuses;i++){
 				fw.write(lord.culture_bonuses[i]+System.getProperty("line.separator"));

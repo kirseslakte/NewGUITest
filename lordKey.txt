@@ -4,11 +4,11 @@ societal_structure				3
 ruler						4
 life_style					5
 centralisation					6
-alignemnt					7
+culture						7
 religion					8
-ruler_name					9
+ruler_name					9<-THIS SHOULD BE REMOVED
 legitimacy					10
-is_vassal					11
+is_vassal					11<-SHOULD BE REPLACED WITH TITLE
 institution1					12
 institution2					13
 institution3					14
