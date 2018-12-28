@@ -85,28 +85,28 @@ public class LordPanes {
 	public Panel governmentPane(Governments government, Institutions institutes) {//government panel
 		Panel government_panel = new Panel(new GridLayout(0,4));
 		government_panel.add(new JLabel("Culture"));
-		government_panel.add(culture = new JComboBox(government.alignments));
+		government_panel.add(culture = new JComboBox<>(government.alignments));
 		government_panel.add(new JLabel("Legitimacy"));
 		government_panel.add(legitimacy = new JTextField("10"));
 		government_panel.add(new JLabel("Religion"));
-		government_panel.add(religion = new JComboBox(government.alignments));
+		government_panel.add(religion = new JComboBox<>(government.alignments));
 		government_panel.add(new JLabel("System"));
-		government_panel.add(system = new JComboBox(government.systems));
+		government_panel.add(system = new JComboBox<>(government.systems));
 		government_panel.add(new JLabel("Social Structure"));
-		government_panel.add(soc_structure = new JComboBox(government.strucs));
+		government_panel.add(soc_structure = new JComboBox<>(government.strucs));
 		government_panel.add(new JLabel("Rule"));
-		government_panel.add(rule = new JComboBox(government.rule));
+		government_panel.add(rule = new JComboBox<>(government.rule));
 		government_panel.add(new JLabel("Life Style"));
-		government_panel.add(life_style = new JComboBox(government.life));
+		government_panel.add(life_style = new JComboBox<>(government.life));
 		government_panel.add(new JLabel("Centralisation"));
-		government_panel.add(centralisation = new JComboBox(government.centralisation));
+		government_panel.add(centralisation = new JComboBox<>(government.centralisation));
 		for (int i=0;i<4;i++){
 			government_panel.add(new JLabel("Institution"));
-			government_panel.add(institutions[i] = new JComboBox(institutes.institution_names));
+			government_panel.add(institutions[i] = new JComboBox<>(institutes.institution_names));
 		}
 		if (system.equals("Histocracy")) {
 			for (int i=0;i<government.histocracy_options.length;i++) {
-				government_panel.add(histocracy_choices[i] = new JComboBox(government.histocracy_options));
+				government_panel.add(histocracy_choices[i] = new JComboBox<>(government.histocracy_options));
 				government_panel.add(histocracy_values[i] = new JTextField(""));
 			}
 		}

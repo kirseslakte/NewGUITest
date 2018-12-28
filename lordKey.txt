@@ -6,18 +6,15 @@ life_style					5
 centralisation					6
 culture						7
 religion					8
-ruler_name					9<-THIS SHOULD BE REMOVED
-legitimacy					10
-is_vassal					11<-SHOULD BE REPLACED WITH TITLE
-institution1					12
-institution2					13
-institution3					14
-institution4					15
-culture_bonuses (22 doubles)			16-37
-number_of_officials				38
-tax_rate					39
-banked_rp					40
-banked_development				41
-tax_rate_overlord				42
-histocracy_bonus_tags				43-46
-histocracy_bonus_mods				47-50
+legitimacy					9
+master_title					10
+institution1					11
+institution2					12
+institution3					13
+institution4					14
+tax_rate					15
+banked_rp					16
+banked_development				17
+tax_rate_overlord				18
+histocracy_bonus_tags				19-22
+histocracy_bonus_mods				23-26

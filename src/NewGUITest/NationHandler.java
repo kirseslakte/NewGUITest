@@ -50,21 +50,40 @@ public class NationHandler {
 	
 	public void createNation(String s) {//only ever called from MainThread when a new nation is created
 		write.setNationName(s);
-		newLord(s,true);//DONE
+		newLord(s,"");//DONE
 	}
 	
 	public void loadNation (String s) {//only ever called from MainThread when an old nation is loaded
 		write.setNationName(s);//DONT CALL newLord!! handle the entire loading from here!!
-		for (Hex hex: write.loadHexes()){
-			listofhexes.add(hex);//import hexes to nationhandler
+		List<String> listofloads = new ArrayList<String>();
+		for (String loadstr:write.directory.list()) {
+			loadstr = loadstr.replace(write.filetype, "");
+			listofloads.add(loadstr);//load all files in directory to list
 		}
-		//hexwindow.loadHexes(listofhexes);//load hexes
-		for (Lord lord: write.loadLords()){
-			listoflords.add(lord);//import lord in nationhandler
-			listoflords.get(listoflords.size()-1).loadLord();//load lordwindow
-			if (lord.is_vassal==false){
-				listoflords.get(listoflords.size()-1).start();//set overlord window to visible
-			}
+		listofloads.remove("hexes");listofloads.remove("units");listofloads.remove("officials");
+		listofloads.remove("culture");listofloads.remove("routes");//remove all non-lords
+		String[] loaded_lord = new String[26];//lord should contain 27 strings
+		String[] gov = new String[15];//going into setGovernment
+		for (String lord:listofloads){//lords should be sorted alphabetically meaning overlord is first,
+			loaded_lord = write.loadLord(lord);//then vassal1, then vassals of 1, then vassal2, then vassals of 2, aso
+			listoflords.add(new Lord(loaded_lord[0],loaded_lord[9]));//name, master_title
+			gov[0] = loaded_lord[15];//banked rp
+			gov[1] = loaded_lord[16];//banked dev
+			gov[2] = loaded_lord[14];//tax rate
+			gov[3] = loaded_lord[1];//system
+			gov[4] = loaded_lord[2];//societal structure
+			gov[5] = loaded_lord[3];//rule
+			gov[6] = loaded_lord[4];//life style
+			gov[7] = loaded_lord[5];//centralisation
+			gov[8] = loaded_lord[6];//culture
+			gov[9] = loaded_lord[7];//religion
+			gov[10] = loaded_lord[8];//legitimacy
+			for (int i=0;i<4;i++)
+				gov[11+i] = loaded_lord[10+i];//institutions
+			listoflords.get(listoflords.size()-1).setGovernment(gov);//gov is now 15 long, so put it into setGovernment!
+			
+			//left to load: tax_rate_overlord
+			//and histocracy stuff, the rest is loaded
 		}
 	}
 	
@@ -75,7 +94,7 @@ public class NationHandler {
 		write.saveHexes(listofhexes);
 		write.saveUnit(listofunits);
 		write.saveRoute(listofroutes);
-		write.saveOfficail(listofofficials);
+		write.saveOfficial(listofofficials);
 	}//that was pretty straight forward, right?
 	
 	public void changeActiveLord(Lord active,Lord new_active) {//just changing which frame to show
@@ -84,18 +103,30 @@ public class NationHandler {
 		active_lord = new_active;
 	}
 	
-	public void newLord(String s,boolean new_nation) {//create a new lordWindow
-		if (new_nation){//this is a new nation
-			listoflords.add(new Lord(s));//add lord
-			listoflords.get(0).start();
-			active_lord = listoflords.get(0);
+	public void newLord(String new_lord,String master) {//create a new lordWindow
+		if (master.equals("")){//this is a new nation
+			listoflords.add(new Lord(new_lord,master));//add lord
+			listoflords.get(0).start();//display lord
+			active_lord = listoflords.get(0);//set lord as active
+			listoflords.get(0).title = "overlord";//set title to overlord
 		}else {//if creating a new vassal
-			for (String existing_lords:write.save_names) {//is this really correct?
-				if (s==existing_lords)//if lord with same name already exist
+			for (int i=0;i<listoflords.size();i++) {
+				String existing_lords = listoflords.get(i).name;
+				if (new_lord==existing_lords)//if lord with same name already exist
 					JOptionPane.showMessageDialog(new Frame(),"That Lord already exist!","Vassal allocation error",JOptionPane.PLAIN_MESSAGE);
 				else {
-					listoflords.add(new Lord(s));//add the new lord
+					listoflords.add(new Lord(new_lord,master));//add the new lord
 					changeActiveLord(active_lord,listoflords.get(listoflords.size()-1));//make that lord the new active lord
+					int vassal_count = 0;
+					for (int j=0;j<listoflords.size();j++) {
+						if (listoflords.get(i).master_title.equals(master))
+							vassal_count++;//get the number of vassals with the same master
+					}
+					listoflords.get(listoflords.size()-1).master_title = master;//set the title of the master
+					if (master.equals("overlord"))
+						listoflords.get(listoflords.size()-1).title = "vassal"+vassal_count;//if master is overlord
+					else																	
+						listoflords.get(listoflords.size()-1).title = master+"_"+vassal_count;//if master is vassal
 				}
 			}
 		}

@@ -5,10 +5,11 @@ import java.io.FileWriter;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ReadNWrite {
 	
-	private String filetype = ".dat";
+	public String filetype = ".dat";
 	private String separator = "xxxxxx";
 	public String[] save_names;
 	public int n_saves = 0;
@@ -35,23 +36,34 @@ public class ReadNWrite {
 	
 	//load lords
 	
-	public List<Lord> loadLords() {//reading a save file with nation file directory as input
-		List<Lord> listoflords = new ArrayList<Lord>();//list of all lords in the savefile
-		//overlord always exist and vassals go as vassal1, vassal2, ...
-		//vassals of vassals go as vassal1_1, vassal1_2,... or vassal1_1_1, vassal1_1_2,... and so on
-		//for (String s: k.list()) {//time to import some lords bois
-			//if (s.contains("lord")||s.contains("vassal")) {
-				//listoflords.add(lord);
-			//}
-		//}											
-		return listoflords;
+	public String[] loadLord(String title) {//reading a save file with nation file directory as input
+		String[] lord = new String[27];
+		File file = new File(directory+"\\"+title+filetype);
+		try {
+			Scanner sc = new Scanner(file);
+			for (int i=0;i<lord.length;i++) {
+				lord[i] = sc.nextLine();
+			}
+			sc.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return lord;
+	}
+	
+	//load culture
+	
+	public String[] loadCulture() {
+		String[] culture = new String[3];
+		
+		return culture;
 	}
 	
 	//load hexes
 	
 	public List<Hex> loadHexes() {//loading hexes!
 		List<Hex> listofhexes = new ArrayList<Hex>();
-		String s = directory+"/hexes"+filetype;
+		String s = directory+"\\hexes"+filetype;
 		File file = new File(s);
 		List<String> hexreader = new ArrayList<String>();
 		int max_hex_length = number_of_building_slots+7;
@@ -99,7 +111,7 @@ public class ReadNWrite {
 	
 	public List<Unit> loadUnits(){
 		List<Unit> listofunits = new ArrayList<Unit>();
-		String s = directory+"/units"+filetype;
+		String s = directory+"\\units"+filetype;
 		File file = new File(s);
 		try {
 			Scanner sc = new Scanner(file);
@@ -117,7 +129,7 @@ public class ReadNWrite {
 	
 	public List<Route> loadRoutes(File k) {
 		List<Route> listofroutes = new ArrayList<Route>();
-		String s = directory+"/routes"+filetype;
+		String s = directory+"\\routes"+filetype;
 		File file = new File(s);
 		try {
 			Scanner sc = new Scanner(file);
@@ -198,20 +210,37 @@ public class ReadNWrite {
 			fw.write(lord.government.cent+System.getProperty("line.separator"));
 			fw.write(lord.government.culture+System.getProperty("line.separator"));
 			fw.write(lord.government.religion+System.getProperty("line.separator"));
-			fw.write(lord.ruler_name+System.getProperty("line.separator"));
 			fw.write(lord.government.legitimacy+System.getProperty("line.separator"));
-			fw.write(Boolean.toString(lord.is_vassal)+System.getProperty("line.separator"));
+			fw.write(lord.master_title+System.getProperty("line.separator"));
 			for (int i=0;i<lord.max_number_of_institutions;i++){
 				fw.write(lord.institutes.active_institutions[i]+System.getProperty("line.separator"));
-			}
-			for (int i=0;i<lord.number_of_culture_bonuses;i++){
-				fw.write(lord.culture_bonuses[i]+System.getProperty("line.separator"));
 			}
 			for (int i=0;i<lord.eco.length;i++) {
 				fw.write(lord.eco[i]+System.getProperty("line.separator"));
 			}
 			fw.close();
 		} catch (Exception e){
+			System.out.println(e);
+		}
+		if (lord.master_title.equals(""))
+			saveCulture(lord);
+	}
+	
+	//saving culture
+	
+	public void saveCulture(Lord lord) {
+		String s = directory+"\\culture"+filetype;
+		File file = new File(s);
+		file.delete();
+		try {
+			file.createNewFile();
+			System.out.println("created "+s);
+			FileWriter fw = new FileWriter(file);
+			for (int i=0;i<lord.number_of_culture_bonuses;i++){
+				fw.write(lord.culture_bonuses[i]+System.getProperty("line.separator"));
+			}
+			fw.close();
+		} catch (Exception e) {
 			System.out.println(e);
 		}
 	}
@@ -342,7 +371,7 @@ public class ReadNWrite {
 	
 	//save officials
 	
-	public void saveOfficail(List<Official> listofofficials) {//self-explanatory save procedure
+	public void saveOfficial(List<Official> listofofficials) {//self-explanatory save procedure
 		String s = directory+"\\officials"+filetype;
 		File file = new File(s);
 		file.delete();

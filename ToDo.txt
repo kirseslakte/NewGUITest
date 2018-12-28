@@ -6,6 +6,8 @@ For some reason whenever I try saving I get an access denied IOException. Add sy
 The dummy button should probably be there for a while, it is very very very useful for debugging and since I can write a day of coding without ever testing it, that is sorely needed.
 Whenever I go from an instance of Lord within NationHandler and go back to access variables within NationHandler the variables have been reset. This is because I generate a new instance of NationHandler whenever I inside Lord try to directly access it. There must be a better way of sending information between the classes. Maybe requests is the best option? This is something that I should continue investigating. Like now.
 
+WHEN CREATING VASSALS ONE MUST ASSIGN NAME TO THE VASSAL AND THE LORD OF THE VASSAL!!!!
+
 rule-wize:
 Add Buildings
 Add Institutions
@@ -78,3 +80,7 @@ priorities:
 10. finish classes hex, unit, route, official
 11. finish units layout
 12. set initializers of nationhandler so that lordwindow, hexwindow, unitwindow and officialwindow are created
+NEXT STEP:
+FIX setCulture and loadculture.
+FIX histocracystuff.
+FIX routes/hexes/units/officials.
