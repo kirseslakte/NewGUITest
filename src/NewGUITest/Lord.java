@@ -138,89 +138,96 @@ public class Lord extends JFrame{
 	}
 	
 	public void getGovernment() {//getting the government tab things
-		this.eco[0] = Integer.parseInt(panes.bank_rp.getText());
-		this.eco[1] = Integer.parseInt(panes.bank_dev.getText());
-		this.eco[2] = Integer.parseInt(panes.tax_rate.getText());
-		this.government.setSystem((String) panes.system.getSelectedItem());
-		this.government.setStruc((String) panes.soc_structure.getSelectedItem());
-		this.government.setRuler((String) panes.rule.getSelectedItem());
-		this.government.setLifeStyle((String) panes.life_style.getSelectedItem());
-		this.government.setCentralisation((String) panes.centralisation.getSelectedItem());
-		this.government.culture = ((String) panes.culture.getSelectedItem());
-		this.government.religion = ((String) panes.religion.getSelectedItem());
-		this.government.legitimacy = Integer.parseInt(panes.legitimacy.getText());
+		System.out.println(Integer.parseInt((String) this.panes.bank_rp.getText()));
+		this.eco[0] = Integer.parseInt(this.panes.bank_rp.getText());
+		this.eco[1] = Integer.parseInt(this.panes.bank_dev.getText());
+		this.eco[2] = Integer.parseInt(this.panes.tax_rate.getText());
+		this.government.setSystem((String) this.panes.system.getSelectedItem());
+		this.government.setStruc((String) this.panes.soc_structure.getSelectedItem());
+		this.government.setRuler((String) this.panes.rule.getSelectedItem());
+		this.government.setLifeStyle((String) this.panes.life_style.getSelectedItem());
+		this.government.setCentralisation((String) this.panes.centralisation.getSelectedItem());
+		this.government.culture = ((String) this.panes.culture.getSelectedItem());
+		this.government.religion = ((String) this.panes.religion.getSelectedItem());
+		this.government.legitimacy = Integer.parseInt(this.panes.legitimacy.getText());
 		for (int i=0;i<4;i++) {
-			this.institutes.setInstitution((String) panes.institutions[i].getSelectedItem(),i);
+			this.institutes.setInstitution((String) this.panes.institutions[i].getSelectedItem(),i);
 		}
 	}
 	
 	public void setGovernment(String[] s) {//setting the government tab things
-		panes.bank_rp.setText(s[0]);
-		panes.bank_dev.setText(s[1]);
-		panes.tax_rate.setText(s[2]);
-		panes.system.setSelectedItem(s[3]);
-		panes.soc_structure.setSelectedItem(s[4]);
-		panes.rule.setSelectedItem(s[5]);
-		panes.life_style.setSelectedItem(s[6]);
-		panes.centralisation.setSelectedItem(s[7]);
-		panes.culture.setSelectedItem(s[8]);
-		panes.religion.setSelectedItem(s[9]);
-		panes.legitimacy.setText(s[10]);
+		this.panes.bank_rp.setText(s[0]);
+		this.panes.bank_dev.setText(s[1]);
+		this.panes.tax_rate.setText(s[2]);
+		this.panes.system.setSelectedItem(s[3]);
+		this.panes.soc_structure.setSelectedItem(s[4]);
+		this.panes.rule.setSelectedItem(s[5]);
+		this.panes.life_style.setSelectedItem(s[6]);
+		this.panes.centralisation.setSelectedItem(s[7]);
+		this.panes.culture.setSelectedItem(s[8]);
+		this.panes.religion.setSelectedItem(s[9]);
+		this.panes.legitimacy.setText(s[10]);
 		for (int i=0;i<4;i++) {
-			panes.institutions[i].setSelectedItem(s[11+i]);
+			this.panes.institutions[i].setSelectedItem(s[11+i]);
 		}
-		getGovernment();//to set the newly imported values into more than the visuals
+		this.getGovernment();//to set the newly imported values into more than the visuals
 	}
 	
 	public void getCulture() {//extracting all the culture modifiers
-		this.culture_bonuses[0] = Integer.parseInt(panes.unit_training_cost.getText());
-		this.culture_bonuses[1] = Integer.parseInt(panes.undead_unit_cap.getText());
-		this.culture_bonuses[2] = Integer.parseInt(panes.unit_cap.getText());
-		this.culture_bonuses[3] = Integer.parseInt(panes.unit_equipment_cost.getText());
-		this.culture_bonuses[4] = Integer.parseInt(panes.hit_mod.getText());
-		this.culture_bonuses[5] = Integer.parseInt(panes.ac_mod.getText());
-		this.culture_bonuses[6] = Integer.parseInt(panes.m_mod.getText());
-		this.culture_bonuses[7] = Integer.parseInt(panes.c_mod.getText());
-		this.culture_bonuses[8] = Integer.parseInt(panes.ranged_hit_mod.getText());
-		this.culture_bonuses[9] = Integer.parseInt(panes.settlement_upk.getText());
-		this.culture_bonuses[10] = Integer.parseInt(panes.fortification_cost.getText());
-		this.culture_bonuses[11] = Integer.parseInt(panes.settlement_upgrade.getText());
-		this.culture_bonuses[12] = Integer.parseInt(panes.bp_mod.getText());
-		this.culture_bonuses[13] = Integer.parseInt(panes.prod_mod.getText());
-		this.culture_bonuses[14] = Integer.parseInt(panes.tax_mod.getText());
-		this.culture_bonuses[15] = Integer.parseInt(panes.bank_mod.getText());
-		this.culture_bonuses[16] = Integer.parseInt(panes.trade_mod.getText());
-		this.culture_bonuses[17] = Integer.parseInt(panes.vassal_mod.getText());
-		this.culture_bonuses[18] = Integer.parseInt(panes.magic_mod.getText());
-		this.culture_bonuses[19] = Integer.parseInt(panes.tinker_mod.getText());
-		this.culture_bonuses[20] = Integer.parseInt(panes.spy_mod.getText());
-		this.culture_bonuses[21] = Integer.parseInt(panes.guild_mod.getText());
+		this.culture_bonuses[0] = Integer.parseInt(this.panes.unit_training_cost.getText());
+		this.culture_bonuses[1] = Integer.parseInt(this.panes.undead_unit_cap.getText());
+		this.culture_bonuses[2] = Integer.parseInt(this.panes.unit_cap.getText());
+		this.culture_bonuses[3] = Integer.parseInt(this.panes.unit_equipment_cost.getText());
+		this.culture_bonuses[4] = Integer.parseInt(this.panes.hit_mod.getText());
+		this.culture_bonuses[5] = Integer.parseInt(this.panes.ac_mod.getText());
+		this.culture_bonuses[6] = Integer.parseInt(this.panes.m_mod.getText());
+		this.culture_bonuses[7] = Integer.parseInt(this.panes.c_mod.getText());
+		this.culture_bonuses[8] = Integer.parseInt(this.panes.ranged_hit_mod.getText());
+		this.culture_bonuses[9] = Integer.parseInt(this.panes.settlement_upk.getText());
+		this.culture_bonuses[10] = Integer.parseInt(this.panes.fortification_cost.getText());
+		this.culture_bonuses[11] = Integer.parseInt(this.panes.settlement_upgrade.getText());
+		this.culture_bonuses[12] = Integer.parseInt(this.panes.bp_mod.getText());
+		this.culture_bonuses[13] = Integer.parseInt(this.panes.prod_mod.getText());
+		this.culture_bonuses[14] = Integer.parseInt(this.panes.tax_mod.getText());
+		this.culture_bonuses[15] = Integer.parseInt(this.panes.bank_mod.getText());
+		this.culture_bonuses[16] = Integer.parseInt(this.panes.trade_mod.getText());
+		this.culture_bonuses[17] = Integer.parseInt(this.panes.vassal_mod.getText());
+		this.culture_bonuses[18] = Integer.parseInt(this.panes.magic_mod.getText());
+		this.culture_bonuses[19] = Integer.parseInt(this.panes.tinker_mod.getText());
+		this.culture_bonuses[20] = Integer.parseInt(this.panes.spy_mod.getText());
+		this.culture_bonuses[21] = Integer.parseInt(this.panes.guild_mod.getText());
 	}
 	
 	public void setCulture(String[] s) {//extracting all the culture modifiers
-		this.culture_bonuses[0] = Integer.parseInt(panes.unit_training_cost.getText());
-		this.culture_bonuses[1] = Integer.parseInt(panes.undead_unit_cap.getText());
-		this.culture_bonuses[2] = Integer.parseInt(panes.unit_cap.getText());
-		this.culture_bonuses[3] = Integer.parseInt(panes.unit_equipment_cost.getText());
-		this.culture_bonuses[4] = Integer.parseInt(panes.hit_mod.getText());
-		this.culture_bonuses[5] = Integer.parseInt(panes.ac_mod.getText());
-		this.culture_bonuses[6] = Integer.parseInt(panes.m_mod.getText());
-		this.culture_bonuses[7] = Integer.parseInt(panes.c_mod.getText());
-		this.culture_bonuses[8] = Integer.parseInt(panes.ranged_hit_mod.getText());
-		this.culture_bonuses[9] = Integer.parseInt(panes.settlement_upk.getText());
-		this.culture_bonuses[10] = Integer.parseInt(panes.fortification_cost.getText());
-		this.culture_bonuses[11] = Integer.parseInt(panes.settlement_upgrade.getText());
-		this.culture_bonuses[12] = Integer.parseInt(panes.bp_mod.getText());
-		this.culture_bonuses[13] = Integer.parseInt(panes.prod_mod.getText());
-		this.culture_bonuses[14] = Integer.parseInt(panes.tax_mod.getText());
-		this.culture_bonuses[15] = Integer.parseInt(panes.bank_mod.getText());
-		this.culture_bonuses[16] = Integer.parseInt(panes.trade_mod.getText());
-		this.culture_bonuses[17] = Integer.parseInt(panes.vassal_mod.getText());
-		this.culture_bonuses[18] = Integer.parseInt(panes.magic_mod.getText());
-		this.culture_bonuses[19] = Integer.parseInt(panes.tinker_mod.getText());
-		this.culture_bonuses[20] = Integer.parseInt(panes.spy_mod.getText());
-		this.culture_bonuses[21] = Integer.parseInt(panes.guild_mod.getText());
-		getCulture();
+		if (this.title.equals("overlord")) {
+			this.panes.unit_training_cost.setText(s[0]);
+			this.panes.undead_unit_cap.setText(s[1]);
+			this.panes.unit_cap.setText(s[2]);
+			this.panes.unit_equipment_cost.setText(s[3]);
+			this.panes.hit_mod.setText(s[4]);
+			this.panes.ac_mod.setText(s[5]);
+			this.panes.m_mod.setText(s[6]);
+			this.panes.c_mod.setText(s[7]);
+			this.panes.ranged_hit_mod.setText(s[8]);
+			this.panes.settlement_upk.setText(s[9]);
+			this.panes.fortification_cost.setText(s[10]);
+			this.panes.settlement_upgrade.setText(s[11]);
+			this.panes.bp_mod.setText(s[12]);
+			this.panes.prod_mod.setText(s[13]);
+			this.panes.tax_mod.setText(s[14]);
+			this.panes.bank_mod.setText(s[15]);
+			this.panes.trade_mod.setText(s[16]);
+			this.panes.vassal_mod.setText(s[17]);
+			this.panes.magic_mod.setText(s[18]);
+			this.panes.tinker_mod.setText(s[19]);
+			this.panes.spy_mod.setText(s[20]);
+			this.panes.guild_mod.setText(s[21]);
+			getCulture();
+		} else {
+			for (int i=0;i<22;i++) {
+				this.culture_bonuses[i] = Integer.parseInt(s[i]);
+			}
+		}
 	}
 	
 	public void resetRequest() {

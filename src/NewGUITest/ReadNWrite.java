@@ -54,8 +54,17 @@ public class ReadNWrite {
 	//load culture
 	
 	public String[] loadCulture() {
-		String[] culture = new String[3];
-		
+		String[] culture = new String[22];
+		File file = new File(directory+"\\culture"+filetype);
+		try {
+			Scanner sc = new Scanner(file);
+			for (int i=0;i<22;i++) {
+				culture[i] = sc.nextLine();
+			}
+			sc.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 		return culture;
 	}
 	
@@ -222,7 +231,7 @@ public class ReadNWrite {
 		} catch (Exception e){
 			System.out.println(e);
 		}
-		if (lord.master_title.equals(""))
+		if (lord.master_title.equals(""))//if the lord is overlord extract culture bonuses!
 			saveCulture(lord);
 	}
 	

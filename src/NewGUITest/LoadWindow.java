@@ -44,7 +44,6 @@ public class LoadWindow extends Frame {
 			public void actionPerformed(ActionEvent e){
 				if (e.getSource() instanceof Button){
 					nation_name = ((Button) e.getSource()).getName();
-					writer.setNationName(nation_name);
 					stop();
 					feedback = "Load";
 				}

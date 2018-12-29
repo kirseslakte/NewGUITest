@@ -81,7 +81,7 @@ public class NationHandler {
 			for (int i=0;i<4;i++)
 				gov[11+i] = loaded_lord[10+i];//institutions
 			listoflords.get(listoflords.size()-1).setGovernment(gov);//gov is now 15 long, so put it into setGovernment!
-			
+			listoflords.get(listoflords.size()-1).setCulture(write.loadCulture());//set culture
 			//left to load: tax_rate_overlord
 			//and histocracy stuff, the rest is loaded
 		}
