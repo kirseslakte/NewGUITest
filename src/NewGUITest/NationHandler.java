@@ -67,6 +67,7 @@ public class NationHandler {
 		for (String lord:listofloads){//lords should be sorted alphabetically meaning overlord is first,
 			loaded_lord = write.loadLord(lord);//then vassal1, then vassals of 1, then vassal2, then vassals of 2, aso
 			listoflords.add(new Lord(loaded_lord[0],loaded_lord[9]));//name, master_title
+			listoflords.get(listoflords.size()-1).title = lord;
 			gov[0] = loaded_lord[15];//banked rp
 			gov[1] = loaded_lord[16];//banked dev
 			gov[2] = loaded_lord[14];//tax rate
@@ -84,6 +85,10 @@ public class NationHandler {
 			listoflords.get(listoflords.size()-1).setCulture(write.loadCulture());//set culture
 			//left to load: tax_rate_overlord
 			//and histocracy stuff, the rest is loaded
+			if (lord.equals("overlord")) {
+				listoflords.get(listoflords.size()-1).start();
+				active_lord = listoflords.get(listoflords.size()-1);
+			}
 		}
 	}
 	

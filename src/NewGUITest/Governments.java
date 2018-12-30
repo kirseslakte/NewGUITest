@@ -9,7 +9,7 @@ public class Governments {
 	public String[] life = {"Settled","Tribalistic","Nomadic"};
 	public String[] centralisation = {"Highly","Moderately","Decentralised"};
 	public String[] alignments = {"LG","NG","CG","LN","NN","CN","LE","NE","CE"};
-	public String[] histocracy_options = {"",""};//THESE OPTIONS NEED TO BE FILLED OUT!!
+	public String[] histocracy_options = {"this","that"};//THESE OPTIONS NEED TO BE FILLED OUT!!
 	//If you ever want to add anything above, just add it at the end and 
 	//look in the appropriate section below to add the method for it!
 	public String sys = "";
@@ -20,6 +20,8 @@ public class Governments {
 	public String culture = "";
 	public String religion = "";
 	int legitimacy = 0;
+	public String[] histocracy = new String[4];
+	public int[] hist_val = new int[4];
 	double total_val = 0;
 	double settlement_cost_mod = 1;
 	double unit_training_cost_mod = 1;
@@ -86,6 +88,17 @@ public class Governments {
 			this.setFederation();
 		}
 	}
+	public void setStystem(String s,String[] hist,int[] histo_val){//own method for setting histocracy
+		if (s.equals(systems[5])){
+			for (int i=0;i<4;i++) {
+				this.histocracy[i] = hist[i];
+				this.hist_val[i] = histo_val[i];
+			}
+			this.setHistocratic();
+		} else 
+			System.out.println("Non-histocratic histocracy??");
+	}
+	
 	public void setDemocratic() {//modifiers for the democratic system
 		this.sys = systems[0];
 		this.settlement_cost_mod *= 0.9;

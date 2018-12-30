@@ -29,7 +29,7 @@ finish save mehtods for
 	routes---DONE!
 	officials---DONE!
 finish load methods for
-	lords
+	lords---DONE!
 	hexes---DONE? Test required!
 	units
 	routes
@@ -81,6 +81,6 @@ priorities:
 11. finish units layout
 12. set initializers of nationhandler so that lordwindow, hexwindow, unitwindow and officialwindow are created
 NEXT STEP:
-FIX setCulture and loadculture.
+FIX setCulture and loadculture.---DONEISH!!
 FIX histocracystuff.
 FIX routes/hexes/units/officials.

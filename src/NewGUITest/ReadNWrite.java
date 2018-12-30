@@ -37,7 +37,7 @@ public class ReadNWrite {
 	//load lords
 	
 	public String[] loadLord(String title) {//reading a save file with nation file directory as input
-		String[] lord = new String[27];
+		String[] lord = new String[26];
 		File file = new File(directory+"\\"+title+filetype);
 		try {
 			Scanner sc = new Scanner(file);
@@ -48,6 +48,7 @@ public class ReadNWrite {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
+		System.out.println("lord loaded");
 		return lord;
 	}
 	

@@ -118,6 +118,8 @@ public class Lord extends JFrame{
 		});
 		saveBtn.addActionListener(new ActionListener() {//add action event to save button
 			public void actionPerformed(ActionEvent e){
+				getGovernment();
+				getCulture();
 				request_flag = true;
 				save_request = true;
 			}
@@ -138,10 +140,9 @@ public class Lord extends JFrame{
 	}
 	
 	public void getGovernment() {//getting the government tab things
-		System.out.println(Integer.parseInt((String) this.panes.bank_rp.getText()));
-		this.eco[0] = Integer.parseInt(this.panes.bank_rp.getText());
-		this.eco[1] = Integer.parseInt(this.panes.bank_dev.getText());
-		this.eco[2] = Integer.parseInt(this.panes.tax_rate.getText());
+		this.eco[0] = (int) Double.parseDouble(this.panes.bank_rp.getText());	
+		this.eco[1] = (int) Double.parseDouble(this.panes.bank_dev.getText());
+		this.eco[2] = (int) Double.parseDouble(this.panes.tax_rate.getText());
 		this.government.setSystem((String) this.panes.system.getSelectedItem());
 		this.government.setStruc((String) this.panes.soc_structure.getSelectedItem());
 		this.government.setRuler((String) this.panes.rule.getSelectedItem());
@@ -149,14 +150,17 @@ public class Lord extends JFrame{
 		this.government.setCentralisation((String) this.panes.centralisation.getSelectedItem());
 		this.government.culture = ((String) this.panes.culture.getSelectedItem());
 		this.government.religion = ((String) this.panes.religion.getSelectedItem());
-		this.government.legitimacy = Integer.parseInt(this.panes.legitimacy.getText());
+		this.government.legitimacy = (int) Double.parseDouble(this.panes.legitimacy.getText());
 		for (int i=0;i<4;i++) {
 			this.institutes.setInstitution((String) this.panes.institutions[i].getSelectedItem(),i);
 		}
+		this.setFrame();
 	}
 	
 	public void setGovernment(String[] s) {//setting the government tab things
+		System.out.println("Setting government");
 		this.panes.bank_rp.setText(s[0]);
+		System.out.println(panes.bank_rp.getText());
 		this.panes.bank_dev.setText(s[1]);
 		this.panes.tax_rate.setText(s[2]);
 		this.panes.system.setSelectedItem(s[3]);
