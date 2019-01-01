@@ -82,5 +82,5 @@ priorities:
 12. set initializers of nationhandler so that lordwindow, hexwindow, unitwindow and officialwindow are created
 NEXT STEP:
 FIX setCulture and loadculture.---DONEISH!!
-FIX histocracystuff.
-FIX routes/hexes/units/officials.
+FIX histocracystuff.---NOW ONLY FUNCTIONALITY IS NEEDED TO BE ADDED!
+FIX routes/hexes/units/officials.<----THIS IS THE NEXT STEP!!

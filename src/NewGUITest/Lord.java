@@ -154,13 +154,12 @@ public class Lord extends JFrame{
 		for (int i=0;i<4;i++) {
 			this.institutes.setInstitution((String) this.panes.institutions[i].getSelectedItem(),i);
 		}
-		this.setFrame();
+		//this.setFrame();
+		this.panes.updateGovernmentPane(government);
 	}
 	
 	public void setGovernment(String[] s) {//setting the government tab things
-		System.out.println("Setting government");
 		this.panes.bank_rp.setText(s[0]);
-		System.out.println(panes.bank_rp.getText());
 		this.panes.bank_dev.setText(s[1]);
 		this.panes.tax_rate.setText(s[2]);
 		this.panes.system.setSelectedItem(s[3]);
