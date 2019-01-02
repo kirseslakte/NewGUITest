@@ -65,59 +65,36 @@ public class Lord extends NationHandler {
 	public Lord(String s, String master) {
 		this.name = s;
 		this.master_title = master;
-		this.setPanel();
 	}
 	
-	public Panel setPanel() {
-		////SETTING UP MAIN PANEL////
-		Panel mainPnl = new Panel(new GridLayout(2,2));//set out panel
-		//nation stats panel
+	public Panel setPanel(boolean master) {
+		int layers = 1;
+		if (master)
+			layers = 2;
+		Panel mainPnl = new Panel(new GridLayout(layers,2));//set up panel
 		mainPnl.add(panes.nationPanel(government,!master_title.equals("")));
-		//government panel
 		mainPnl.add(panes.governmentPane(government, institutes));
-		//culture
-		mainPnl.add(panes.culturePane());
-		//lastpanel
-		Panel pnl4 = new Panel(new GridLayout(1,1));//setting up dummybuttons on the dummypane
-		Button newVassalBtn = new Button("New Vassal");//adding buttons
-		Button saveBtn = new Button("Save Nation");
-		Button quitBtn = new Button("Quit");
-		Button dummy = new Button("Dummy");
-		pnl4.add(dummy);
-		pnl4.add(saveBtn);
-		pnl4.add(quitBtn);
-		mainPnl.add(pnl4);
-		
-		////DONE SETTING UP MAIN PANEL////
-		
-		////BUTTON FUNCTIONALITIES////
-		newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
-			public void actionPerformed(ActionEvent e){
-				request_flag = true;
-				new_request = true;
-			}
-		});
-		saveBtn.addActionListener(new ActionListener() {//add action event to save button
-			public void actionPerformed(ActionEvent e){
-				getGovernment();
-				getCulture();
-				request_flag = true;
-				save_request = true;
-			}
-		});
-		quitBtn.addActionListener(new ActionListener() {//add action event to quit button
-			public void actionPerformed(ActionEvent e){
-				System.exit(0);
-			}
-		});
-		dummy.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {/*
-				request_flag = true;
-				generate_request = true;*/
-				getGovernment();
-				getCulture();
-			}
-		});
+		if (master) {
+			mainPnl.add(panes.culturePane());
+			Panel pnl4 = new Panel(new GridLayout(1,1));//setting up dummybuttons on the dummypane
+			Button newVassalBtn = new Button("New Vassal");//adding buttons
+			Button saveBtn = new Button("Save Nation");
+			pnl4.add(saveBtn);
+			mainPnl.add(pnl4);
+			////BUTTON FUNCTIONALITIES////
+			newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
+				public void actionPerformed(ActionEvent e){
+					request_flag = true;
+					new_request = true;
+				}
+			});
+			saveBtn.addActionListener(new ActionListener() {//add action event to save button
+				public void actionPerformed(ActionEvent e){
+					request_flag = true;
+					save_request = true;
+				}
+			});
+		}
 		return mainPnl;
 	}
 	
@@ -138,97 +115,62 @@ public class Lord extends NationHandler {
 		for (int i=0;i<4;i++) {
 			this.institutes.setInstitution((String) this.panes.institutions[i].getSelectedItem(),i);
 		}
-		if (this.panes.histocheck){
+		System.out.println(this.government.sys+" is being saved");
+		if (this.government.sys.equals("Histocratic")){
 			for (int i=0;i<4;i++) {
+				System.out.println(this.panes.histocracy_choices[i].getSelectedItem());
 				this.government.histocratic_choices[i] = (String) this.panes.histocracy_choices[i].getSelectedItem();
 				this.government.hist_val[i] = Double.parseDouble(this.panes.histocracy_values[i].getText());
+				System.out.println(this.government.histocratic_choices[i]);
 			}
-		}	
+		}
 		this.panes.updateGovernmentPane(government);
+		//setGovernment();
 	}
 	
-	public void setGovernment(String[] s) {//only ever called when loading
-		this.panes.bank_rp.setText(s[0]);
-		this.panes.bank_dev.setText(s[1]);
-		this.panes.tax_rate.setText(s[2]);
-		if (!(this.master_title.equals("")))
-			this.panes.lord_tax_rate.setText(s[3]);
-		this.panes.system.setSelectedItem(s[4]);
-		this.panes.soc_structure.setSelectedItem(s[5]);
-		this.panes.rule.setSelectedItem(s[6]);
-		this.panes.life_style.setSelectedItem(s[7]);
-		this.panes.centralisation.setSelectedItem(s[8]);
-		this.panes.culture.setSelectedItem(s[9]);
-		this.panes.religion.setSelectedItem(s[10]);
-		this.panes.legitimacy.setText(s[11]);
+	public void loadGovernment(String[] s) {//only ever called when loading//has nothing to do with visual layer
+		this.government.setSystem(s[1]);
+		this.government.setStruc(s[2]);
+		this.government.setRuler(s[3]);
+		this.government.setLifeStyle(s[4]);
+		this.government.setCentralisation(s[5]);
+		this.government.culture = s[6];
+		this.government.religion = s[7];
+		this.government.legitimacy = (int) Double.parseDouble(s[8]);
 		for (int i=0;i<4;i++) {
-			this.panes.institutions[i].setSelectedItem(s[12+i]);
+			this.institutes.setInstitution(s[10+i],i);
 		}
-		if (this.panes.histocheck){
-			System.out.println("attempting to set histocracy panes");
+		this.government.eco[0] = (int) Double.parseDouble(s[14]);
+		this.government.eco[1] = (int) Double.parseDouble(s[15]);
+		this.government.eco[2] = (int) Double.parseDouble(s[16]);
+		if (!(this.master_title.equals("")))
+			this.government.eco[3] = (int) Double.parseDouble(s[17]);
+		if (this.government.sys.equals("Histocratic")){
 			for (int i=0;i<4;i++) {
-				this.panes.histocracy_choices[i].setSelectedItem(s[16+i]);
-				this.panes.histocracy_values[i].setText(s[20+i]);
+				this.government.histocratic_choices[i] = s[18+2*i];
+				this.government.hist_val[i] = Double.parseDouble(s[19+2*i]);
 			}
-		}			
-		this.getGovernment();//to set the newly imported values into more than the visuals
+		}
+	}
+	
+	public void setGovernment() {//visual update of government pane
+		this.panes.setGovernmentPane(government, institutes);
 	}
 	
 	public void getCulture() {//extracting all the culture modifiers
-		this.culture_bonuses[0] = Integer.parseInt(this.panes.unit_training_cost.getText());
-		this.culture_bonuses[1] = Integer.parseInt(this.panes.undead_unit_cap.getText());
-		this.culture_bonuses[2] = Integer.parseInt(this.panes.unit_cap.getText());
-		this.culture_bonuses[3] = Integer.parseInt(this.panes.unit_equipment_cost.getText());
-		this.culture_bonuses[4] = Integer.parseInt(this.panes.hit_mod.getText());
-		this.culture_bonuses[5] = Integer.parseInt(this.panes.ac_mod.getText());
-		this.culture_bonuses[6] = Integer.parseInt(this.panes.m_mod.getText());
-		this.culture_bonuses[7] = Integer.parseInt(this.panes.c_mod.getText());
-		this.culture_bonuses[8] = Integer.parseInt(this.panes.ranged_hit_mod.getText());
-		this.culture_bonuses[9] = Integer.parseInt(this.panes.settlement_upk.getText());
-		this.culture_bonuses[10] = Integer.parseInt(this.panes.fortification_cost.getText());
-		this.culture_bonuses[11] = Integer.parseInt(this.panes.settlement_upgrade.getText());
-		this.culture_bonuses[12] = Integer.parseInt(this.panes.bp_mod.getText());
-		this.culture_bonuses[13] = Integer.parseInt(this.panes.prod_mod.getText());
-		this.culture_bonuses[14] = Integer.parseInt(this.panes.tax_mod.getText());
-		this.culture_bonuses[15] = Integer.parseInt(this.panes.bank_mod.getText());
-		this.culture_bonuses[16] = Integer.parseInt(this.panes.trade_mod.getText());
-		this.culture_bonuses[17] = Integer.parseInt(this.panes.vassal_mod.getText());
-		this.culture_bonuses[18] = Integer.parseInt(this.panes.magic_mod.getText());
-		this.culture_bonuses[19] = Integer.parseInt(this.panes.tinker_mod.getText());
-		this.culture_bonuses[20] = Integer.parseInt(this.panes.spy_mod.getText());
-		this.culture_bonuses[21] = Integer.parseInt(this.panes.guild_mod.getText());
+		for (int i=0;i<22;i++) {//from visual layer
+			this.culture_bonuses[i] = Integer.parseInt(this.panes.culturefields.get(i).getText());
+		}
 	}
 	
-	public void setCulture(String[] s) {//only ever called when loading
-		if (this.title.equals("overlord")) {
-			this.panes.unit_training_cost.setText(s[0]);
-			this.panes.undead_unit_cap.setText(s[1]);
-			this.panes.unit_cap.setText(s[2]);
-			this.panes.unit_equipment_cost.setText(s[3]);
-			this.panes.hit_mod.setText(s[4]);
-			this.panes.ac_mod.setText(s[5]);
-			this.panes.m_mod.setText(s[6]);
-			this.panes.c_mod.setText(s[7]);
-			this.panes.ranged_hit_mod.setText(s[8]);
-			this.panes.settlement_upk.setText(s[9]);
-			this.panes.fortification_cost.setText(s[10]);
-			this.panes.settlement_upgrade.setText(s[11]);
-			this.panes.bp_mod.setText(s[12]);
-			this.panes.prod_mod.setText(s[13]);
-			this.panes.tax_mod.setText(s[14]);
-			this.panes.bank_mod.setText(s[15]);
-			this.panes.trade_mod.setText(s[16]);
-			this.panes.vassal_mod.setText(s[17]);
-			this.panes.magic_mod.setText(s[18]);
-			this.panes.tinker_mod.setText(s[19]);
-			this.panes.spy_mod.setText(s[20]);
-			this.panes.guild_mod.setText(s[21]);
-			getCulture();
-		} else {
-			for (int i=0;i<22;i++) {
-				this.culture_bonuses[i] = Integer.parseInt(s[i]);
-			}
+	public void loadCulture(String[] s) {//only ever called when loading, nothing to do with visual layer
+		for (int i=0;i<22;i++) {
+			this.culture_bonuses[i] = Integer.parseInt(s[i]);
 		}
+	}
+	
+	public void setCulture() {//visual update of culture pane
+		this.panes.setCulturePane(this.culture_bonuses);
 	}
 	
 	public void resetRequest() {

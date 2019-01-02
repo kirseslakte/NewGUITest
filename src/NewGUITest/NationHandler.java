@@ -14,8 +14,8 @@ public class NationHandler extends JFrame{
 	public List<Route> listofroutes = new ArrayList<Route>();
 	public List<Official> listofofficials = new ArrayList<Official>();
 	public Lord active_lord;
-	//private JFrame frame = new JFrame();
 	private int min = 0;
+	private JTabbedPane mainPane = new JTabbedPane();
 	private ReadNWrite write = new ReadNWrite();
 	private HexPane hexpanel = new HexPane();
 	//private MilitaryWindow milwindow = new MilitaryWindw();
@@ -37,11 +37,9 @@ public class NationHandler extends JFrame{
 
 						active_lord.resetRequest();						
 					}else if (active_lord.save_request) {
+						updateNation();
 						saveNation();
 						System.out.println("saving");
-						active_lord.resetRequest();
-					}else if (active_lord.generate_request) {
-						System.out.println("generating");
 						active_lord.resetRequest();
 					}
 				}
@@ -58,7 +56,7 @@ public class NationHandler extends JFrame{
 	}
 	
 	public void loadNation (String s) {//only ever called from MainThread when an old nation is loaded
-		write.setNationName(s);//DONT CALL newLord!! handle the entire loading from here!!
+		write.setNationName(s);
 		List<String> listofloads = new ArrayList<String>();
 		for (String loadstr:write.directory.list()) {
 			loadstr = loadstr.replace(write.filetype, "");
@@ -66,39 +64,22 @@ public class NationHandler extends JFrame{
 		}
 		listofloads.remove("hexes");listofloads.remove("units");listofloads.remove("officials");
 		listofloads.remove("culture");listofloads.remove("routes");//remove all non-lords
-		String[] loaded_lord = new String[26];//lord should contain 27 strings
-		String[] gov = new String[24];//going into setGovernment
-		for (String lord:listofloads){//lords should be sorted alphabetically meaning overlord is first,
-			loaded_lord = write.loadLord(lord);//then vassal1, then vassals of 1, then vassal2, then vassals of 2, aso
+		for (String lord:listofloads){//lords SHOULD be sorted alphabetically meaning overlord is first,
+			String[] loaded_lord = write.loadLord(lord);//then vassal1, then vassals of 1, then vassal2, then vassals of 2, aso
 			listoflords.add(new Lord(loaded_lord[0],loaded_lord[9]));//name, master_title
 			listoflords.get(listoflords.size()-1).title = lord;
-			gov[0] = loaded_lord[15];//banked rp
-			gov[1] = loaded_lord[16];//banked dev
-			gov[2] = loaded_lord[14];//tax rate
-			gov[3] = loaded_lord[17];//lord_tax_rate
-			gov[4] = loaded_lord[1];//system
-			gov[5] = loaded_lord[2];//societal structure
-			gov[6] = loaded_lord[3];//rule
-			gov[7] = loaded_lord[4];//life style
-			gov[8] = loaded_lord[5];//centralisation
-			gov[9] = loaded_lord[6];//culture
-			gov[10] = loaded_lord[7];//religion
-			gov[11] = loaded_lord[8];//legitimacy
-			for (int i=0;i<4;i++)
-				gov[12+i] = loaded_lord[10+i];//institutions
-			listoflords.get(listoflords.size()-1).master_title = loaded_lord[9];
-			for (int i=0;i<4;i++) {
-				gov[16+i] = loaded_lord[18+2*i];//(18,20,22,24) into 16,17,18,19
-				gov[20+i] = loaded_lord[19+2*i];//(19,21,23,25) 20,21,22,23
+			listoflords.get(listoflords.size()-1).loadGovernment(write.loadLord(lord));
+			if (lord.equals("overlord")) {
+				listoflords.get(listoflords.size()-1).loadCulture(write.loadCulture());
+				active_lord = listoflords.get(listoflords.size()-1);
+				mainSetup(s);
+				listoflords.get(listoflords.size()-1).setCulture();
+				listoflords.get(listoflords.size()-1).setGovernment();
+			} else {
+				addVassalTab(loaded_lord[0]);
+				listoflords.get(listoflords.size()-1).setGovernment();
 			}
-			listoflords.get(listoflords.size()-1).setGovernment(gov);//gov is now 24 long, so put it into setGovernment!
-			listoflords.get(listoflords.size()-1).setCulture(write.loadCulture());//set culture
-			//left to load: tax_rate_overlord
-			//and histocracy stuff, the rest is loaded
-			if (lord.equals("overlord"))
-				active_lord = listoflords.get(listoflords.size()-1);//unique load for overlord is required!
 		}
-		mainSetup(s);
 	}
 	
 	public void saveNation() {//only ever called from save_request
@@ -146,6 +127,14 @@ public class NationHandler extends JFrame{
 		}
 	}
 	
+	public void updateNation() {
+		for (Lord lord:listoflords) {
+			lord.getGovernment();
+			if (lord.title.equals("overlord"))
+				lord.getCulture();
+		}
+	}
+	
 	public void mainSetup(String s) {
 		this.setSize(1500,1000);//x,y
 	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -158,15 +147,14 @@ public class NationHandler extends JFrame{
 			}
 		});
 		this.setTitle(s);
-		JTabbedPane mainPane = new JTabbedPane();
-		mainPane.addTab(s,listoflords.get(listoflords.size()-1).setPanel());
+		mainPane.addTab(s,listoflords.get(listoflords.size()-1).setPanel(true));
 		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPanel(listofhexes)));
-		//mainPane.addTab("Officials");
 		//mainPane.addTab("Units");
-		//mainPane.addTab("TradeMap");
-		//mainPane.addTab("VassalMap");
 		//mainPane.addTab("Notes");
 		this.add(mainPane);
 		this.setVisible(true);
+	}
+	public void addVassalTab(String s) {
+		mainPane.addTab(s,listoflords.get(listoflords.size()-1).setPanel(false));
 	}
 }

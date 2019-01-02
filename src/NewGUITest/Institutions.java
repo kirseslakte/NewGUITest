@@ -11,41 +11,41 @@ public class Institutions {
 	}
 	
 	public void setInstitution(String s,int i) {//input is institute and it executes that institue method
-		if (s==institution_names[1])
+		if (s.equals(institution_names[1]))
 			arts(i);
-		else if (s==institution_names[2])
+		else if (s.equals(institution_names[2]))
 			church(i);
-		else if (s==institution_names[3])
+		else if (s.equals(institution_names[3]))
 			courts(i);
-		else if (s==institution_names[4])
+		else if (s.equals(institution_names[4]))
 			druids(i);
-		else if (s==institution_names[5])
+		else if (s.equals(institution_names[5]))
 			education(i);
-		else if (s==institution_names[6])
+		else if (s.equals(institution_names[6]))
 			foreignOffice(i);
-		else if (s==institution_names[7])
+		else if (s.equals(institution_names[7]))
 			interior(i);
-		else if (s==institution_names[8])
+		else if (s.equals(institution_names[8]))
 			mages(i);
-		else if (s==institution_names[9])
+		else if (s.equals(institution_names[9]))
 			merchants(i);
-		else if (s==institution_names[10])
+		else if (s.equals(institution_names[10]))
 			military(i);
-		else if (s==institution_names[11])
+		else if (s.equals(institution_names[11]))
 			monstrologist(i);
-		else if (s==institution_names[12])
+		else if (s.equals(institution_names[12]))
 			parliament(i);
-		else if (s==institution_names[13])
+		else if (s.equals(institution_names[13]))
 			psions(i);
-		else if (s==institution_names[14])
+		else if (s.equals(institution_names[14]))
 			secretService(i);
-		else if (s==institution_names[15])
+		else if (s.equals(institution_names[15]))
 			slavery(i);
-		else if (s==institution_names[16])
+		else if (s.equals(institution_names[16]))
 			tinkers(i);
-		else if (s==institution_names[17])
+		else if (s.equals(institution_names[17]))
 			treasury(i);
-		else if (s==institution_names[18])
+		else if (s.equals(institution_names[18]))
 			welfare(i);
 	}	
 	public void resetModifiers() {//resets all the modifiers from insitutions

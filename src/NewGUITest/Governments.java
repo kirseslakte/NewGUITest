@@ -73,21 +73,21 @@ public class Governments {
 	}
 		//START SYSTEMS!!
 	public void setSystem(String s) {//a method which sets the system of governance
-		if (s==systems[0]){
+		if (s.equals(systems[0])){
 			this.setDemocratic();
-		}else if (s==systems[1]){
+		}else if (s.equals(systems[1])){
 			this.setAutocratic();
-		}else if (s==systems[2]){
+		}else if (s.equals(systems[2])){
 			this.setMeritocratic();
-		}else if (s==systems[3]){
+		}else if (s.equals(systems[3])){
 			this.setTheocratic();
-		}else if (s==systems[4]){
+		}else if (s.equals(systems[4])){
 			this.setHistocratic();
-		}else if (s==systems[5]){
+		}else if (s.equals(systems[5])){
 			this.setPlutocratic();
-		}else if (s==systems[6]){
+		}else if (s.equals(systems[6])){
 			this.setHive();
-		}else if (s==systems[7]){
+		}else if (s.equals(systems[7])){
 			this.setFederation();
 		}
 	}
@@ -145,6 +145,8 @@ public class Governments {
 				this.bank_dev_eff += this.hist_val[i];
 				value_checker += this.hist_val[i]/2;
 			}
+			//System.out.println(histocratic_choices[i]);
+			//System.out.println(hist_val[i]);
 		}
 		if (value_checker==total_val)
 			this.histocracy_fault = false;
@@ -171,9 +173,9 @@ public class Governments {
 	//STOP SYSTEMS!!
 	//START SOC STRUC!!
 	public void setStruc(String s) {
-		if (s==strucs[0]){
+		if (s.equals(strucs[0])){
 			this.setClassisist();
-		}else if(s==strucs[1]){
+		}else if(s.equals(strucs[1])){
 			this.setIndividualistic();
 		}
 	}
@@ -187,11 +189,11 @@ public class Governments {
 	//STOP SOC STRUC!!
 	//START RULER!!
 	public void setRuler(String s) {
-		if (s==rule[0]){
+		if (s.equals(rule[0])){
 			this.setMonarchy();
-		}else if(s==rule[1]){
+		}else if(s.equals(rule[1])){
 			this.setOligarchy();
-		}else if(s==rule[2]){
+		}else if(s.equals(rule[2])){
 			this.setPolyarchy();
 		}
 	}
@@ -207,11 +209,11 @@ public class Governments {
 	//STOP RULER!!
 	//START LIFE STYLE!!
 	public void setLifeStyle(String s) {
-		if (s==life[0]){
+		if (s.equals(life[0])){
 			this.setSettled();
-		}else if(s==life[1]){
+		}else if(s.equals(life[1])){
 			this.setTribalistic();
-		}else if(s==life[2]){
+		}else if(s.equals(life[2])){
 			this.setNomadic();
 		}
 	}
@@ -242,11 +244,11 @@ public class Governments {
 	//STOP LIFE STYLE!!
 	//START CENTRALISATION!!
 	public void setCentralisation(String s) {
-		if (s==centralisation[0]){
+		if (s.equals(centralisation[0])){
 			this.setHighly();
-		}else if(s==centralisation[1]){
+		}else if(s.equals(centralisation[1])){
 			this.setModerately();
-		}else if(s==centralisation[2]){
+		}else if(s.equals(centralisation[2])){
 			this.setDecentralised();
 		}
 	}

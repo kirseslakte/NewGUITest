@@ -2,6 +2,8 @@ package NewGUITest;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LordPanes {
 	//nationPanel variables
@@ -16,12 +18,13 @@ public class LordPanes {
 	public JComboBox[] histocracy_choices = new JComboBox[4];
 	public JTextField[] histocracy_values = new JTextField[4];
 	public JTextField legitimacy;
-	public boolean govset = false;
 	public boolean histocheck;
 	//culture variables
-	public JTextField unit_training_cost,undead_unit_cap,unit_cap,unit_equipment_cost,hit_mod,ac_mod,m_mod,c_mod,
-	ranged_hit_mod,settlement_upk,fortification_cost,settlement_upgrade,bp_mod,prod_mod,tax_mod,bank_mod,trade_mod,
-	vassal_mod,magic_mod,tinker_mod,spy_mod,guild_mod;
+	public List<JTextField> culturefields = new ArrayList<JTextField>();
+	public String[] culture_names =  {"Unit Training Cost (%)","Undead Unit Cap (%)","Unit Cap (%)","Unit Equipment Cost (%)","Hit","AC",
+			"Morale","Command","Ranged Hit","Settlement Upkeep Cost (%)","Fortification Cost (%)","Settlement Upgrade Cost (%)","Base Production (%)",
+			"Production Efficiency (%)","Tax Efficiency (%)","Bank Efficiency (%)","Trade Efficiency (%)","Vassal Tax Income Efficiency (%)",
+			"Mage Guild Cost (%)","Tinker Guild Cost (%)","Spy Guild Cost (%)","All Guilds Cost (%)"};
 	
 	//TODO:
 	//make sure, when loading that the correct values are displayed,
@@ -87,55 +90,56 @@ public class LordPanes {
 	}
 	
 	public Panel governmentPane(Governments government, Institutions institutes) {//government panel
-		if (!this.govset) {
-			this.govset = true;
-			this.government_panel.add(new JLabel("Culture"));
-			this.government_panel.add(culture = new JComboBox<>(government.alignments));
-			this.culture.setSelectedItem(government.culture);
-			this.government_panel.add(legitimacy_label = new JLabel("Legitimacy"));
-			this.government_panel.add(legitimacy = new JTextField("10"));
-			this.legitimacy.setText(Integer.toString(government.legitimacy));
-			this.government_panel.add(new JLabel("Religion"));
-			this.government_panel.add(religion = new JComboBox<>(government.alignments));
-			this.religion.setSelectedItem(government.religion);
-			this.government_panel.add(new JLabel("System"));
-			this.government_panel.add(system = new JComboBox<>(government.systems));
-			this.system.setSelectedItem(government.sys);
-			this.histocheck = system.getSelectedItem().equals("Histocratic");
-			this.government_panel.add(new JLabel("Social Structure"));
-			this.government_panel.add(soc_structure = new JComboBox<>(government.strucs));
-			this.soc_structure.setSelectedItem(government.struc);
-			this.government_panel.add(new JLabel("Rule"));
-			this.government_panel.add(rule = new JComboBox<>(government.rule));
-			this.rule.setSelectedItem(government.ruler);
-			this.government_panel.add(new JLabel("Life Style"));
-			this.government_panel.add(life_style = new JComboBox<>(government.life));
-			this.life_style.setSelectedItem(government.style);
-			this.government_panel.add(new JLabel("Centralisation"));
-			this.government_panel.add(centralisation = new JComboBox<>(government.centralisation));
-			this.centralisation.setSelectedItem(government.cent);
-			for (int i=0;i<4;i++){
-				this.government_panel.add(new JLabel("Institution"));
-				this.government_panel.add(institutions[i] = new JComboBox<>(institutes.institution_names));
-				this.institutions[i].setSelectedItem(institutes.active_institutions[i]);
-			}
-			if (histocheck) {
-				for (int i=0;i<4;i++) {
-					this.government_panel.add(histocracy_choices[i] = new JComboBox<>(government.histocratic_options));
-					this.histocracy_choices[i].setSelectedItem(government.histocratic_choices[i]);
-					this.government_panel.add(histocracy_values[i] = new JTextField(""));
-					this.histocracy_values[i].setText(Double.toString(government.hist_val[i]));
-				}
-			}
+		this.government_panel.add(new JLabel("Culture"));
+		this.government_panel.add(culture = new JComboBox<>(government.alignments));
+		this.government_panel.add(legitimacy_label = new JLabel("Legitimacy"));
+		this.government_panel.add(legitimacy = new JTextField("10"));
+		this.government_panel.add(new JLabel("Religion"));
+		this.government_panel.add(religion = new JComboBox<>(government.alignments));
+		this.government_panel.add(new JLabel("System"));
+		this.government_panel.add(system = new JComboBox<>(government.systems));
+		this.government_panel.add(new JLabel("Social Structure"));
+		this.government_panel.add(soc_structure = new JComboBox<>(government.strucs));
+		this.government_panel.add(new JLabel("Rule"));
+		this.government_panel.add(rule = new JComboBox<>(government.rule));
+		this.government_panel.add(new JLabel("Life Style"));
+		this.government_panel.add(life_style = new JComboBox<>(government.life));
+		this.government_panel.add(new JLabel("Centralisation"));
+		this.government_panel.add(centralisation = new JComboBox<>(government.centralisation));
+		for (int i=0;i<4;i++){
+			this.government_panel.add(new JLabel("Institution"));
+			this.government_panel.add(institutions[i] = new JComboBox<>(institutes.institution_names));
 		}
 		return government_panel;
 	}
 	
-	public void updateGovernmentPane(Governments government) {
-		if (government.sys.equals("Hive")) { //set legitimacy text for hive or not hive
-			System.out.println("Hiveies");
+	public void setGovernmentPane(Governments government, Institutions institutes) {//load visuals for government pane
+		this.culture.setSelectedItem(government.culture);
+		this.legitimacy.setText(Integer.toString(government.legitimacy));
+		this.religion.setSelectedItem(government.religion);
+		this.system.setSelectedItem(government.sys);
+		this.histocheck = system.getSelectedItem().equals("Histocratic");
+		this.soc_structure.setSelectedItem(government.struc);
+		this.rule.setSelectedItem(government.ruler);
+		this.life_style.setSelectedItem(government.style);
+		this.centralisation.setSelectedItem(government.cent);
+		for (int i=0;i<4;i++) {
+			this.institutions[i].setSelectedItem(institutes.active_institutions[i]);
+		}
+		if (histocheck) {
+			for (int i=0;i<4;i++) {
+				this.government_panel.add(histocracy_choices[i] = new JComboBox<>(government.histocratic_options));
+				this.government_panel.add(histocracy_values[i] = new JTextField(""));
+				this.histocracy_choices[i].setSelectedItem(government.histocratic_choices[i]);
+				this.histocracy_values[i].setText(Double.toString(government.hist_val[i]));
+			}
+		}
+	}
+	
+	public void updateGovernmentPane(Governments government) {//update if hive/hist are selected
+		if (government.sys.equals("Hive"))  //set legitimacy text for hive or not hive
 			this.legitimacy_label.setText("Control");
-		}else if (!government.sys.equals("Hive")&&legitimacy_label.getText().equals("Control"))
+		else if (!government.sys.equals("Hive")&&legitimacy_label.getText().equals("Control"))
 			this.legitimacy_label.setText("Legitimacy");
 		if ((government.sys.equals("Histocratic")&&government_panel.getComponentCount()<25)) {
 			for (int i=0;i<4;i++) {
@@ -144,62 +148,34 @@ public class LordPanes {
 				this.government_panel.add(histocracy_values[i] = new JTextField(""));
 				this.histocracy_values[i].setText(Double.toString(government.hist_val[i]));
 			}
+		}else if ((government.sys.equals("Histocratic")&&government_panel.getComponentCount()>25)) {
+			for (int i=0;i<4;i++) {
+				this.histocracy_values[i].setText(Double.toString(government.hist_val[i]));
+				this.histocracy_choices[i].setSelectedItem(government.histocratic_choices[i]);	
+			}	
+			System.out.println("updating histocracy stuff");
 		}else if ((!government.sys.equals("Histocratic"))&&government_panel.getComponentCount()>25) {
 			for (int i=0;i<4;i++) {
 				this.government_panel.remove(histocracy_choices[i]);
 				this.government_panel.remove(histocracy_values[i]);
 			}
+			System.out.println("removed histocratic things");
 		}
-		this.government_panel.revalidate();
-		
+		this.government_panel.revalidate();		
 	}
 	
 	public Panel culturePane() {//culture panel
 		Panel culture_panel = new Panel(new GridLayout(0,4));
-		culture_panel.add(new JLabel("Unit Training Cost"));
-		culture_panel.add(unit_training_cost = new JTextField("100"));
-		culture_panel.add(new JLabel("Undead Unit Cap"));
-		culture_panel.add(undead_unit_cap = new JTextField("0"));
-		culture_panel.add(new JLabel("Unit Cap"));
-		culture_panel.add(unit_cap = new JTextField("0"));
-		culture_panel.add(new JLabel("Unit Equipment Cost"));
-		culture_panel.add(unit_equipment_cost = new JTextField("100"));
-		culture_panel.add(new JLabel("Hit"));
-		culture_panel.add(hit_mod = new JTextField("0"));
-		culture_panel.add(new JLabel("AC"));
-		culture_panel.add(ac_mod = new JTextField("0"));
-		culture_panel.add(new JLabel("Morale"));
-		culture_panel.add(m_mod = new JTextField("0"));
-		culture_panel.add(new JLabel("Command"));
-		culture_panel.add(c_mod = new JTextField("0"));
-		culture_panel.add(new JLabel("Ranged Hit"));
-		culture_panel.add(ranged_hit_mod = new JTextField("0"));
-		culture_panel.add(new JLabel("Settlement Upkeep Cost"));
-		culture_panel.add(settlement_upk = new JTextField("100"));
-		culture_panel.add(new JLabel("Fortification Cost"));
-		culture_panel.add(fortification_cost = new JTextField("100"));
-		culture_panel.add(new JLabel("Settlement Upgrade Cost"));
-		culture_panel.add(settlement_upgrade = new JTextField("100"));
-		culture_panel.add(new JLabel("Base Production"));
-		culture_panel.add(bp_mod = new JTextField("0"));
-		culture_panel.add(new JLabel("Production Efficiency"));
-		culture_panel.add(prod_mod = new JTextField("0"));
-		culture_panel.add(new JLabel("Tax Efficiency"));
-		culture_panel.add(tax_mod = new JTextField("0"));
-		culture_panel.add(new JLabel("Banking Efficiency"));
-		culture_panel.add(bank_mod = new JTextField("0"));
-		culture_panel.add(new JLabel("Trade Efficiency"));
-		culture_panel.add(trade_mod = new JTextField("0"));
-		culture_panel.add(new JLabel("Vassal Income Efficiency"));
-		culture_panel.add(vassal_mod = new JTextField("0"));
-		culture_panel.add(new JLabel("Magic Guild Cost"));
-		culture_panel.add(magic_mod = new JTextField("100"));
-		culture_panel.add(new JLabel("Tinker Guild Cost"));
-		culture_panel.add(tinker_mod = new JTextField("100"));
-		culture_panel.add(new JLabel("Spy Guild Cost"));
-		culture_panel.add(spy_mod = new JTextField("100"));
-		culture_panel.add(new JLabel("All Guild Cost"));
-		culture_panel.add(guild_mod = new JTextField("100"));
+		for (int i=0;i<22;i++){
+			culturefields.add(new JTextField("0"));
+			culture_panel.add(new JLabel(culture_names[i]));
+			culture_panel.add(culturefields.get(i));
+		}
 		return culture_panel;
+	}
+	
+	public void setCulturePane(int[] s) {//setting culture pane
+		for (int i=0;i<22;i++)//only ever called from lord.setCulture()
+			culturefields.get(i).setText(Integer.toString(s[i]));		
 	}
 }
