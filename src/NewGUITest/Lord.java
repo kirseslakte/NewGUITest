@@ -57,6 +57,7 @@ public class Lord extends JFrame{
 	public boolean generate_request = false;
 	public boolean new_request = false;
 	public LordPanes panes = new LordPanes();
+	public HexPane hexpanel = new HexPane();
 	//public TradeWindow trade = new TradeWindow(this);//a trade window for each lord
 	
 	//// START OF METHODS ////
@@ -89,7 +90,7 @@ public class Lord extends JFrame{
 		//culture
 		mainPnl.add(panes.culturePane());
 		//lastpanel
-		Panel pnl4 = new Panel(new GridLayout(1,1));
+		Panel pnl4 = new Panel(new GridLayout(1,1));//setting up dummybuttons on the dummypane
 		Button newVassalBtn = new Button("New Vassal");//adding buttons
 		Button saveBtn = new Button("Save Nation");
 		Button quitBtn = new Button("Quit");
@@ -100,6 +101,7 @@ public class Lord extends JFrame{
 		mainPnl.add(pnl4);
 		JTabbedPane mainPane = new JTabbedPane();
 		mainPane.addTab("Government",mainPnl);
+		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPanel()));
 		//mainPane.addTab("Officials");
 		//mainPane.addTab("Units");
 		//mainPane.addTab("TradeMap");

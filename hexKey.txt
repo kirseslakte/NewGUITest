@@ -1,9 +1,10 @@
 hexname					1
-hab					2
-culture					3
-religion				4
-pop_size				5
-unrest					6
-resource				7
-buildings				8-x
+owner					2
+hab					3
+culture					4
+religion				5
+pop_size				6
+unrest					7
+resource				8
+buildings				9-x
 separator				x+1

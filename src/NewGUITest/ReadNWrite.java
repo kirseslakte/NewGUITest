@@ -98,19 +98,7 @@ public class ReadNWrite {
 					hex_length++;
 				}
 			}
-			sc.close();/*
-			List<String>[] hexstring = new List[number_of_hexes];//what we want to go into the Hex method
-			number_of_hexes = 0;//reset the counter
-			for (int i=0;i<hexreader.size();i++) {//track the positions of the hexes
-				if (hexreader.get(i).equals(separator)){
-					number_of_hexes++;//count the number of hexes
-				} else
-					hexstring[number_of_hexes].add(hexreader.get(i));//put all but the separator into a string array
-			}
-			for (int i=0;i<number_of_hexes;i++) {//loop over all the hexes
-				listofhexes.add(new Hex());				//add the hex to the list
-				//listofhexes.get(i).setHex(hexstring[i]);//fill the hex with the loaded data
-			}*/
+			sc.close();
 		} catch(Exception e){
 			System.out.println(e);
 		}
@@ -185,13 +173,14 @@ public class ReadNWrite {
 			FileWriter fw = new FileWriter(file);//write all the data for the lord in order (see hexKey.txt)
 			for (Hex hex: listofhexes){
 				fw.write(hex.name+System.getProperty("line.separator"));
+				fw.write(hex.owner+System.getProperty("line.separator"));
 				fw.write(hex.habitability+System.getProperty("line.separator"));
 				fw.write(hex.alignment+System.getProperty("line.separator"));
 				fw.write(hex.religion+System.getProperty("line.separator"));
 				fw.write(hex.pop_size+System.getProperty("line.separator"));
 				fw.write(hex.unrest+System.getProperty("line.separator"));
 				fw.write(hex.resource+System.getProperty("line.separator"));
-				for (String building: hex.buildings){
+				for (String building: hex.built_buildings){
 					fw.write(building+System.getProperty("line.separator"));
 				}
 				fw.write(separator+System.getProperty("line.separator"));
