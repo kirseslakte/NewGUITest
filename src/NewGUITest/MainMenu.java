@@ -11,7 +11,7 @@ public class MainMenu extends Frame {
 	
 	public MainMenu() {//constructor constructs the frame
 		menuFrame = new Frame("Main Menu");
-		menuFrame.setSize(200,600);//x,y
+		menuFrame.setSize(400,600);//x,y
 	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();//center frame on screen
 	    int x = (int) ((dimension.getWidth() - menuFrame.getWidth()) / 2);
 	    int y = (int) ((dimension.getHeight() - menuFrame.getHeight()) / 2);

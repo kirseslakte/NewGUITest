@@ -16,5 +16,5 @@ tax_rate					15
 banked_rp					16
 banked_development				17
 tax_rate_overlord				18
-histocracy_bonus_tags				19-22
-histocracy_bonus_mods				23-26
+histocracy_bonus_tags				19,21,23,25
+histocracy_bonus_mods				20,22,24,26

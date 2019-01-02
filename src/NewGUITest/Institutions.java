@@ -47,10 +47,6 @@ public class Institutions {
 			treasury(i);
 		else if (s==institution_names[18])
 			welfare(i);
-		else
-			//nothing
-		
-		resetModifiers();
 	}	
 	public void resetModifiers() {//resets all the modifiers from insitutions
 		for (int i=0;i<active_institutions.length;i++)

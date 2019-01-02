@@ -14,9 +14,9 @@ public class MainThread {
 		LoadWindow loadWindow = new LoadWindow();
 		NationHandler handler = new NationHandler();
 		menuWindow.start();
-		boolean thread_handover = true;
+		boolean thread_handover = false;
 		//THE MAIN THREAD
-		while(thread_handover){
+		while(!thread_handover){
 			
 			//THE MAIN MENU LOOP
 			
@@ -48,12 +48,12 @@ public class MainThread {
 					handler.createNation(loadWindow.nation_name);//first we create a new nation
 					loadWindow.stop();
 					handler.mainThread();
-					thread_handover = false;
+					thread_handover = true;
 				}else if (loadWindow.feedback.equals("Load")){//pass over responsibility to nationhandlers main thread
 					handler.loadNation(loadWindow.nation_name);
 					loadWindow.stop();
 					handler.mainThread();
-					thread_handover = false;
+					thread_handover = true;
 				}else if (loadWindow.feedback.equals("Back")) {//quit
 					loadWindow.stop();
 					menuWindow.start();

@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class Lord extends JFrame{
+public class Lord extends NationHandler {
 	
 	public final int max_number_of_institutions = 4;//rule variables
 	public final int number_of_culture_bonuses = 22;
@@ -65,23 +65,11 @@ public class Lord extends JFrame{
 	public Lord(String s, String master) {
 		this.name = s;
 		this.master_title = master;
-		this.setFrame();
+		this.setPanel();
 	}
 	
-	public void setFrame() {
-		this.setSize(1500,1000);//x,y
-	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
-	    this.setLocation(x, y);
-	    this.addWindowListener(new WindowAdapter() {//close program on closing window
-			public void windowClosing(WindowEvent windowEvent){
-				System.exit(0);
-			}
-		});
-		this.setTitle(name);
+	public Panel setPanel() {
 		////SETTING UP MAIN PANEL////
-		
 		Panel mainPnl = new Panel(new GridLayout(2,2));//set out panel
 		//nation stats panel
 		mainPnl.add(panes.nationPanel(government,!master_title.equals("")));
@@ -99,15 +87,6 @@ public class Lord extends JFrame{
 		pnl4.add(saveBtn);
 		pnl4.add(quitBtn);
 		mainPnl.add(pnl4);
-		JTabbedPane mainPane = new JTabbedPane();
-		mainPane.addTab("Government",mainPnl);
-		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPanel()));
-		//mainPane.addTab("Officials");
-		//mainPane.addTab("Units");
-		//mainPane.addTab("TradeMap");
-		//mainPane.addTab("VassalMap");
-		//mainPane.addTab("Notes");
-		this.add(mainPane);
 		
 		////DONE SETTING UP MAIN PANEL////
 		
@@ -139,12 +118,15 @@ public class Lord extends JFrame{
 				getCulture();
 			}
 		});
+		return mainPnl;
 	}
 	
 	public void getGovernment() {//getting the government tab things
-		this.eco[0] = (int) Double.parseDouble(this.panes.bank_rp.getText());	
-		this.eco[1] = (int) Double.parseDouble(this.panes.bank_dev.getText());
-		this.eco[2] = (int) Double.parseDouble(this.panes.tax_rate.getText());
+		this.government.eco[0] = (int) Double.parseDouble(this.panes.bank_rp.getText());	
+		this.government.eco[1] = (int) Double.parseDouble(this.panes.bank_dev.getText());
+		this.government.eco[2] = (int) Double.parseDouble(this.panes.tax_rate.getText());
+		if (!(this.master_title.equals("")))
+			this.government.eco[3] = (int) Double.parseDouble(this.panes.lord_tax_rate.getText());
 		this.government.setSystem((String) this.panes.system.getSelectedItem());
 		this.government.setStruc((String) this.panes.soc_structure.getSelectedItem());
 		this.government.setRuler((String) this.panes.rule.getSelectedItem());
@@ -156,25 +138,39 @@ public class Lord extends JFrame{
 		for (int i=0;i<4;i++) {
 			this.institutes.setInstitution((String) this.panes.institutions[i].getSelectedItem(),i);
 		}
-		//this.setFrame();
+		if (this.panes.histocheck){
+			for (int i=0;i<4;i++) {
+				this.government.histocratic_choices[i] = (String) this.panes.histocracy_choices[i].getSelectedItem();
+				this.government.hist_val[i] = Double.parseDouble(this.panes.histocracy_values[i].getText());
+			}
+		}	
 		this.panes.updateGovernmentPane(government);
 	}
 	
-	public void setGovernment(String[] s) {//setting the government tab things
+	public void setGovernment(String[] s) {//only ever called when loading
 		this.panes.bank_rp.setText(s[0]);
 		this.panes.bank_dev.setText(s[1]);
 		this.panes.tax_rate.setText(s[2]);
-		this.panes.system.setSelectedItem(s[3]);
-		this.panes.soc_structure.setSelectedItem(s[4]);
-		this.panes.rule.setSelectedItem(s[5]);
-		this.panes.life_style.setSelectedItem(s[6]);
-		this.panes.centralisation.setSelectedItem(s[7]);
-		this.panes.culture.setSelectedItem(s[8]);
-		this.panes.religion.setSelectedItem(s[9]);
-		this.panes.legitimacy.setText(s[10]);
+		if (!(this.master_title.equals("")))
+			this.panes.lord_tax_rate.setText(s[3]);
+		this.panes.system.setSelectedItem(s[4]);
+		this.panes.soc_structure.setSelectedItem(s[5]);
+		this.panes.rule.setSelectedItem(s[6]);
+		this.panes.life_style.setSelectedItem(s[7]);
+		this.panes.centralisation.setSelectedItem(s[8]);
+		this.panes.culture.setSelectedItem(s[9]);
+		this.panes.religion.setSelectedItem(s[10]);
+		this.panes.legitimacy.setText(s[11]);
 		for (int i=0;i<4;i++) {
-			this.panes.institutions[i].setSelectedItem(s[11+i]);
+			this.panes.institutions[i].setSelectedItem(s[12+i]);
 		}
+		if (this.panes.histocheck){
+			System.out.println("attempting to set histocracy panes");
+			for (int i=0;i<4;i++) {
+				this.panes.histocracy_choices[i].setSelectedItem(s[16+i]);
+				this.panes.histocracy_values[i].setText(s[20+i]);
+			}
+		}			
 		this.getGovernment();//to set the newly imported values into more than the visuals
 	}
 	
@@ -203,7 +199,7 @@ public class Lord extends JFrame{
 		this.culture_bonuses[21] = Integer.parseInt(this.panes.guild_mod.getText());
 	}
 	
-	public void setCulture(String[] s) {//extracting all the culture modifiers
+	public void setCulture(String[] s) {//only ever called when loading
 		if (this.title.equals("overlord")) {
 			this.panes.unit_training_cost.setText(s[0]);
 			this.panes.undead_unit_cap.setText(s[1]);
@@ -241,15 +237,4 @@ public class Lord extends JFrame{
 		save_request = false;
 		generate_request = false;
 	}
-	
-	public void start(){
-		this.setVisible(true);
-	}
-	public void stop() {
-		this.setVisible(false);
-	}
-	
-	public void loadLord() {
-		
-	}	
 }

@@ -16,6 +16,7 @@ public class LordPanes {
 	public JComboBox[] histocracy_choices = new JComboBox[4];
 	public JTextField[] histocracy_values = new JTextField[4];
 	public JTextField legitimacy;
+	public boolean govset = false;
 	public boolean histocheck;
 	//culture variables
 	public JTextField unit_training_cost,undead_unit_cap,unit_cap,unit_equipment_cost,hit_mod,ac_mod,m_mod,c_mod,
@@ -73,56 +74,58 @@ public class LordPanes {
 		nation_panel.add(new JLabel("Total Production"));
 		nation_panel.add(tot_prod = new JLabel("0"));//needs updating
 		nation_panel.add(new JLabel("Banked Development"));
-		nation_panel.add(bank_dev = new JTextField("0"));//needs updating
+		nation_panel.add(bank_dev = new JTextField(Double.toString(government.eco[1])));//needs updating
 		nation_panel.add(new JLabel("Banked RP"));
-		nation_panel.add(bank_rp = new JTextField("0"));//needs updating
+		nation_panel.add(bank_rp = new JTextField(Double.toString(government.eco[0])));//needs updating
 		nation_panel.add(new JLabel("Taxation Level"));
-		nation_panel.add(tax_rate = new JTextField("0"));//needs updating
+		nation_panel.add(tax_rate = new JTextField(Double.toString(government.eco[2])));//needs updating
 		if (b) {
 			nation_panel.add(new JLabel("Lord Tax Rate"));
-			nation_panel.add(lord_tax_rate = new JTextField("0"));//needs updating
+			nation_panel.add(lord_tax_rate = new JTextField(Double.toString(government.eco[3])));//needs updating
 		}
 		return nation_panel;
 	}
 	
 	public Panel governmentPane(Governments government, Institutions institutes) {//government panel
-		this.government_panel.add(new JLabel("Culture"));
-		this.government_panel.add(culture = new JComboBox<>(government.alignments));
-		this.culture.setSelectedItem(government.culture);
-		this.government_panel.add(legitimacy_label = new JLabel("Legitimacy"));
-		this.government_panel.add(legitimacy = new JTextField("10"));
-		this.legitimacy.setText(Integer.toString(government.legitimacy));
-		this.government_panel.add(new JLabel("Religion"));
-		this.government_panel.add(religion = new JComboBox<>(government.alignments));
-		this.religion.setSelectedItem(government.religion);
-		this.government_panel.add(new JLabel("System"));
-		this.government_panel.add(system = new JComboBox<>(government.systems));
-		this.system.setSelectedItem(government.sys);
-		this.histocheck = system.getSelectedItem().equals("Histocratic");
-		this.government_panel.add(new JLabel("Social Structure"));
-		this.government_panel.add(soc_structure = new JComboBox<>(government.strucs));
-		this.soc_structure.setSelectedItem(government.struc);
-		this.government_panel.add(new JLabel("Rule"));
-		this.government_panel.add(rule = new JComboBox<>(government.rule));
-		this.rule.setSelectedItem(government.ruler);
-		this.government_panel.add(new JLabel("Life Style"));
-		this.government_panel.add(life_style = new JComboBox<>(government.life));
-		this.life_style.setSelectedItem(government.style);
-		this.government_panel.add(new JLabel("Centralisation"));
-		this.government_panel.add(centralisation = new JComboBox<>(government.centralisation));
-		this.centralisation.setSelectedItem(government.cent);
-		System.out.println("SET ONCE");
-		for (int i=0;i<4;i++){
-			this.government_panel.add(new JLabel("Institution"));
-			this.government_panel.add(institutions[i] = new JComboBox<>(institutes.institution_names));
-			this.institutions[i].setSelectedItem(institutes.active_institutions[i]);
-		}
-		if (histocheck) {
-			for (int i=0;i<4;i++) {
-				this.government_panel.add(histocracy_choices[i] = new JComboBox<>(government.histocracy_options));
-				this.histocracy_choices[i].setSelectedItem(government.histocracy[i]);
-				this.government_panel.add(histocracy_values[i] = new JTextField(""));
-				this.histocracy_values[i].setText(Integer.toString(government.hist_val[i]));
+		if (!this.govset) {
+			this.govset = true;
+			this.government_panel.add(new JLabel("Culture"));
+			this.government_panel.add(culture = new JComboBox<>(government.alignments));
+			this.culture.setSelectedItem(government.culture);
+			this.government_panel.add(legitimacy_label = new JLabel("Legitimacy"));
+			this.government_panel.add(legitimacy = new JTextField("10"));
+			this.legitimacy.setText(Integer.toString(government.legitimacy));
+			this.government_panel.add(new JLabel("Religion"));
+			this.government_panel.add(religion = new JComboBox<>(government.alignments));
+			this.religion.setSelectedItem(government.religion);
+			this.government_panel.add(new JLabel("System"));
+			this.government_panel.add(system = new JComboBox<>(government.systems));
+			this.system.setSelectedItem(government.sys);
+			this.histocheck = system.getSelectedItem().equals("Histocratic");
+			this.government_panel.add(new JLabel("Social Structure"));
+			this.government_panel.add(soc_structure = new JComboBox<>(government.strucs));
+			this.soc_structure.setSelectedItem(government.struc);
+			this.government_panel.add(new JLabel("Rule"));
+			this.government_panel.add(rule = new JComboBox<>(government.rule));
+			this.rule.setSelectedItem(government.ruler);
+			this.government_panel.add(new JLabel("Life Style"));
+			this.government_panel.add(life_style = new JComboBox<>(government.life));
+			this.life_style.setSelectedItem(government.style);
+			this.government_panel.add(new JLabel("Centralisation"));
+			this.government_panel.add(centralisation = new JComboBox<>(government.centralisation));
+			this.centralisation.setSelectedItem(government.cent);
+			for (int i=0;i<4;i++){
+				this.government_panel.add(new JLabel("Institution"));
+				this.government_panel.add(institutions[i] = new JComboBox<>(institutes.institution_names));
+				this.institutions[i].setSelectedItem(institutes.active_institutions[i]);
+			}
+			if (histocheck) {
+				for (int i=0;i<4;i++) {
+					this.government_panel.add(histocracy_choices[i] = new JComboBox<>(government.histocratic_options));
+					this.histocracy_choices[i].setSelectedItem(government.histocratic_choices[i]);
+					this.government_panel.add(histocracy_values[i] = new JTextField(""));
+					this.histocracy_values[i].setText(Double.toString(government.hist_val[i]));
+				}
 			}
 		}
 		return government_panel;
@@ -135,15 +138,13 @@ public class LordPanes {
 		}else if (!government.sys.equals("Hive")&&legitimacy_label.getText().equals("Control"))
 			this.legitimacy_label.setText("Legitimacy");
 		if ((government.sys.equals("Histocratic")&&government_panel.getComponentCount()<25)) {
-			System.out.println("adding histo");
 			for (int i=0;i<4;i++) {
-				this.government_panel.add(histocracy_choices[i] = new JComboBox<>(government.histocracy_options));
-				this.histocracy_choices[i].setSelectedItem(government.histocracy[i]);
+				this.government_panel.add(histocracy_choices[i] = new JComboBox<>(government.histocratic_options));
+				this.histocracy_choices[i].setSelectedItem(government.histocratic_choices[i]);
 				this.government_panel.add(histocracy_values[i] = new JTextField(""));
-				this.histocracy_values[i].setText(Integer.toString(government.hist_val[i]));
+				this.histocracy_values[i].setText(Double.toString(government.hist_val[i]));
 			}
 		}else if ((!government.sys.equals("Histocratic"))&&government_panel.getComponentCount()>25) {
-			System.out.println("removing histo");
 			for (int i=0;i<4;i++) {
 				this.government_panel.remove(histocracy_choices[i]);
 				this.government_panel.remove(histocracy_values[i]);

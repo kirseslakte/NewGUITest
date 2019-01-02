@@ -2,43 +2,31 @@ package NewGUITest;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JOptionPane;
-
-import java.awt.Dimension;
-import java.awt.Panel;
-import java.awt.TextField;
-import java.awt.Toolkit;
-import java.awt.Frame;
-import java.awt.Button;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.util.concurrent.TimeUnit;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class LoadWindow extends Frame {
-	private Frame loadFrame;
 	public String nation_name = "";
 	public String feedback = "";
 	public boolean running = false;
 	ReadNWrite writer = new ReadNWrite();
 	
 	public LoadWindow() {
-		loadFrame = new Frame("Load Nation");
+		this.setTitle("Load Nation");
 	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();//center frame on screen
-	    int x = (int) ((dimension.getWidth() - loadFrame.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - loadFrame.getHeight()) / 2);
-	    loadFrame.setLocation(x, y);
-		loadFrame.addWindowListener(new WindowAdapter() {//close program on closing window
+	    int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
+	    int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
+	    this.setLocation(x, y);
+	    this.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				System.exit(0);
 			}
 		});
-		ReadNWrite write = new ReadNWrite();
-		loadFrame.setSize(600, (int) Math.floor(write.n_saves/3+1)*75);//x,y
+	    this.setSize(600, (int) Math.floor(writer.n_saves/3+1)*75);//x,y
 		Panel loadPnl = new Panel();
-		loadPnl.setLayout(new GridLayout((int) Math.floor(write.n_saves/3+1),3));//setting up grid for loading buttons
+		loadPnl.setLayout(new GridLayout((int) Math.floor(writer.n_saves/3+1),3));//setting up grid for loading buttons
 		List<Button> btnList = new ArrayList<Button>();
 		ActionListener listener = new ActionListener() {//creating standardized action listeners for all buttons in arraylist
 			public void actionPerformed(ActionEvent e){
@@ -49,24 +37,29 @@ public class LoadWindow extends Frame {
 				}
 			}
 		};
-		for (int i=0;i<write.n_saves;i++){//adding all buttons
-			Button btn = new Button(write.save_names[i]);
-			btn.setName(write.save_names[i]);
+		for (int i=0;i<writer.n_saves;i++){//adding all buttons
+			Button btn = new Button(writer.save_names[i]);
+			btn.setName(writer.save_names[i]);
 			btnList.add(btn);
 			btnList.get(i).addActionListener(listener);//add action event to new button
 			loadPnl.add(btn);
 		}
-		loadFrame.add(loadPnl);	
+		this.add(loadPnl);	
 	}
 	
 	public void start() {
-		running = true;
-		loadFrame.setVisible(true);
+		this.running = true;
+		if (writer.n_saves==0) {
+			this.feedback = "Back";
+			JOptionPane.showMessageDialog(null, "There are no available saves!","Load Error",JOptionPane.INFORMATION_MESSAGE);
+		}else {
+			this.setVisible(true);
+		}
 	}
 	
 	public void stop() {
-		running = false;
-		loadFrame.setVisible(false);
+		this.running = false;
+		this.setVisible(false);
 	}
 	// new nation pop-up
 	public void startNation() {
@@ -74,7 +67,7 @@ public class LoadWindow extends Frame {
 		TextField name = new TextField("Type Nation Name Here");
 		Panel newNation = new Panel(new GridLayout(0,1));
 		newNation.add(name);
-		running = true;
+		this.running = true;
 		boolean new_nation_creation = true;
 		writer.updateSaves();
 		int result = JOptionPane.showConfirmDialog(null, newNation, "Create a new nation",
@@ -85,16 +78,15 @@ public class LoadWindow extends Frame {
 				if (s.equals(nation_name)) {
 					JOptionPane.showMessageDialog(null, "That Nation already exists!","Save error",
 							JOptionPane.INFORMATION_MESSAGE);
-					feedback = "Back";
+					this.feedback = "Back";
 					new_nation_creation = false;
 				}
 			}
 			if (new_nation_creation) {
-				writer.setNationName(nation_name);
-				feedback = "New";
+				this.feedback = "New";
 			}
 		} else {
-			feedback = "Back";
+			this.feedback = "Back";
 		}
 	}
 }

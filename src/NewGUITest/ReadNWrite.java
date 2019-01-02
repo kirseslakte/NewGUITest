@@ -22,8 +22,20 @@ public class ReadNWrite {
 	
 	
 	public int updateSaves() {//number of saves
-		save_names = new File("Nations").list();
-		n_saves = new File("Nations").list().length;//gets the number of existing saves.
+		String[] save_list = new File("Nations").list();//increased the requirements to be counted as a save
+		List <String> complete_save_list = new ArrayList<String>();
+		for (int i=0;i<save_list.length;i++) {//it has to have at least 3 files in its directories
+			if (new File("Nations\\"+save_list[i]).list().length>3)
+				complete_save_list.add(save_list[i]);
+		}
+		if (complete_save_list.size()==0){
+			save_names = new String[0];
+			n_saves = 0;
+		}else {
+			save_names = new String[complete_save_list.size()];
+			save_names = complete_save_list.toArray(save_names);
+			n_saves = save_names.length;//gets the number of existing saves.	
+		}
 		return n_saves;
 	}
 	
@@ -48,7 +60,6 @@ public class ReadNWrite {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		System.out.println("lord loaded");
 		return lord;
 	}
 	
@@ -216,6 +227,10 @@ public class ReadNWrite {
 			}
 			for (int i=0;i<lord.eco.length;i++) {
 				fw.write(lord.eco[i]+System.getProperty("line.separator"));
+			}
+			for (int i=0;i<4;i++){
+				fw.write(lord.government.histocratic_choices[i]+System.getProperty("line.separator"));
+				fw.write(Double.toString(lord.government.hist_val[i])+System.getProperty("line.separator"));
 			}
 			fw.close();
 		} catch (Exception e){

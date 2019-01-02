@@ -9,7 +9,8 @@ public class Governments {
 	public String[] life = {"Settled","Tribalistic","Nomadic"};
 	public String[] centralisation = {"Highly","Moderately","Decentralised"};
 	public String[] alignments = {"LG","NG","CG","LN","NN","CN","LE","NE","CE"};
-	public String[] histocracy_options = {"this","that"};//THESE OPTIONS NEED TO BE FILLED OUT!!
+	public String[] histocratic_options = {"Tax Efficiency","Production Efficiency","Trade Efficiency","Vassal Income Efficiency",
+			"Bank Income Efficiency","Bank Development Efficiency"};//6 options
 	//If you ever want to add anything above, just add it at the end and 
 	//look in the appropriate section below to add the method for it!
 	public String sys = "";
@@ -20,9 +21,10 @@ public class Governments {
 	public String culture = "";
 	public String religion = "";
 	int legitimacy = 0;
-	public String[] histocracy = new String[4];
-	public int[] hist_val = new int[4];
-	double total_val = 0;
+	public String[] histocratic_choices = {"","","",""};
+	public double[] hist_val = {0,0,0,0};
+	boolean histocracy_fault;
+	double total_val = 0.4;
 	double settlement_cost_mod = 1;
 	double unit_training_cost_mod = 1;
 	double tax_eff = 0;
@@ -38,6 +40,7 @@ public class Governments {
 	double max_bank_dev_eff = 0;
 	int min_unrest = 0;
 	double max_tax_rate = 0;
+	double[] eco = {0,0,0,0};
 	
 	public Governments() {
 		
@@ -51,7 +54,6 @@ public class Governments {
 		this.cent = "";
 		this.culture = "";
 		this.religion = "";
-		this.total_val = 0;
 		this.settlement_cost_mod = 1;
 		this.unit_training_cost_mod = 1;
 		this.tax_eff = 0;
@@ -67,6 +69,7 @@ public class Governments {
 		this.max_bank_dev_eff = 0;
 		this.min_unrest = 0;
 		this.max_tax_rate = 0;
+		this.histocracy_fault = false;
 	}
 		//START SYSTEMS!!
 	public void setSystem(String s) {//a method which sets the system of governance
@@ -87,16 +90,6 @@ public class Governments {
 		}else if (s==systems[7]){
 			this.setFederation();
 		}
-	}
-	public void setStystem(String s,String[] hist,int[] histo_val){//own method for setting histocracy
-		if (s.equals(systems[5])){
-			for (int i=0;i<4;i++) {
-				this.histocracy[i] = hist[i];
-				this.hist_val[i] = histo_val[i];
-			}
-			this.setHistocratic();
-		} else 
-			System.out.println("Non-histocratic histocracy??");
 	}
 	
 	public void setDemocratic() {//modifiers for the democratic system
@@ -129,9 +122,34 @@ public class Governments {
 		this.bank_inc_eff += 0.2;
 		this.vassal_inc_eff += 0.1;
 	}
-	public void setHistocratic() {//modifiers for the histocratic system
+	public void setHistocratic(){//modifiers for the histocratic system
 		this.sys = systems[4];
-		this.total_val = 0.4;
+		double value_checker = 0;
+		for (int i=0;i<4;i++) {
+			if (this.histocratic_choices[i].equals(histocratic_options[0])) {
+				this.tax_eff += this.hist_val[i];
+				value_checker += this.hist_val[i];
+			}else if(this.histocratic_choices[i].equals(histocratic_options[1])) {
+				this.prod_eff += this.hist_val[i];
+				value_checker += this.hist_val[i];
+			}else if(this.histocratic_choices[i].equals(histocratic_options[2])) {
+				this.trade_eff += this.hist_val[i];
+				value_checker += this.hist_val[i];
+			}else if(this.histocratic_choices[i].equals(histocratic_options[3])) {
+				this.vassal_inc_eff += this.hist_val[i];
+				value_checker += this.hist_val[i];
+			}else if(this.histocratic_choices[i].equals(histocratic_options[4])) {
+				this.bank_inc_eff += this.hist_val[i];
+				value_checker += this.hist_val[i]/2;
+			}else if(this.histocratic_choices[i].equals(histocratic_options[5])) {
+				this.bank_dev_eff += this.hist_val[i];
+				value_checker += this.hist_val[i]/2;
+			}
+		}
+		if (value_checker==total_val)
+			this.histocracy_fault = false;
+		else
+			this.histocracy_fault = true;
 	}
 	public void setPlutocratic() {//modifiers for the plutocratic system
 		this.sys = systems[5];
