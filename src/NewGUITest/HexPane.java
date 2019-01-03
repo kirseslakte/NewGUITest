@@ -40,6 +40,8 @@ public class HexPane extends Hex{
 	public List<Button> add_ons_btn = new ArrayList<Button>();
 	public List<JLabel> fortifications_cost = new ArrayList<JLabel>();
 	public List<JLabel> fortifications_upkeep = new ArrayList<JLabel>();
+	public List<JComboBox> add_on_list = new ArrayList<JComboBox>();
+	public List<JLabel> add_on_cost = new ArrayList<JLabel>();
 	
 	public Frame build = new Frame();
 	public JPanel mainbuild;
@@ -370,23 +372,49 @@ public class HexPane extends Hex{
 	public void updateBuilding() {
 		
 	}
-	public void addOnPopup(int i) {
-		addon = new Frame();
+	public void addOnPopup(int i) {//there is a problem where there only exists one frame
+		addon = new Frame();		//so the next fortification to add add-ons to gives the same frame as the first.
 		JPanel addonpanel = new JPanel(new GridBagLayout());
 		addon.setSize(600,500);//setting where the frame is
 	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 	    int x = (int) ((dimension.getWidth() - addon.getWidth()) / 2);
 	    int y = (int) ((dimension.getHeight() - addon.getHeight()) / 2);
 	    addon.setLocation(x, y);
-	    addon.setTitle("Add-ons for "+fortifications.get(i).getSelectedItem());
-	    addon.addWindowListener(new WindowAdapter() {//close frame on closing window
-			public void windowClosing(WindowEvent windowEvent){
-				addon.dispose();//destroys frame on exit
-			}
-		});
-	    
-	    addon.add(addonpanel);
-	    addon.setVisible(true);
+	    if (fortifications.get(i).getSelectedItem().equals("")){
+	    	JOptionPane.showMessageDialog(null, "There is no fortification set!","Fortification Error",JOptionPane.INFORMATION_MESSAGE);
+	    }else if  (fortifications.get(i).getSelectedItem().equals(fortificationlist[6])){
+	    	JOptionPane.showMessageDialog(null, fortificationlist[6]+" has no available add-ons!","Fortification Error",JOptionPane.INFORMATION_MESSAGE);
+		}else{
+	    	addon.setTitle("Add-ons for "+fortifications.get(i).getSelectedItem());
+		    addon.addWindowListener(new WindowAdapter() {//close frame on closing window
+				public void windowClosing(WindowEvent windowEvent){
+					addon.dispose();//destroys frame on exit
+				}
+			});
+		    c.gridwidth = 1;//adding the first row
+		    c.gridy = 0;
+		    c.gridx = 0;
+		    addonpanel.add(new JLabel("Add-on"),c);
+		    c.gridx = 1;
+		    addonpanel.add(new JLabel("Cost"),c);
+		    for (int j=0;j<5;j++) {
+		    	c.gridy = 1+j;
+		    	c.gridx = 0;
+		    	add_on_list.add(new JComboBox<>(addonlist));
+		    	int k = j;
+		    	add_on_list.get(j).addActionListener(new ActionListener() {
+		    		public void actionPerformed (ActionEvent e){
+		    			add_on_cost.get(k).setText(Double.toString(findCost((String) fortifications.get(i).getSelectedItem())*findCost((String) ((JComboBox) e.getSource()).getSelectedItem())/100));
+		    		}
+		    	});
+		    	addonpanel.add(add_on_list.get(j),c);
+		    	c.gridx = 1;
+		    	add_on_cost.add(new JLabel("0"));
+		    	addonpanel.add(add_on_cost.get(j),c);
+		    }
+		    addon.add(new JScrollPane(addonpanel));
+		    addon.setVisible(true);
+		}
 	}
 	public void wallAddOnPopup() {
 		walladdon = new Frame();
@@ -403,7 +431,7 @@ public class HexPane extends Hex{
 			}
 		});
 	    
-	    walladdon.add(walladdonpanel);
+	    walladdon.add(new JScrollPane(walladdonpanel));
 	    walladdon.setVisible(true);
 	}
 }

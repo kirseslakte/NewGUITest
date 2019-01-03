@@ -44,6 +44,11 @@ public class Hex {
 	public String[] wallslist;
 	public String[] addonlist;
 	public String[] walladdonlist;
+	public int[] building_costs;
+	public int[] fortifications_costs;
+	public int[] add_ons_costs;
+	public int[] walls_costs;
+	public int[] walls_add_costs;
 	
 	public Hex() {
 		List <String> temp = new ArrayList<String>(Arrays.asList(active_resources));
@@ -72,11 +77,60 @@ public class Hex {
 		walladdonlist[0] = "";
 		for (int i=1;i<construction.available_wall_add_ons.length+1;i++)
 			walladdonlist[i] = construction.available_wall_add_ons[i-1];//walladdonlist done
-		
+		building_costs = construction.building_costs;
+		fortifications_costs = construction.fortifications_costs;
+		add_ons_costs = construction.add_ons_costs;
+		walls_costs = construction.walls_costs;
+		walls_add_costs = construction.walls_add_costs;
 	}
 	
 	public void setHex() {
 		
+	}
+	
+	public int findCost(String building) {
+		int cost = 0;
+		for (int i=0;i<buildinglist.length;i++) {
+			if (buildinglist[i].equals(building)) {
+				if (i==0)
+					cost = 0;
+				else
+					cost = building_costs[i-1];
+			}
+		}
+		for (int i=0;i<fortificationlist.length;i++) {
+			if (fortificationlist[i].equals(building)) {
+				if (i==0)
+					cost = 0;
+				else
+					cost = fortifications_costs[i-1];
+			}
+		}
+		for (int i=0;i<wallslist.length;i++) {
+			if (wallslist[i].equals(building)) {
+				if (i==0)
+					cost = 0;
+				else
+					cost = walls_costs[i-1];
+			}
+		}
+		for (int i=0;i<addonlist.length;i++) {
+			if (addonlist[i].equals(building)) {
+				if (i==0)
+					cost = 0;
+				else
+					cost = add_ons_costs[i-1];
+			}
+		}
+		for (int i=0;i<walladdonlist.length;i++) {
+			if (walladdonlist[i].equals(building)) {
+				if (i==0)
+					cost = 0;
+				else
+					cost = walls_add_costs[i-1];
+			}
+		}
+		return cost;
 	}
 	
 	public void loadHex(String[] s){//assumes you have erased the separator
