@@ -38,8 +38,8 @@ public class NationHandler extends JFrame{
 						active_lord.resetRequest();						
 					}else if (active_lord.save_request) {
 						updateNation();
-						saveNation();
 						System.out.println("saving");
+						saveNation();
 						active_lord.resetRequest();
 					}
 				}
@@ -80,6 +80,16 @@ public class NationHandler extends JFrame{
 				listoflords.get(listoflords.size()-1).setGovernment();
 			}
 		}
+		//all lords have been loaded!!
+		listofhexes = write.loadHexes();
+		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPane(listofhexes,listoflords)));//loaded after all the lords
+		listofunits = write.loadUnits();
+		//mainPane.addTab("Units");
+		listofofficials = write.loadOfficials();
+		//update the nationpanes of the lords
+		//load notes
+		//mainPane.addTab("Notes");
+		mainPane.revalidate();
 	}
 	
 	public void saveNation() {//only ever called from save_request
@@ -148,9 +158,6 @@ public class NationHandler extends JFrame{
 		});
 		this.setTitle(s);
 		mainPane.addTab(s,listoflords.get(listoflords.size()-1).setPanel(true));
-		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPanel(listofhexes)));
-		//mainPane.addTab("Units");
-		//mainPane.addTab("Notes");
 		this.add(mainPane);
 		this.setVisible(true);
 	}

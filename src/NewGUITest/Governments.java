@@ -22,9 +22,9 @@ public class Governments {
 	public String religion = "";
 	int legitimacy = 0;
 	public String[] histocratic_choices = {"","","",""};
-	public double[] hist_val = {0,0,0,0};
+	public int[] hist_val = {0,0,0,0};
 	boolean histocracy_fault;
-	double total_val = 0.4;
+	int total_val = 40;
 	double settlement_cost_mod = 1;
 	double unit_training_cost_mod = 1;
 	double tax_eff = 0;
@@ -40,7 +40,7 @@ public class Governments {
 	double max_bank_dev_eff = 0;
 	int min_unrest = 0;
 	double max_tax_rate = 0;
-	double[] eco = {0,0,0,0};
+	int[] eco = {0,0,0,0};
 	
 	public Governments() {
 		
@@ -127,26 +127,24 @@ public class Governments {
 		double value_checker = 0;
 		for (int i=0;i<4;i++) {
 			if (this.histocratic_choices[i].equals(histocratic_options[0])) {
-				this.tax_eff += this.hist_val[i];
+				this.tax_eff += this.hist_val[i]/100;
 				value_checker += this.hist_val[i];
 			}else if(this.histocratic_choices[i].equals(histocratic_options[1])) {
-				this.prod_eff += this.hist_val[i];
+				this.prod_eff += this.hist_val[i]/100;
 				value_checker += this.hist_val[i];
 			}else if(this.histocratic_choices[i].equals(histocratic_options[2])) {
-				this.trade_eff += this.hist_val[i];
+				this.trade_eff += this.hist_val[i]/100;
 				value_checker += this.hist_val[i];
 			}else if(this.histocratic_choices[i].equals(histocratic_options[3])) {
-				this.vassal_inc_eff += this.hist_val[i];
+				this.vassal_inc_eff += this.hist_val[i]/100;
 				value_checker += this.hist_val[i];
 			}else if(this.histocratic_choices[i].equals(histocratic_options[4])) {
-				this.bank_inc_eff += this.hist_val[i];
+				this.bank_inc_eff += this.hist_val[i]/100;
 				value_checker += this.hist_val[i]/2;
 			}else if(this.histocratic_choices[i].equals(histocratic_options[5])) {
-				this.bank_dev_eff += this.hist_val[i];
+				this.bank_dev_eff += this.hist_val[i]/100;
 				value_checker += this.hist_val[i]/2;
 			}
-			//System.out.println(histocratic_choices[i]);
-			//System.out.println(hist_val[i]);
 		}
 		if (value_checker==total_val)
 			this.histocracy_fault = false;

@@ -77,14 +77,14 @@ public class LordPanes {
 		nation_panel.add(new JLabel("Total Production"));
 		nation_panel.add(tot_prod = new JLabel("0"));//needs updating
 		nation_panel.add(new JLabel("Banked Development"));
-		nation_panel.add(bank_dev = new JTextField(Double.toString(government.eco[1])));//needs updating
+		nation_panel.add(bank_dev = new JTextField(Integer.toString(government.eco[1])));//needs updating
 		nation_panel.add(new JLabel("Banked RP"));
-		nation_panel.add(bank_rp = new JTextField(Double.toString(government.eco[0])));//needs updating
+		nation_panel.add(bank_rp = new JTextField(Integer.toString(government.eco[0])));//needs updating
 		nation_panel.add(new JLabel("Taxation Level"));
-		nation_panel.add(tax_rate = new JTextField(Double.toString(government.eco[2])));//needs updating
+		nation_panel.add(tax_rate = new JTextField(Integer.toString(government.eco[2])));//needs updating
 		if (b) {
 			nation_panel.add(new JLabel("Lord Tax Rate"));
-			nation_panel.add(lord_tax_rate = new JTextField(Double.toString(government.eco[3])));//needs updating
+			nation_panel.add(lord_tax_rate = new JTextField(Integer.toString(government.eco[3])));//needs updating
 		}
 		return nation_panel;
 	}
@@ -109,6 +109,8 @@ public class LordPanes {
 		for (int i=0;i<4;i++){
 			this.government_panel.add(new JLabel("Institution"));
 			this.government_panel.add(institutions[i] = new JComboBox<>(institutes.institution_names));
+			this.histocracy_values[i] = new JTextField("0");
+			this.histocracy_choices[i] = new JComboBox<>(government.histocratic_options);
 		}
 		return government_panel;
 	}
@@ -128,10 +130,10 @@ public class LordPanes {
 		}
 		if (histocheck) {
 			for (int i=0;i<4;i++) {
-				this.government_panel.add(histocracy_choices[i] = new JComboBox<>(government.histocratic_options));
-				this.government_panel.add(histocracy_values[i] = new JTextField(""));
+				this.government_panel.add(histocracy_choices[i]);
+				this.government_panel.add(histocracy_values[i]);
 				this.histocracy_choices[i].setSelectedItem(government.histocratic_choices[i]);
-				this.histocracy_values[i].setText(Double.toString(government.hist_val[i]));
+				this.histocracy_values[i].setText(Integer.toString(government.hist_val[i]));
 			}
 		}
 	}
@@ -146,20 +148,18 @@ public class LordPanes {
 				this.government_panel.add(histocracy_choices[i] = new JComboBox<>(government.histocratic_options));
 				this.histocracy_choices[i].setSelectedItem(government.histocratic_choices[i]);
 				this.government_panel.add(histocracy_values[i] = new JTextField(""));
-				this.histocracy_values[i].setText(Double.toString(government.hist_val[i]));
+				this.histocracy_values[i].setText(Integer.toString(government.hist_val[i]));
 			}
 		}else if ((government.sys.equals("Histocratic")&&government_panel.getComponentCount()>25)) {
 			for (int i=0;i<4;i++) {
-				this.histocracy_values[i].setText(Double.toString(government.hist_val[i]));
+				this.histocracy_values[i].setText(Integer.toString(government.hist_val[i]));
 				this.histocracy_choices[i].setSelectedItem(government.histocratic_choices[i]);	
 			}	
-			System.out.println("updating histocracy stuff");
 		}else if ((!government.sys.equals("Histocratic"))&&government_panel.getComponentCount()>25) {
 			for (int i=0;i<4;i++) {
 				this.government_panel.remove(histocracy_choices[i]);
 				this.government_panel.remove(histocracy_values[i]);
 			}
-			System.out.println("removed histocratic things");
 		}
 		this.government_panel.revalidate();		
 	}

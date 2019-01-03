@@ -31,14 +31,6 @@ public class Lord extends NationHandler {
 	//TradeWindow trade = new TradeWindow();
 	
 	public int[] culture_bonuses = new int[22];//culture bonuses (22 of them)
-
-	public double[] eco = new double[4];//economy
-	/* key for eco:
-	 * tax rate										0
-	 * banked rp									1
-	 * banked dev									2	
-	 * tax rate overlord (=0 if overlord)			3
-	 */
 	/*													MAYBE ROLL ALL THESE OFFICALS INTO SEPARATE CLASS
 	 * bank income roll								4	OFFICIAL
 	 * tax collect roll								5	OFFICIAL
@@ -115,13 +107,10 @@ public class Lord extends NationHandler {
 		for (int i=0;i<4;i++) {
 			this.institutes.setInstitution((String) this.panes.institutions[i].getSelectedItem(),i);
 		}
-		System.out.println(this.government.sys+" is being saved");
 		if (this.government.sys.equals("Histocratic")){
 			for (int i=0;i<4;i++) {
-				System.out.println(this.panes.histocracy_choices[i].getSelectedItem());
 				this.government.histocratic_choices[i] = (String) this.panes.histocracy_choices[i].getSelectedItem();
-				this.government.hist_val[i] = Double.parseDouble(this.panes.histocracy_values[i].getText());
-				System.out.println(this.government.histocratic_choices[i]);
+				this.government.hist_val[i] = Integer.parseInt(this.panes.histocracy_values[i].getText());
 			}
 		}
 		this.panes.updateGovernmentPane(government);
@@ -148,7 +137,7 @@ public class Lord extends NationHandler {
 		if (this.government.sys.equals("Histocratic")){
 			for (int i=0;i<4;i++) {
 				this.government.histocratic_choices[i] = s[18+2*i];
-				this.government.hist_val[i] = Double.parseDouble(s[19+2*i]);
+				this.government.hist_val[i] = Integer.parseInt(s[19+2*i]);
 			}
 		}
 	}

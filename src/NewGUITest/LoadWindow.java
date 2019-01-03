@@ -16,6 +16,7 @@ public class LoadWindow extends Frame {
 	public LoadWindow() {
 		this.setTitle("Load Nation");
 	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();//center frame on screen
+	    this.setSize(600, (int) Math.floor(writer.n_saves/3+1)*75);//x,y
 	    int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
 	    int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
 	    this.setLocation(x, y);
@@ -24,7 +25,6 @@ public class LoadWindow extends Frame {
 				System.exit(0);
 			}
 		});
-	    this.setSize(600, (int) Math.floor(writer.n_saves/3+1)*75);//x,y
 		Panel loadPnl = new Panel();
 		loadPnl.setLayout(new GridLayout((int) Math.floor(writer.n_saves/3+1),3));//setting up grid for loading buttons
 		List<Button> btnList = new ArrayList<Button>();

@@ -98,7 +98,7 @@ public class ReadNWrite {
 				s = sc.nextLine();
 				hexreader.add(s);			//scanning the entire document into hexlist
 				if (s.equals(separator)){
-					hex.setHex(hex_input);
+					hex.loadHex(hex_input);
 					listofhexes.add(hex);
 					//number_of_hexes++;	//count the number of hexes
 					for (int i=0;i<hex_input.length;i++) {
@@ -225,12 +225,12 @@ public class ReadNWrite {
 			for (int i=0;i<lord.max_number_of_institutions;i++){
 				fw.write(lord.institutes.active_institutions[i]+System.getProperty("line.separator"));
 			}
-			for (int i=0;i<lord.eco.length;i++) {
-				fw.write(lord.eco[i]+System.getProperty("line.separator"));
+			for (int i=0;i<lord.government.eco.length;i++) {
+				fw.write(lord.government.eco[i]+System.getProperty("line.separator"));
 			}
 			for (int i=0;i<4;i++){
 				fw.write(lord.government.histocratic_choices[i]+System.getProperty("line.separator"));
-				fw.write(Double.toString(lord.government.hist_val[i])+System.getProperty("line.separator"));
+				fw.write(lord.government.hist_val[i]+System.getProperty("line.separator"));
 			}
 			fw.close();
 		} catch (Exception e){
