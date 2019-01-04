@@ -30,7 +30,8 @@ public class Lord extends NationHandler {
 	public Governments government = new Governments();
 	//TradeWindow trade = new TradeWindow();
 	
-	public int[] culture_bonuses = new int[22];//culture bonuses (22 of them)
+	NationHandler getter = new NationHandler();
+	public static int[] culture_bonuses = new int[22];//culture bonuses (22 of them)
 	/*													MAYBE ROLL ALL THESE OFFICALS INTO SEPARATE CLASS
 	 * bank income roll								4	OFFICIAL
 	 * tax collect roll								5	OFFICIAL
@@ -44,12 +45,7 @@ public class Lord extends NationHandler {
 	
 	//// THESE ARE THE variables FOR THE GUI ////
 	ReadNWrite write = new ReadNWrite();
-	public boolean request_flag = false;
-	public boolean save_request = false;
-	public boolean generate_request = false;
-	public boolean new_request = false;
 	public LordPanes panes = new LordPanes();
-	public HexPane hexpanel = new HexPane();
 	//public TradeWindow trade = new TradeWindow(this);//a trade window for each lord
 	
 	//// START OF METHODS ////
@@ -76,13 +72,13 @@ public class Lord extends NationHandler {
 			////BUTTON FUNCTIONALITIES////
 			newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
 				public void actionPerformed(ActionEvent e){
-					request_flag = true;
-					new_request = true;
+					request = true;
+					vassal_request = true;
 				}
 			});
 			saveBtn.addActionListener(new ActionListener() {//add action event to save button
 				public void actionPerformed(ActionEvent e){
-					request_flag = true;
+					vassal_request = true;
 					save_request = true;
 				}
 			});
@@ -148,24 +144,18 @@ public class Lord extends NationHandler {
 	
 	public void getCulture() {//extracting all the culture modifiers
 		for (int i=0;i<22;i++) {//from visual layer
-			this.culture_bonuses[i] = Integer.parseInt(this.panes.culturefields.get(i).getText());
+			culture_bonuses[i] = Integer.parseInt(this.panes.culturefields.get(i).getText());
 		}
 	}
 	
 	public void loadCulture(String[] s) {//only ever called when loading, nothing to do with visual layer
 		for (int i=0;i<22;i++) {
-			this.culture_bonuses[i] = Integer.parseInt(s[i]);
+			culture_bonuses[i] = Integer.parseInt(s[i]);
 		}
 	}
 	
 	public void setCulture() {//visual update of culture pane
-		this.panes.setCulturePane(this.culture_bonuses);
+		this.panes.setCulturePane(culture_bonuses);
 	}
 	
-	public void resetRequest() {
-		request_flag = false;
-		new_request = false;
-		save_request = false;
-		generate_request = false;
-	}
 }

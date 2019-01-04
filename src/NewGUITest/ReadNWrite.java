@@ -9,12 +9,12 @@ import java.util.Arrays;
 
 public class ReadNWrite {
 	
-	public String filetype = ".dat";
-	private String separator = "xxxxxx";
-	public String[] save_names;
-	public int n_saves = 0;
+	public static String filetype = ".dat";
+	private static String separator = "xxxxxx";
+	public static String[] save_names;
+	public static int n_saves = 0;
 	public int number_of_building_slots = 18;
-	public File directory = new File("");
+	public static File directory = new File("");
 	
 	public ReadNWrite() {
 		updateSaves();
@@ -87,7 +87,7 @@ public class ReadNWrite {
 		String s = directory+"\\hexes"+filetype;
 		File file = new File(s);
 		List<String> hexreader = new ArrayList<String>();
-		int max_hex_length = number_of_building_slots+7;
+		int max_hex_length = number_of_building_slots+9;
 		String[] hex_input = new String[max_hex_length];
 		int hex_length = 0;
 		//int number_of_hexes = 0;
@@ -191,6 +191,7 @@ public class ReadNWrite {
 				fw.write(hex.pop_size+System.getProperty("line.separator"));
 				fw.write(hex.unrest+System.getProperty("line.separator"));
 				fw.write(hex.resource+System.getProperty("line.separator"));
+				fw.write(hex.resource_check+System.getProperty("line.separator"));
 				for (String building: hex.built_buildings){
 					fw.write(building+System.getProperty("line.separator"));
 				}

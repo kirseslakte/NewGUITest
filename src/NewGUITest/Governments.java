@@ -2,14 +2,14 @@ package NewGUITest;
 
 
 public class Governments {
-	public String[] systems = {"Democratic","Autocratic","Meritocratic","Theocratic","Histocratic","Plutocratic","Hive"
+	public static String[] systems = {"Democratic","Autocratic","Meritocratic","Theocratic","Histocratic","Plutocratic","Hive"
 			,"Federation"};
-	public String[] strucs = {"Classisist","Individualistic"};
-	public String[] rule = {"Monarchy","Oligarchy","Polyarchy"};
-	public String[] life = {"Settled","Tribalistic","Nomadic"};
-	public String[] centralisation = {"Highly","Moderately","Decentralised"};
-	public String[] alignments = {"LG","NG","CG","LN","NN","CN","LE","NE","CE"};
-	public String[] histocratic_options = {"Tax Efficiency","Production Efficiency","Trade Efficiency","Vassal Income Efficiency",
+	public static String[] strucs = {"Classisist","Individualistic"};
+	public static String[] rule = {"Monarchy","Oligarchy","Polyarchy"};
+	public static String[] life = {"Settled","Tribalistic","Nomadic"};
+	public static String[] centralisation = {"Highly","Moderately","Decentralised"};
+	public static String[] alignments = {"LG","NG","CG","LN","NN","CN","LE","NE","CE"};
+	public static String[] histocratic_options = {"Tax Efficiency","Production Efficiency","Trade Efficiency","Vassal Income Efficiency",
 			"Bank Income Efficiency","Bank Development Efficiency"};//6 options
 	//If you ever want to add anything above, just add it at the end and 
 	//look in the appropriate section below to add the method for it!

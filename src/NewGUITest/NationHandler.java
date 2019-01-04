@@ -8,16 +8,19 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class NationHandler extends JFrame{
-	public List<Lord> listoflords = new ArrayList<Lord>();
-	public List<Hex> listofhexes = new ArrayList<Hex>();
-	public List<Unit> listofunits = new ArrayList<Unit>();
-	public List<Route> listofroutes = new ArrayList<Route>();
-	public List<Official> listofofficials = new ArrayList<Official>();
-	public Lord active_lord;
-	private int min = 0;
-	private JTabbedPane mainPane = new JTabbedPane();
-	private ReadNWrite write = new ReadNWrite();
-	private HexPane hexpanel = new HexPane();
+	static List<Lord> listoflords = new ArrayList<Lord>();
+	static List<Hex> listofhexes = new ArrayList<Hex>();
+	static List<Unit> listofunits = new ArrayList<Unit>();
+	static List<Route> listofroutes = new ArrayList<Route>();
+	static List<Official> listofofficials = new ArrayList<Official>();
+	private static int min = 0;
+	private static JTabbedPane mainPane = new JTabbedPane();
+	private static ReadNWrite write = new ReadNWrite();
+	private static HexPane hexpanel = new HexPane();
+	static boolean request = false;
+	static boolean vassal_request = false;
+	public static boolean save_request = false;
+	public static boolean hex_request = false;
 	//private MilitaryWindow milwindow = new MilitaryWindw();
 	//private HexWindow hexwindow = new HexWindow();
 	
@@ -32,15 +35,20 @@ public class NationHandler extends JFrame{
 				min++;
 				if (min==3600)//reset every hour
 					min = 0;
-				if (active_lord.request_flag) {
-					if (active_lord.new_request){
-
-						active_lord.resetRequest();						
-					}else if (active_lord.save_request) {
+				if (request) {
+					request = false;
+					if (vassal_request){
+						
+						vassal_request = false;
+					}else if (save_request) {
 						updateNation();
 						System.out.println("saving");
 						saveNation();
-						active_lord.resetRequest();
+						save_request = false;
+					}else if (hex_request) {
+						hexpanel.getBuildings();
+						recalibrateHexes();
+						hex_request = false;
 					}
 				}
 			}catch (InterruptedException e){
@@ -71,7 +79,6 @@ public class NationHandler extends JFrame{
 			listoflords.get(listoflords.size()-1).loadGovernment(write.loadLord(lord));
 			if (lord.equals("overlord")) {
 				listoflords.get(listoflords.size()-1).loadCulture(write.loadCulture());
-				active_lord = listoflords.get(listoflords.size()-1);
 				mainSetup(s);
 				listoflords.get(listoflords.size()-1).setCulture();
 				listoflords.get(listoflords.size()-1).setGovernment();
@@ -82,7 +89,7 @@ public class NationHandler extends JFrame{
 		}
 		//all lords have been loaded!!
 		listofhexes = write.loadHexes();
-		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPane(listofhexes,listoflords)));//loaded after all the lords
+		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPane()));//loaded after all the lords
 		listofunits = write.loadUnits();
 		//mainPane.addTab("Units");
 		listofofficials = write.loadOfficials();
@@ -102,16 +109,9 @@ public class NationHandler extends JFrame{
 		write.saveOfficial(listofofficials);
 	}//that was pretty straight forward, right?
 	
-	public void changeActiveLord(Lord active,Lord new_active) {//just changing which frame to show
-		//listoflords.get(listoflords.indexOf(active)).stop();
-		//listoflords.get(listoflords.indexOf(new_active)).start();
-		active_lord = new_active;
-	}
-	
 	public void newLord(String new_lord,String master) {//create a new lordWindow
 		if (master.equals("")){//this is a new nation
 			listoflords.add(new Lord(new_lord,master));//add lord
-			active_lord = listoflords.get(0);//set lord as active
 			listoflords.get(0).title = "overlord";//set title to overlord
 			System.out.println("Created lord "+new_lord);
 		}else {//if creating a new vassal
@@ -121,7 +121,6 @@ public class NationHandler extends JFrame{
 					JOptionPane.showMessageDialog(new Frame(),"That Lord already exist!","Vassal allocation error",JOptionPane.PLAIN_MESSAGE);
 				else {
 					listoflords.add(new Lord(new_lord,master));//add the new lord
-					changeActiveLord(active_lord,listoflords.get(listoflords.size()-1));//make that lord the new active lord
 					int vassal_count = 0;
 					for (int j=0;j<listoflords.size();j++) {
 						if (listoflords.get(i).master_title.equals(master))
@@ -161,7 +160,21 @@ public class NationHandler extends JFrame{
 		this.add(mainPane);
 		this.setVisible(true);
 	}
+	
 	public void addVassalTab(String s) {
 		mainPane.addTab(s,listoflords.get(listoflords.size()-1).setPanel(false));
+	}
+	
+	public void recalibrateHexes() {
+		List<String[]> hexes = new ArrayList<String[]>();
+		boolean exists;
+		hexes = hexpanel.getHex();
+		listofhexes.clear();
+		for (int i=0;i<hexes.size();i++) {
+			exists = false;
+			if ((!(hexes.get(i)[0].equals("")))){
+				listofhexes.add(new Hex(hexes.get(i)));
+			}
+		}
 	}
 }

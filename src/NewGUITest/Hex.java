@@ -14,6 +14,7 @@ public class Hex {
 	public int pop_size;
 	public int unrest;
 	public String resource;
+	public boolean resource_check;
 	public List<String> buildings = new ArrayList<String>();
 	public String[] built_buildings;
 	public String owner;
@@ -27,18 +28,20 @@ public class Hex {
 	public int unit_cap;
 	public int govnm_upkeep;
 	
-	public Buildings construction = new Buildings();
-	
-	public int[] list_pv = {1,2,4,8,16,32,50,70,80,100};//all of these are rules
-	public double[] list_pm = {0.25,0.5,1,1.5,2,2.75,3.5,4.25,5.25,6.5};
-	public double[] list_upgrade_cost = {500,1000,5000,20000,70000,150000,300000,400000,600000};//if pop_size==10{upg_cost = 0}
-	public String[] alignments = {"LG","NG","CG","LN","NN","CN","LE","NE","CE"};
-	public String[] active_resources = {"Mithril","Adamantine","Baatorian Green Steel","Cold Iron","Astral Driftmetanl"};
-	public int[] active_resources_income = {300,200,200,300,400,400};
-	public String[] passive_resources = {"Darkwood","Precious Metals","Spices","Silk","Incense","Cotton","Herbs","Marble","Sugar","Gemstones/Diamonds",
+	public static int[] list_pv = {1,2,4,8,16,32,50,70,80,100};//all of these are rules
+	public static double[] list_pm = {0.25,0.5,1,1.5,2,2.75,3.5,4.25,5.25,6.5};
+	public static int[] list_upgrade_cost = {500,1000,5000,20000,70000,150000,300000,400000,600000};//if pop_size==10{upg_cost = 0}
+	public static int[] list_upkeep_cost = {100,150,225,1000,1500,2500,3600,4800,6000,8000};
+	public static int[] list_unit_cap = {5,8,12,17,24,34,46,60,100,175};
+	public static String[] alignments = {"LG","NG","CG","LN","NN","CN","LE","NE","CE"};
+	public static String[] active_resources = {"Mithril","Adamantine","Baatorian Green Steel","Cold Iron","Astral Driftmetanl"};
+	public static int[] active_resources_income = {300,200,200,300,400,400};
+	public static String[] passive_resources = {"Darkwood","Precious Metals","Spices","Silk","Incense","Cotton","Herbs","Marble","Sugar","Gemstones/Diamonds",
 			"Ivory","High Quality Iron","High Quality Stone","High Quality Paper","High Quality Glass","Furs","Drugs"};
-	public String[] resources;;
-	public double base_pm = 250;
+	public static String[] resources = {"","Mithril","Adamantine","Baatorian Green Steel","Cold Iron","Astral Driftmetanl","Darkwood","Precious Metals",
+			"Spices","Silk","Incense","Cotton","Herbs","Marble","Sugar","Gemstones/Diamonds","Ivory","High Quality Iron","High Quality Stone",
+			"High Quality Paper","High Quality Glass","Furs","Drugs"};
+	public static double base_pm = 250;
 	public String[] buildinglist;
 	public String[] fortificationlist;
 	public String[] wallslist;
@@ -51,86 +54,23 @@ public class Hex {
 	public int[] walls_add_costs;
 	
 	public Hex() {
-		List <String> temp = new ArrayList<String>(Arrays.asList(active_resources));
-		temp.addAll(Arrays.asList(passive_resources));
-		resources = new String[temp.size()+1];
-		resources[0] = "";
-		for (int i=1;i<temp.size()+1;i++)
-			resources[i] = temp.get(i-1);//all resources in a string array
-		buildinglist = new String[construction.available_buildings.length+1];
-		buildinglist[0] = "";
-		for (int i=1;i<construction.available_buildings.length+1;i++)
-			buildinglist[i] = construction.available_buildings[i-1];//buildingslist done
-		fortificationlist = new String[construction.available_fortifications.length+1];
-		fortificationlist[0] = "";
-		for (int i=1;i<construction.available_fortifications.length+1;i++)
-			fortificationlist[i] = construction.available_fortifications[i-1];//fortificationslist done
-		wallslist = new String[construction.available_walls.length+1];
-		wallslist[0] = "";
-		for (int i=1;i<construction.available_walls.length+1;i++)
-			wallslist[i] = construction.available_walls[i-1];//wallslist done
-		addonlist = new String[construction.available_add_ons.length+1];
-		addonlist[0] = "";
-		for (int i=1;i<construction.available_add_ons.length+1;i++)
-			addonlist[i] = construction.available_add_ons[i-1];//addonlist done
-		walladdonlist = new String[construction.available_wall_add_ons.length+1];
-		walladdonlist[0] = "";
-		for (int i=1;i<construction.available_wall_add_ons.length+1;i++)
-			walladdonlist[i] = construction.available_wall_add_ons[i-1];//walladdonlist done
-		building_costs = construction.building_costs;
-		fortifications_costs = construction.fortifications_costs;
-		add_ons_costs = construction.add_ons_costs;
-		walls_costs = construction.walls_costs;
-		walls_add_costs = construction.walls_add_costs;
-	}
-	
-	public void setHex() {
 		
 	}
 	
-	public int findCost(String building) {
-		int cost = 0;
-		for (int i=0;i<buildinglist.length;i++) {
-			if (buildinglist[i].equals(building)) {
-				if (i==0)
-					cost = 0;
-				else
-					cost = building_costs[i-1];
-			}
-		}
-		for (int i=0;i<fortificationlist.length;i++) {
-			if (fortificationlist[i].equals(building)) {
-				if (i==0)
-					cost = 0;
-				else
-					cost = fortifications_costs[i-1];
-			}
-		}
-		for (int i=0;i<wallslist.length;i++) {
-			if (wallslist[i].equals(building)) {
-				if (i==0)
-					cost = 0;
-				else
-					cost = walls_costs[i-1];
-			}
-		}
-		for (int i=0;i<addonlist.length;i++) {
-			if (addonlist[i].equals(building)) {
-				if (i==0)
-					cost = 0;
-				else
-					cost = add_ons_costs[i-1];
-			}
-		}
-		for (int i=0;i<walladdonlist.length;i++) {
-			if (walladdonlist[i].equals(building)) {
-				if (i==0)
-					cost = 0;
-				else
-					cost = walls_add_costs[i-1];
-			}
-		}
-		return cost;
+	public Hex(String[] s) {
+		this.loadHex(s);
+		this.setHex();
+	}
+	public void setHex() {
+		if (pop_size>9)
+			this.upgrade_cost = 0;
+		else
+			this.upgrade_cost = list_upgrade_cost[pop_size-1];
+		this.base_bp = (int) Math.round(base_pm*habitability*list_pm[pop_size-1]);
+		this.upkeep = list_upkeep_cost[pop_size-1];
+		this.govnm_upkeep = (int) Math.round(base_pm*10*list_pm[pop_size-1]);
+		this.population_value = list_pv[pop_size-1];
+		this.unit_cap = list_unit_cap[pop_size-1];
 	}
 	
 	public void loadHex(String[] s){//assumes you have erased the separator
@@ -142,7 +82,8 @@ public class Hex {
 		this.pop_size = Integer.parseInt(s[5]);
 		this.unrest = Integer.parseInt(s[6]);
 		this.resource = s[7];
-		String[] build_holder = Arrays.copyOfRange(s, 8, s.length);
+		this.resource_check = Boolean.parseBoolean(s[8]);
+		String[] build_holder = Arrays.copyOfRange(s, 9, s.length);
 		int number_of_buildings = 0;
 		for (int i=0;i<build_holder.length;i++){
 			if (build_holder[i].equals("")){
@@ -154,7 +95,7 @@ public class Hex {
 		for (int i=0;i<number_of_buildings;i++){
 			this.built_buildings[i] = build_holder[i];
 		}
-		//by passing a string to Hex it will automatically create the hex
+		
 		this.population_value = list_pv[this.pop_size-1];
 		this.base_bp = (int) Math.round(list_pm[this.pop_size-1]*base_pm*this.habitability);
 		if (!(this.pop_size==10))

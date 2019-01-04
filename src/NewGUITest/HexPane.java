@@ -5,55 +5,40 @@ import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.concurrent.TimeUnit;
 
 public class HexPane extends Hex{
 	
-	public List<JTextField> hex_list = new ArrayList<JTextField>();
-	public List<JComboBox> owner_list = new ArrayList<JComboBox>();
-	public List<JTextField> hab_list = new ArrayList<JTextField>();
-	public List<JComboBox> culture_list = new ArrayList<JComboBox>();
-	public List<JComboBox> religion_list = new ArrayList<JComboBox>();
-	public List<JTextField> pop_size_list = new ArrayList<JTextField>();
-	public List<JTextField> unrest_list = new ArrayList<JTextField>();
-	public List<JComboBox> resource_list = new ArrayList<JComboBox>();
-	public List<JCheckBox> resource_check_list = new ArrayList<JCheckBox>();
-	public List<JLabel> upgrade_cost_list = new ArrayList<JLabel>();
-	public List<JLabel> bp_list = new ArrayList<JLabel>();
-	public List<JLabel> upkeep_list = new ArrayList<JLabel>();
-	public List<JLabel> gov_upkeep_list = new ArrayList<JLabel>();
-	public List<JLabel> pv_list = new ArrayList<JLabel>();
-	public List<JLabel> unit_cap_list = new ArrayList<JLabel>();
-	public List<Button> building_btn_list = new ArrayList<Button>();
-	public Panel hex_panel = new Panel(new GridBagLayout());
-	public int[] paddyx = {20,10,5,5,5,5,5,8,5,10,10,10,10,5,5,5};
-	GridBagConstraints c = new GridBagConstraints();
-	public List<String> lordnames = new ArrayList<String>();
-	
-	public List<String> built_buildings_list = new ArrayList<String>();//building plug-in		String building int tier/unit eq.cost/capacity
-	public List<String> built_fortifications_list = new ArrayList<String>();//String fort int capacity String add-on int amount String add-on int amount...
-	public List<JComboBox> buildings = new ArrayList<JComboBox>();
-	public List<JTextField> building_tiers = new ArrayList<JTextField>();
-	public List<JLabel> buildings_cost = new ArrayList<JLabel>();
-	public List<JLabel> buildings_upkeep = new ArrayList<JLabel>();
-	public List<JComboBox> fortifications = new ArrayList<JComboBox>();
-	public List<JTextField> fortifications_capacity = new ArrayList<JTextField>();
-	public List<Button> add_ons_btn = new ArrayList<Button>();
-	public List<JLabel> fortifications_cost = new ArrayList<JLabel>();
-	public List<JLabel> fortifications_upkeep = new ArrayList<JLabel>();
-	public List<JComboBox> add_on_list = new ArrayList<JComboBox>();
-	public List<JLabel> add_on_cost = new ArrayList<JLabel>();
-	
-	public Frame build = new Frame();
-	public JPanel mainbuild;
-	public Frame fortification;//fortifications plug-plug-in
-	public Frame addon = new Frame();
-	public Frame walladdon = new Frame();
+	public static List<JTextField> hex_list = new ArrayList<JTextField>();
+	public static List<JComboBox> owner_list = new ArrayList<JComboBox>();
+	public static List<JTextField> hab_list = new ArrayList<JTextField>();
+	public static List<JComboBox> culture_list = new ArrayList<JComboBox>();
+	public static List<JComboBox> religion_list = new ArrayList<JComboBox>();
+	public static List<JTextField> pop_size_list = new ArrayList<JTextField>();
+	public static List<JTextField> unrest_list = new ArrayList<JTextField>();
+	public static List<JComboBox> resource_list = new ArrayList<JComboBox>();
+	public static List<JCheckBox> resource_check_list = new ArrayList<JCheckBox>();
+	public static List<JLabel> upgrade_cost_list = new ArrayList<JLabel>();
+	public static List<JLabel> bp_list = new ArrayList<JLabel>();
+	public static List<JLabel> upkeep_list = new ArrayList<JLabel>();
+	public static List<JLabel> gov_upkeep_list = new ArrayList<JLabel>();
+	public static List<JLabel> pv_list = new ArrayList<JLabel>();
+	public static List<JLabel> unit_cap_list = new ArrayList<JLabel>();
+	public static List<Button> building_btn_list = new ArrayList<Button>();
+	public static Panel hex_panel = new Panel(new GridBagLayout());
+	public static int[] paddyx = {20,10,5,5,5,5,5,8,5,10,10,10,10,5,5,5};
+	static GridBagConstraints c = new GridBagConstraints();
+	public static List<String> lordnames = new ArrayList<String>();
+	public static List<Buildings> buildings = new ArrayList<Buildings>();
+	public static List<Boolean> open_building_window = new ArrayList<Boolean>();
+	public static List<String[]> built_buildings = new ArrayList<String[]>();
+	static NationHandler getter = new NationHandler();
 	
 	public HexPane() {
 		
 	}
 	
-	public Panel hexPane(List<Hex> listofhexes,List<Lord> listoflords) {
+	public Panel hexPane() {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.ipady = 20;
@@ -64,7 +49,26 @@ public class HexPane extends Hex{
 		Button update = new Button("Update hexes!");
 		update.addActionListener(new ActionListener() {//add action event to new button
 			public void actionPerformed(ActionEvent e){
-				updateHexPane(listoflords);
+				boolean correct = true;
+				for (int i=0;i<hex_list.size();i++) {
+					if (!(hex_list.get(i).equals(""))){
+						if (Integer.parseInt(pop_size_list.get(i).getText())>10||Integer.parseInt(pop_size_list.get(i).getText())<1||
+								pop_size_list.get(i).getText().equals(""))
+							correct = false;
+					}
+				}
+				if (correct) {
+					getter.request = true;
+					getter.hex_request = true;
+					try {
+						TimeUnit.SECONDS.sleep(1);
+					} catch (Exception ge) {
+						System.out.println(ge);
+					}
+					updateHexPane();
+				} else
+					JOptionPane.showMessageDialog(null, "Hex not correctly configured","Update Error",
+							JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		hex_panel.add(update,c);
@@ -119,16 +123,16 @@ public class HexPane extends Hex{
 		c.gridx = 15;
 		c.ipadx = paddyx[15];
 		hex_panel.add(new JLabel("Buildings"), c);
-		for (int i=0;i<listoflords.size();i++) {
-			lordnames.add(listoflords.get(i).name);
+		for (int i=0;i<getter.listoflords.size();i++) {
+			lordnames.add(getter.listoflords.get(i).name);
 		}
-		loadHexPane(listofhexes,true);
-		updateHexPane(listoflords);
+		loadHexPane(true);
+		updateHexPane();
 		
 		return hex_panel;
 	}
 	
-	public void updateHexPane(List<Lord> listoflords) {
+	public void updateHexPane() {
 		if (hex_list.size()==0) {//check if we need to add another hex line
 			addHex();
 		}else {
@@ -137,8 +141,8 @@ public class HexPane extends Hex{
 			}
 		}//done with adding new hex line
 		lordnames.clear();//update the lordnames list to see if it has expanded
-		for (int i=0;i<listoflords.size();i++) {
-			lordnames.add(listoflords.get(i).name);
+		for (int i=0;i<getter.listoflords.size();i++) {
+			lordnames.add(getter.listoflords.get(i).name);
 		}
 		for (int i=0;i<owner_list.size();i++) {
 			owner_list.get(i).removeAllItems();
@@ -147,27 +151,35 @@ public class HexPane extends Hex{
 			}
 		}
 		//need to update the values
+		for (int i=0;i<getter.listofhexes.size();i++) {//need to fetch all the values from hex
+			upgrade_cost_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).upgrade_cost));
+			bp_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).base_production));
+			upkeep_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).upkeep));
+			gov_upkeep_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).govnm_upkeep));
+			pv_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).population_value));
+			unit_cap_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).unit_cap));
+		}
 		hex_panel.revalidate();//redraw the pane
 	}
 	
-	public void loadHexPane(List<Hex> listofhexes, boolean loading) {
-		for (int i=0;i<listofhexes.size();i++) {
+	public void loadHexPane(boolean loading) {
+		for (int i=0;i<getter.listofhexes.size();i++) {
 			if (loading)//if this is a load or update
 				addHex();
-			hex_list.get(i).setText(listofhexes.get(i).name);
-			owner_list.get(i).setSelectedItem(listofhexes.get(i).owner);
-			hab_list.get(i).setText(Integer.toString(listofhexes.get(i).habitability));
-			culture_list.get(i).setSelectedItem(listofhexes.get(i).alignment);
-			religion_list.get(i).setSelectedItem(listofhexes.get(i).religion);
-			pop_size_list.get(i).setText(Integer.toString(listofhexes.get(i).pop_size));
-			unrest_list.get(i).setText(Integer.toString(listofhexes.get(i).unrest));
-			resource_list.get(i).setSelectedItem(listofhexes.get(i).resource);
-			upgrade_cost_list.get(i).setText(Integer.toString(listofhexes.get(i).upgrade_cost));
-			bp_list.get(i).setText(Integer.toString(listofhexes.get(i).base_production));
-			upkeep_list.get(i).setText(Integer.toString(listofhexes.get(i).upkeep));
-			gov_upkeep_list.get(i).setText(Integer.toString(listofhexes.get(i).govnm_upkeep));
-			pv_list.get(i).setText(Integer.toString(listofhexes.get(i).population_value));
-			unit_cap_list.get(i).setText(Integer.toString(listofhexes.get(i).unit_cap));
+			hex_list.get(i).setText(getter.listofhexes.get(i).name);
+			owner_list.get(i).setSelectedItem(getter.listofhexes.get(i).owner);
+			hab_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).habitability));
+			culture_list.get(i).setSelectedItem(getter.listofhexes.get(i).alignment);
+			religion_list.get(i).setSelectedItem(getter.listofhexes.get(i).religion);
+			pop_size_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).pop_size));
+			unrest_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).unrest));
+			resource_list.get(i).setSelectedItem(getter.listofhexes.get(i).resource);
+			upgrade_cost_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).upgrade_cost));
+			bp_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).base_production));
+			upkeep_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).upkeep));
+			gov_upkeep_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).govnm_upkeep));
+			pv_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).population_value));
+			unit_cap_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).unit_cap));
 		}
 	}
 	public void addHex() {//simply adds another row along with the structure
@@ -183,7 +195,7 @@ public class HexPane extends Hex{
 		hex_panel.add(owner_list.get(i),c);//added owner of hex
 		c.gridx = 2;
 		c.ipadx = paddyx[2];
-		hab_list.add(new JTextField(""));
+		hab_list.add(new JTextField("1"));
 		hex_panel.add(hab_list.get(i),c);//added habitability
 		c.gridx = 3;
 		c.ipadx = paddyx[3];
@@ -195,11 +207,11 @@ public class HexPane extends Hex{
 		hex_panel.add(religion_list.get(i),c);//added religion
 		c.gridx = 5;
 		c.ipadx = paddyx[5];
-		pop_size_list.add(new JTextField(""));
+		pop_size_list.add(new JTextField("1"));
 		hex_panel.add(pop_size_list.get(i),c);//added pop size
 		c.gridx = 6;
 		c.ipadx = paddyx[6];
-		unrest_list.add(new JTextField(""));
+		unrest_list.add(new JTextField("0"));
 		hex_panel.add(unrest_list.get(i),c);//added unrest
 		c.gridx = 7;
 		c.ipadx = paddyx[7];
@@ -236,202 +248,56 @@ public class HexPane extends Hex{
 		c.gridx = 15;
 		c.ipadx = paddyx[15];
 		building_btn_list.add(new Button("Buildings"));
+		open_building_window.add(new Boolean(false));
 		building_btn_list.get(i).addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
-				if (!build.isVisible())
-					buildingsPopup(i);
+				if (!open_building_window.get(i))
+					buildingCaller(hex_list.get(i).getText(),i);
 			}
 		});
 		hex_panel.add(building_btn_list.get(i),c);//added building button
 	}
-	public void buildingsPopup(int i) {//the building pop-up
-		build = new Frame();
-		mainbuild = new JPanel(new GridBagLayout());
-		build.setSize(600,500);//setting where the frame is
-	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dimension.getWidth() - build.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - build.getHeight()) / 2);
-	    build.setLocation(x, y);
-		build.setTitle(hex_list.get(i).getText()+"'s Buildings and Fortifications");
-	    build.addWindowListener(new WindowAdapter() {//close frame on closing window
-			public void windowClosing(WindowEvent windowEvent){
-				build.dispose();//destroys frame on exit
-			}
-		});
-	    //add building things
-	    c.gridy = 0;//first row
-	    c.gridwidth = 2;
-	    c.gridx = 0;
-	    mainbuild.add(new JLabel("Buildings"),c);
-	    c.gridx = 3;
-	    c.gridwidth = 1;
-	    Button update_building_btn = new Button("Update");
-	    update_building_btn.addActionListener(new ActionListener() {
-	    	public void actionPerformed (ActionEvent e) {
-	    		updateBuilding();
-	    	}
-	    });
-	    mainbuild.add(update_building_btn,c);
-	    c.gridy = 1;//second row
-	    c.gridx = 0;
-	    mainbuild.add(new JLabel("Buildining and Fortification"),c);
-	    c.gridx = 1;
-	    mainbuild.add(new JLabel("Tier/Unit eq. Cost/Capacity"),c);
-	    c.gridx = 2;
-	    mainbuild.add(new JLabel("Cost"),c);
-	    c.gridx = 3;
-	    mainbuild.add(new JLabel("Upkeep"),c);
-	    for (int j=0;j<11;j++) {
-	    	c.gridy = 2+j;
-	    	c.gridx = 0;
-	    	buildings.add(new JComboBox<>(buildinglist));
-	    	mainbuild.add(buildings.get(j),c);
-	    	c.gridx = 1;
-	    	building_tiers.add(new JTextField("0"));
-	    	mainbuild.add(building_tiers.get(j),c);
-	    	c.gridx = 2;
-	    	buildings_cost.add(new JLabel(""));
-	    	mainbuild.add(buildings_cost.get(j),c);
-	    	c.gridx = 3;
-	    	buildings_upkeep.add(new JLabel(""));
-	    	mainbuild.add(buildings_upkeep.get(j),c);
-	    }//all building rows added
-	    c.gridy = 13;//fortifications
-	    c.gridx = 0;
-	    mainbuild.add(new JLabel("Fortifications"),c);
-	    c.gridx = 1;
-	    mainbuild.add(new JLabel("Capacity"),c);
-	    c.gridx = 2;
-	    mainbuild.add(new JLabel("Add-on"),c);
-	    c.gridx = 3;
-	    mainbuild.add(new JLabel("Cost"),c);
-	    c.gridx = 4;
-	    mainbuild.add(new JLabel("Upkeep"),c);
-	    for (int j=0;j<5;j++) {
-	    	c.gridy = 14+j;
-	    	c.gridx = 0;
-	    	fortifications.add(new JComboBox<>(fortificationlist));
-	    	mainbuild.add(fortifications.get(j),c);
-	    	c.gridx = 1;
-	    	fortifications_capacity.add(new JTextField("0"));
-	    	mainbuild.add(fortifications_capacity.get(j),c);
-	    	c.gridx = 2;
-	    	add_ons_btn.add(new Button("Add-on"));
-	    	int k = j;
-	    	add_ons_btn.get(j).addActionListener(new ActionListener() {
-	    		public void actionPerformed(ActionEvent e) {
-	    			if (!addon.isVisible())
-	    				addOnPopup(k);
-	    		}
-	    	});
-	    	mainbuild.add(add_ons_btn.get(j),c);
-	    	c.gridx = 3;
-	    	fortifications_cost.add(new JLabel(""));
-	    	mainbuild.add(fortifications_cost.get(j),c);
-	    	c.gridx = 4;
-	    	fortifications_upkeep.add(new JLabel(""));
-	    	mainbuild.add(fortifications_upkeep.get(j),c);
-	    }//fortification rows added
-	    c.gridy = 19;//walls
-	    c.gridx = 0;
-	    mainbuild.add(new JLabel("Walls"),c);
-	    c.gridx = 1;
-	    mainbuild.add(new JLabel("Capacity"),c);
-	    c.gridx = 2;
-	    mainbuild.add(new JLabel("Add-on"),c);
-	    c.gridx = 3;
-	    mainbuild.add(new JLabel("Cost"),c);
-	    c.gridx = 4;
-	    mainbuild.add(new JLabel("Upkeep"),c);
-    	c.gridy = 20;
-    	c.gridx = 0;
-    	fortifications.add(new JComboBox<>(wallslist));
-    	mainbuild.add(fortifications.get(5),c);
-    	c.gridx = 1;
-    	fortifications_capacity.add(new JTextField("0"));
-    	mainbuild.add(fortifications_capacity.get(5),c);
-    	c.gridx = 2;
-    	add_ons_btn.add(new Button("Add-on"));
-    	add_ons_btn.get(5).addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			if (!walladdon.isVisible())
-    				wallAddOnPopup();
-    		}
-    	});
-    	mainbuild.add(add_ons_btn.get(5),c);
-    	c.gridx = 3;
-    	fortifications_cost.add(new JLabel(""));
-    	mainbuild.add(fortifications_cost.get(5),c);
-    	c.gridx = 4;
-    	fortifications_upkeep.add(new JLabel(""));
-    	mainbuild.add(fortifications_upkeep.get(5),c);//walls added
-	    
-	    build.add(new JScrollPane(mainbuild));
-		build.setVisible(true);
+	
+	public String[] buildingCaller(String hex_name, int i) {
+		buildings.add(new Buildings());
+		buildings.get(buildings.size()-1).buildingsPopup(hex_name);
+		
+		String[] building = new String[15];
+		building = buildings.get(buildings.size()-1).doneBuilding();
+		return building;
 	}
-	public void updateBuilding() {
+	
+	public void getBuildings() {
 		
 	}
-	public void addOnPopup(int i) {//there is a problem where there only exists one frame
-		addon = new Frame();		//so the next fortification to add add-ons to gives the same frame as the first.
-		JPanel addonpanel = new JPanel(new GridBagLayout());
-		addon.setSize(600,500);//setting where the frame is
-	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dimension.getWidth() - addon.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - addon.getHeight()) / 2);
-	    addon.setLocation(x, y);
-	    if (fortifications.get(i).getSelectedItem().equals("")){
-	    	JOptionPane.showMessageDialog(null, "There is no fortification set!","Fortification Error",JOptionPane.INFORMATION_MESSAGE);
-	    }else if  (fortifications.get(i).getSelectedItem().equals(fortificationlist[6])){
-	    	JOptionPane.showMessageDialog(null, fortificationlist[6]+" has no available add-ons!","Fortification Error",JOptionPane.INFORMATION_MESSAGE);
-		}else{
-	    	addon.setTitle("Add-ons for "+fortifications.get(i).getSelectedItem());
-		    addon.addWindowListener(new WindowAdapter() {//close frame on closing window
-				public void windowClosing(WindowEvent windowEvent){
-					addon.dispose();//destroys frame on exit
-				}
-			});
-		    c.gridwidth = 1;//adding the first row
-		    c.gridy = 0;
-		    c.gridx = 0;
-		    addonpanel.add(new JLabel("Add-on"),c);
-		    c.gridx = 1;
-		    addonpanel.add(new JLabel("Cost"),c);
-		    for (int j=0;j<5;j++) {
-		    	c.gridy = 1+j;
-		    	c.gridx = 0;
-		    	add_on_list.add(new JComboBox<>(addonlist));
-		    	int k = j;
-		    	add_on_list.get(j).addActionListener(new ActionListener() {
-		    		public void actionPerformed (ActionEvent e){
-		    			add_on_cost.get(k).setText(Double.toString(findCost((String) fortifications.get(i).getSelectedItem())*findCost((String) ((JComboBox) e.getSource()).getSelectedItem())/100));
-		    		}
-		    	});
-		    	addonpanel.add(add_on_list.get(j),c);
-		    	c.gridx = 1;
-		    	add_on_cost.add(new JLabel("0"));
-		    	addonpanel.add(add_on_cost.get(j),c);
-		    }
-		    addon.add(new JScrollPane(addonpanel));
-		    addon.setVisible(true);
-		}
-	}
-	public void wallAddOnPopup() {
-		walladdon = new Frame();
-		JPanel walladdonpanel = new JPanel(new GridBagLayout());
-		walladdon.setSize(600,500);//setting where the frame is
-	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dimension.getWidth() - walladdon.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - walladdon.getHeight()) / 2);
-	    walladdon.setLocation(x, y);
-	    walladdon.setTitle("Wall add-ons");
-	    walladdon.addWindowListener(new WindowAdapter() {//close frame on closing window
-			public void windowClosing(WindowEvent windowEvent){
-				walladdon.dispose();//destroys frame on exit
+	
+	
+	public List<String[]> getHex() {
+		List<String[]> hexlist = new ArrayList<String[]>();
+		boolean empty_buildings;
+		for (int i=0;i<hex_list.size();i++) {
+			if (built_buildings.size()==0){
+				hexlist.add(new String[9]);
+				empty_buildings = true;
+			}else{
+				hexlist.add(new String[9+built_buildings.get(i).length]);
+				empty_buildings = false;
 			}
-		});
-	    
-	    walladdon.add(new JScrollPane(walladdonpanel));
-	    walladdon.setVisible(true);
+			hexlist.get(i)[0] = hex_list.get(i).getText();
+			hexlist.get(i)[1] = (String) owner_list.get(i).getSelectedItem();
+			hexlist.get(i)[2] = hab_list.get(i).getText();
+			hexlist.get(i)[3] = (String) culture_list.get(i).getSelectedItem();
+			hexlist.get(i)[4] = (String) religion_list.get(i).getSelectedItem();
+			hexlist.get(i)[5] = pop_size_list.get(i).getText();
+			hexlist.get(i)[6] = unrest_list.get(i).getText();
+			hexlist.get(i)[7] = (String) resource_list.get(i).getSelectedItem();
+			hexlist.get(i)[8] = Boolean.toString(resource_check_list.get(i).isSelected());
+			if (!empty_buildings){
+				for (int j=0;j<built_buildings.get(i).length;j++) {
+					hexlist.get(i)[9+j] = built_buildings.get(i)[j];
+				}
+			}
+		}
+		return hexlist;
 	}
 }

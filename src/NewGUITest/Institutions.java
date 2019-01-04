@@ -4,7 +4,7 @@ package NewGUITest;
 public class Institutions {
 	public int number_of_institutions;
 	public String[] active_institutions = new String[4];
-	public String[] institution_names = { "","Arts","Church","Courts","Druids","Education","Foreign Office","Interior","Mages","Merchants",
+	public static String[] institution_names = { "","Arts","Church","Courts","Druids","Education","Foreign Office","Interior","Mages","Merchants",
 			"Military","Monstrologist","Parliament","Psions","Secret Service","Slavery","Tinkers","Treasury","Welfare"};
 	public Institutions() {//whenever an object is created from this class we reset all the modifiers from them
 		resetModifiers();
