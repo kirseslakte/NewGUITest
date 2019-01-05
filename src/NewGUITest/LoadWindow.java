@@ -59,6 +59,7 @@ public class LoadWindow extends Frame {
 	
 	public void stop() {
 		this.running = false;
+		this.feedback = "";
 		this.setVisible(false);
 	}
 	// new nation pop-up

@@ -118,7 +118,15 @@ public class Buildings{
 		return cost;
 	}
 	
-	public void buildingsPopup(String hex_name) {//the building pop-up
+	public void checkBeforeBuilding(int i) {
+		if (i<getter.listofhexes.size()) {
+			buildingsPopup(i);
+		} else {
+	    	JOptionPane.showMessageDialog(null,"This Hex has not yet been initialized! Try giving it a name and updating first.","Hex Loading Error",JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+	
+	public void buildingsPopup(int hex_number) {//the building pop-up
 		build = new Frame();
 		mainbuild = new JPanel(new GridBagLayout());
 		build.setSize(600,500);//setting where the frame is
@@ -126,7 +134,7 @@ public class Buildings{
 	    int x = (int) ((dimension.getWidth() - build.getWidth()) / 2);
 	    int y = (int) ((dimension.getHeight() - build.getHeight()) / 2);
 	    build.setLocation(x, y);
-		build.setTitle(hex_name+"'s Buildings and Fortifications");
+		build.setTitle(getter.listofhexes.get(hex_number).name+"'s Buildings and Fortifications");
 	    build.addWindowListener(new WindowAdapter() {//close frame on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				getBuilding();
@@ -163,6 +171,11 @@ public class Buildings{
 	    	c.gridy = 2+j;
 	    	c.gridx = 0;
 	    	buildings.add(new JComboBox<>(buildinglist));
+	    	buildings.get(j).addActionListener(new ActionListener() {
+	    		public void actionPerformed(ActionEvent e){
+	    			updateBuilding(hex_number);
+	    		}
+	    	});
 	    	mainbuild.add(buildings.get(j),c);
 	    	c.gridx = 1;
 	    	building_tiers.add(new JTextField("0"));
@@ -189,6 +202,11 @@ public class Buildings{
 	    	c.gridy = 14+j;
 	    	c.gridx = 0;
 	    	fortifications.add(new JComboBox<>(fortificationlist));
+	    	fortifications.get(j).addActionListener(new ActionListener() {
+	    		public void actionPerformed (ActionEvent e) {
+					updateBuilding(hex_number);
+	    		}
+	    	});
 	    	mainbuild.add(fortifications.get(j),c);
 	    	c.gridx = 1;
 	    	fortifications_capacity.add(new JTextField("0"));
@@ -199,12 +217,12 @@ public class Buildings{
 	    	add_ons_btn.get(j).addActionListener(new ActionListener() {
 	    		public void actionPerformed(ActionEvent e) {
 	    			if (!addon.isVisible())
-	    				addOnPopup(k);
+	    				addOnPopup(k,hex_number);
 	    		}
 	    	});
 	    	mainbuild.add(add_ons_btn.get(j),c);
 	    	c.gridx = 3;
-	    	fortifications_cost.add(new JLabel(""));
+	    	fortifications_cost.add(new JLabel("0"));
 	    	mainbuild.add(fortifications_cost.get(j),c);
 	    	c.gridx = 4;
 	    	fortifications_upkeep.add(new JLabel(""));
@@ -232,6 +250,11 @@ public class Buildings{
     	c.gridy = 20;
     	c.gridx = 0;
     	walls = new JComboBox<>(walllist);
+    	walls.addActionListener(new ActionListener() {
+    		public void actionPerformed (ActionEvent e){
+    			updateBuilding(hex_number);
+    		}
+    	});
     	mainbuild.add(walls,c);/*
     	c.gridx = 1;
     	fortifications_capacity.add(new JTextField("0"));
@@ -241,7 +264,7 @@ public class Buildings{
     	add_ons_btn.get(5).addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			if (!walladdon.isVisible())
-    				wallAddOnPopup();
+    				wallAddOnPopup(hex_number);
     		}
     	});
     	mainbuild.add(add_ons_btn.get(5),c);
@@ -255,7 +278,7 @@ public class Buildings{
 	    build.add(new JScrollPane(mainbuild));
 		build.setVisible(true);
 	}
-	public void addOnPopup(int i) {//there is a problem where there only exists one frame
+	public void addOnPopup(int i, int hex_number) {//there is a problem where there only exists one frame
 		addon = new Frame();		//so the next fortification to add add-ons to gives the same frame as the first.
 		JPanel addonpanel = new JPanel(new GridBagLayout());
 		addon.setSize(600,500);//setting where the frame is
@@ -266,7 +289,8 @@ public class Buildings{
 	    if (fortifications.get(i).getSelectedItem().equals("")){
 	    	JOptionPane.showMessageDialog(null, "There is no fortification set!","Fortification Error",JOptionPane.INFORMATION_MESSAGE);
 	    }else if  (fortifications.get(i).getSelectedItem().equals(fortificationlist[6])){
-	    	JOptionPane.showMessageDialog(null, fortificationlist[6]+" has no available add-ons!","Fortification Error",JOptionPane.INFORMATION_MESSAGE);
+	    	JOptionPane.showMessageDialog(null, fortificationlist[6]+" has no available add-ons!\nMoats don't do much against a flying enemy.",
+	    			"Fortification Error",JOptionPane.INFORMATION_MESSAGE);
 		}else{
 	    	addon.setTitle("Add-ons for "+fortifications.get(i).getSelectedItem());
 		    addon.addWindowListener(new WindowAdapter() {//close frame on closing window
@@ -280,6 +304,7 @@ public class Buildings{
 						System.out.println(e);
 					}
 					addon.dispose();//destroys frame on exit
+					updateBuilding(hex_number);
 				}
 			});
 		    c.gridwidth = 1;//adding the first row
@@ -294,8 +319,7 @@ public class Buildings{
 		    	int k = j;
 		    	add_on.get(i)[j].addActionListener(new ActionListener() {
 		    		public void actionPerformed (ActionEvent e){
-		    			add_on_cost.get(i)[k].setText(Double.toString(findCost((String) fortifications.get(i).getSelectedItem())*
-		    					findCost((String) ((JComboBox) e.getSource()).getSelectedItem())/100));
+		    			updateBuilding(hex_number);
 		    		}//instantly see the cost of the add-on
 		    	});
 		    	addonpanel.add(add_on.get(i)[j],c);
@@ -306,7 +330,7 @@ public class Buildings{
 		    addon.setVisible(true);
 		}
 	}
-	public void wallAddOnPopup() {
+	public void wallAddOnPopup(int hex_number) {
 		walladdon = new Frame();
 		JPanel walladdonpanel = new JPanel(new GridBagLayout());
 		walladdon.setSize(600,500);//setting where the frame is
@@ -314,59 +338,113 @@ public class Buildings{
 	    int x = (int) ((dimension.getWidth() - walladdon.getWidth()) / 2);
 	    int y = (int) ((dimension.getHeight() - walladdon.getHeight()) / 2);
 	    walladdon.setLocation(x, y);
-	    walladdon.setTitle("Wall add-ons");
-	    walladdon.addWindowListener(new WindowAdapter() {//close frame on closing window
-			public void windowClosing(WindowEvent windowEvent){
-				getBuilding();
-				getter.request = true;
-				getter.hex_request = true;
-				try {
-					TimeUnit.SECONDS.sleep(1);
-				} catch (Exception e) {
-					System.out.println(e);
+	    if (walls.getSelectedItem().equals("")) {
+	    	JOptionPane.showMessageDialog(null,"The walls must be constructed before we add the gate, sire!","Wall-Building Error",JOptionPane.INFORMATION_MESSAGE);
+	    } else {
+		    walladdon.setTitle("Wall add-ons");
+		    walladdon.addWindowListener(new WindowAdapter() {//close frame on closing window
+				public void windowClosing(WindowEvent windowEvent){
+					getBuilding();
+					getter.request = true;
+					getter.hex_request = true;
+					try {
+						TimeUnit.SECONDS.sleep(1);
+					} catch (Exception e) {
+						System.out.println(e);
+					}
+					walladdon.dispose();//destroys frame on exit
+					updateBuilding(hex_number);
 				}
-				walladdon.dispose();//destroys frame on exit
-			}
-		});
-	    c.gridy = 0;//first row!
-	    c.gridx = 0;
-	    walladdonpanel.add(new JLabel("Add-On"),c);
-	    c.gridx = 1;
-	    walladdonpanel.add(new JLabel("Amount"),c);
-	    c.gridx = 2;
-	    walladdonpanel.add(new JLabel("Cost"),c);
-	    c.gridx = 3;
-	    walladdonpanel.add(new JLabel("Upkeep"),c);
-	    for (int i=0;i<5;i++) {
-	    	c.gridy = 1+i;
-	    	c.gridx = 0;
-	    	int k = i;
-	    	wall_add_on.add(new JComboBox<>(walladdonlist));
-	    	wall_add_on_amount.add(new JTextField("0"));
-	    	wall_add_on_cost.add(new JLabel(""));
-	    	wall_add_on_upkeep.add(new JLabel(""));
-	    	wall_add_on.get(i).addActionListener(new ActionListener() {
-	    		public void actionPerformed (ActionEvent e){
-	    			wall_add_on_cost.get(k).setText(Double.toString(findCost((String) walls.getSelectedItem())*
-	    					findCost((String) ((JComboBox) e.getSource()).getSelectedItem())/100));
-	    			wall_add_on_upkeep.get(k).setText(Double.toString(findCost((String) walls.getSelectedItem())*
-	    					findCost((String) ((JComboBox) e.getSource()).getSelectedItem())/100*0.2));
-	    		}//instantly see the cost of the add-on
-	    	});
-	    	walladdonpanel.add(wall_add_on.get(i),c);
-	    	c.gridx = 1;
-	    	walladdonpanel.add(wall_add_on_amount.get(i),c);
-	    	c.gridx = 2;
-	    	walladdonpanel.add(wall_add_on_cost.get(i),c);	    	
-	    	c.gridx = 3;
-	    	walladdonpanel.add(wall_add_on_upkeep.get(i),c);
+			});
+		    c.gridy = 0;//first row!
+		    c.gridx = 0;
+		    walladdonpanel.add(new JLabel("Add-On"),c);
+		    c.gridx = 1;
+		    walladdonpanel.add(new JLabel("Amount"),c);
+		    c.gridx = 2;
+		    walladdonpanel.add(new JLabel("Cost"),c);
+		    c.gridx = 3;
+		    walladdonpanel.add(new JLabel("Upkeep"),c);
+		    for (int i=0;i<5;i++) {
+		    	c.gridy = 1+i;
+		    	c.gridx = 0;
+		    	int k = i;
+		    	wall_add_on.add(new JComboBox<>(walladdonlist));
+		    	wall_add_on_amount.add(new JTextField("0"));
+		    	wall_add_on_cost.add(new JLabel(""));
+		    	wall_add_on_upkeep.add(new JLabel(""));
+		    	wall_add_on.get(i).addActionListener(new ActionListener() {
+		    		public void actionPerformed (ActionEvent e){
+		    			updateBuilding(hex_number);
+		    		}//instantly see the cost of the add-on
+		    	});
+		    	walladdonpanel.add(wall_add_on.get(i),c);
+		    	c.gridx = 1;
+		    	walladdonpanel.add(wall_add_on_amount.get(i),c);
+		    	c.gridx = 2;
+		    	walladdonpanel.add(wall_add_on_cost.get(i),c);	    	
+		    	c.gridx = 3;
+		    	walladdonpanel.add(wall_add_on_upkeep.get(i),c);
+		    }
+		    walladdon.add(new JScrollPane(walladdonpanel));
+		    walladdon.setVisible(true);
 	    }
-	    walladdon.add(new JScrollPane(walladdonpanel));
-	    walladdon.setVisible(true);
 	}
-	public void updateBuilding() {//should be the same as setBuildings
-		
+	
+	public void updateBuilding(int hex_number) {//should be the same as setBuildings
+		getBuilding();
+		updateBuildings(hex_number);
+		updateAddOns();
+		updateFortifications();
+		updateWall(hex_number);
 	}
+	public void updateBuildings(int hex_number) {
+		for (int i=0;i<buildings.size();i++){
+			if (buildings.get(i).getSelectedItem().equals("RGO"))//RGO
+				buildings_upkeep.get(i).setText(Integer.toString(Integer.parseInt(building_tiers.get(i).getText())*500+500));
+			else if (buildings.get(i).getSelectedItem().equals(buildinglist[2]))//road
+				buildings_upkeep.get(i).setText(Integer.toString((12-getter.listofhexes.get(hex_number).habitability)*75));
+			//and so on
+		}
+	}
+	public void updateAddOns() {
+		for (int i=0;i<fortifications.size();i++){
+			for (int j=0;j<5;j++) {
+				add_on_cost.get(i)[j].setText(Integer.toString(findCost((String) fortifications.get(i).getSelectedItem())*
+						Integer.parseInt(fortifications_capacity.get(i).getText())*findCost((String) add_on.get(i)[j].getSelectedItem())/100));
+			}
+		}
+	}
+	public void updateFortifications() {
+		int addoncost;
+		for (int i=0;i<fortifications.size();i++) {
+			addoncost = 0;
+			for (int j=0;j<add_on.size();j++) {
+				if (!(add_on.get(i)[j].getSelectedItem().equals("")))
+					addoncost = addoncost+Integer.parseInt(add_on_cost.get(i)[j].getText());
+			}
+			fortifications_cost.get(i).setText(Integer.toString(findCost((String) fortifications.get(i).getSelectedItem())*
+					Integer.parseInt(fortifications_capacity.get(i).getText())+addoncost));
+		}
+	}
+	public void updateWallAddOns() {
+		for (int i=0;i<wall_add_on.size();i++) {
+			wall_add_on_cost.get(i).setText(Integer.toString(findCost((String) wall_add_on.get(i).getSelectedItem())*
+					Integer.parseInt(wall_add_on_amount.get(i).getText())));
+			wall_add_on_upkeep.get(i).setText(Integer.toString((int) Math.round(Integer.parseInt(wall_add_on_cost.get(i).getText())*0.2)));
+		}
+	}
+	public void updateWall(int hex_number) {
+		updateWallAddOns();
+		int addoncost = 0;
+		for (int i=0;i<wall_add_on.size();i++) {
+			if (wall_add_on.get(i).getSelectedItem().equals(walladdonlist[1]))
+				addoncost = Integer.parseInt(wall_add_on_cost.get(i).getText());//only bastions increase the cost of the walls
+		}    				
+		fortifications_cost.get(5).setText(Integer.toString(findCost((String) walls.getSelectedItem())*getter.listofhexes.get(hex_number).unit_cap+addoncost));
+		fortifications_upkeep.get(5).setText(Integer.toString((int) Math.round(Integer.parseInt(fortifications_cost.get(5).getText())*0.2)));
+	}
+	
 	public void getBuilding() {
 		built_buildings.clear();
 		built_fortifications.clear();
@@ -382,9 +460,10 @@ public class Buildings{
 				fortificate = (String) fortifications.get(i).getSelectedItem()+" "+Integer.parseInt(fortifications_capacity.get(i).getText());
 				for (int j=0;j<add_on.get(i).length;j++) {
 					built_add_on.add(new String[add_on.get(i).length]);
-					if (!add_on.get(i)[j].getSelectedItem().equals(""))
+					if (!add_on.get(i)[j].getSelectedItem().equals("")){
 						built_add_on.get(i)[j] = (String) add_on.get(i)[j].getSelectedItem();
 						fortificate = fortificate+","+(String) add_on.get(i)[j].getSelectedItem();
+					}
 				}
 				built_fortifications.add(fortificate);
 			}

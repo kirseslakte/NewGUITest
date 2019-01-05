@@ -260,7 +260,7 @@ public class HexPane extends Hex{
 	
 	public String[] buildingCaller(String hex_name, int i) {
 		buildings.add(new Buildings());
-		buildings.get(buildings.size()-1).buildingsPopup(hex_name);
+		buildings.get(buildings.size()-1).checkBeforeBuilding(i);
 		
 		String[] building = new String[15];
 		building = buildings.get(buildings.size()-1).doneBuilding();
