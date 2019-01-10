@@ -16,10 +16,8 @@ public class LoadWindow extends Frame {
 	public LoadWindow() {
 		this.setTitle("Load Nation");
 	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();//center frame on screen
-	    this.setSize(600, (int) Math.floor(writer.n_saves/3+1)*75);//x,y
-	    int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
-	    this.setLocation(x, y);
+	    this.setSize(600, (int) Math.floor(writer.n_saves/3+1)*75);
+	    this.setLocationRelativeTo(null);
 	    this.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				System.exit(0);

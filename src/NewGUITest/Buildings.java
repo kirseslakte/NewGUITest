@@ -4,478 +4,513 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 
-public class Buildings{
+public class Buildings extends JFrame{
 	
 	public static String[] buildinglist = {"","RGO","Road","Highway","Armoury","Signal Towers","Hospital","Supply Cache","Bureau",
-			"Center of Trade","Palace","Public Order","Port"};
-	public static String[] fortificationlist = {"","Hill Fort","Pallisade","Castle","Fortress","Citadel","Aerial Defenses"};
-	public static String[] addonlist = {"","Moat","Motte","Glacis","Curtain Wall","Keep"};
+			"Palace","Public Order","Port","Center of Trade"};
+	public static String[] fortificationlist = {"","Aerial Defenses","Pallisade","Hill Fort","Castle","Fortress","Citadel"};
 	public static String[] walllist = {"","Primitive","Basic","Advanced"};
-	public static String[] walladdonlist = {"","Bastion","Standard Wood Gate","Heavy Wood Gate","Reinforced Wood Gate","Standard Iron Gate",
-			"Heavy Iron Gate","Reinforced Iron Gate"};
-	public static int[] building_costs = {1000,1500,0,0,250,50,500,200,100,400,5000,7500,10000,200,400,500};//rgo1,2,rd,hw,ar,st,h,sc,b,cot,p1,2,3,po1,2,port
-	public static int[] fortifications_costs = {100,125,200,400,800,50};//hill,pall,cast,fort,cita,aeri def
-	public static int[] add_on_costs = {10,10,10,20,20};//(%) moat,motte,glacis,curtain,keep
+	public static int[] fortifications_costs = {50,125,100,200,400,800};//aeri def,hill,pall,cast,fort,cita
 	public static int[] wall_costs = {100,125,175};//prim,bas,adv
-	public static int[] wall_add_on_costs = {200,100,200,300,400,500,600};//bas,std w,h w,rf w,std i,h i,rf i
+	public String[] active_buildings;
+	public String[] active_forts;
+	public String[] active_walls;
 	
-	public List<String> built_buildings = new ArrayList<String>();	//BUILDINGS
+	public List<String> built_buildings = new ArrayList<String>();	//BUILDINGS syntax:RGO-1 Road-0
 	public List<JComboBox> buildings = new ArrayList<JComboBox>();		//input buildings
 	public List<JTextField> building_tiers = new ArrayList<JTextField>();
 	public List<JLabel> buildings_cost = new ArrayList<JLabel>();
 	public List<JLabel> buildings_upkeep = new ArrayList<JLabel>();
-	public List<String> built_fortifications = new ArrayList<String>();//FORTIFICATIONS
+	public List<String> built_fortifications = new ArrayList<String>();//FORTIFICATIONS syntax: Hill Fort-3,Moat,Motte
 	public List<JComboBox> fortifications = new ArrayList<JComboBox>();	//input fortifications
 	public List<JTextField> fortifications_capacity = new ArrayList<JTextField>();
 	public List<JLabel> fortifications_cost = new ArrayList<JLabel>();
 	public List<JLabel> fortifications_upkeep = new ArrayList<JLabel>();
-	public List<String[]> built_add_on = new ArrayList<String[]>();//ADD-ONS
-	public List<JComboBox[]> add_on = new ArrayList<JComboBox[]>();			//input add-ons
-	public List<JLabel[]> add_on_cost = new ArrayList<JLabel[]>();
-	public String built_walls = "";//WALLS
+	public String built_walls = "";//WALLS								syntax: Basic-Bastion,1-Heavy Wooden Gate,2
 	public JComboBox walls = new JComboBox();	//input walls
-	public JLabel walls_cost = new JLabel("");
-	public JLabel walls_upkeep = new JLabel("");
-	public List<String> built_wall_add_on = new ArrayList<String>();//WALL ADD-ONS
-	public List<JComboBox> wall_add_on = new ArrayList<JComboBox>();	//input wall add-ons
-	public List<JTextField> wall_add_on_amount = new ArrayList<JTextField>();
-	public List<JLabel> wall_add_on_cost = new ArrayList<JLabel>();
-	public List<JLabel> wall_add_on_upkeep = new ArrayList<JLabel>();
+	public JLabel walls_cost = new JLabel("0");
+	public JLabel walls_upkeep = new JLabel("0");
 	
 	static NationHandler getter = new NationHandler();
 	public List<Button> add_ons_btn = new ArrayList<Button>();
+	public List<BuildingsAddOns> addonframes = new ArrayList<BuildingsAddOns>();
+	public WallAddOns wallframe = new WallAddOns();
+	public double[] modifiers = {1,1,1,1,1};//RGO,Building,Unit Equipment,Fortification,Palace
+	public Hex hex;
+	public int hex_number;
 	
 	GridBagConstraints c = new GridBagConstraints();
-	public Frame build = new Frame();
-	public JPanel mainbuild;
-	public Frame fortification;//fortifications plug-plug-in
-	public Frame addon = new Frame();
-	public Frame walladdon = new Frame();
+	public Frame fortification;			//fortifications plug-plug-in
+	
+	//outputs
+	public String[] all_buildings;//same syntax as in save file (B-RGO-1/W-Basic-Bastion,1)
+	public int upgrade_cost;
+	public int upkeep_cost;
 	
 	public Buildings() {
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.5;
-		c.ipady = 20;
+		System.out.println("BUILDINGS! Buildings");
+		this.c.fill = GridBagConstraints.HORIZONTAL;
+		this.c.weightx = 0.5;
+		this.c.ipady = 20;
 	}
 	
-	public String[] doneBuilding() {
-		String[] built = new String[2];
-		return built;
+	public void initialize() {
+		System.out.println("BUILDINGS! initialize");
+		setFrame();
 	}
 	
-	public int findCost(String building) {
-		int cost = 0;
-		for (int i=0;i<buildinglist.length;i++) {
-			if (buildinglist[i].equals(building)) {
-				if (i==0)
-					cost = 0;
-				else
-					cost = building_costs[i-1];
-			}
-		}
-		for (int i=0;i<fortificationlist.length;i++) {
-			if (fortificationlist[i].equals(building)) {
-				if (i==0)
-					cost = 0;
-				else
-					cost = fortifications_costs[i-1];
-			}
-		}
-		for (int i=0;i<walllist.length;i++) {
-			if (walllist[i].equals(building)) {
-				if (i==0)
-					cost = 0;
-				else
-					cost = wall_costs[i-1];
-			}
-		}
-		for (int i=0;i<addonlist.length;i++) {
-			if (addonlist[i].equals(building)) {
-				if (i==0)
-					cost = 0;
-				else
-					cost = add_on_costs[i-1];
-			}
-		}
-		for (int i=0;i<walladdonlist.length;i++) {
-			if (walladdonlist[i].equals(building)) {
-				if (i==0)
-					cost = 0;
-				else
-					cost = wall_add_on_costs[i-1];
-			}
-		}
-		return cost;
+	public void start(int hex_number) {
+		System.out.println("BUILDINGS! start");
+		getInputs(hex_number);
+		this.hex_number = hex_number;
+		this.setTitle(this.hex.name+": Buildings and Fortifications");
+	    this.setVisible(true);
+	    //loadBuildings();
 	}
 	
-	public void checkBeforeBuilding(int i) {
-		if (i<getter.listofhexes.size()) {
-			buildingsPopup(i);
-		} else {
-	    	JOptionPane.showMessageDialog(null,"This Hex has not yet been initialized! Try giving it a name and updating first.","Hex Loading Error",JOptionPane.INFORMATION_MESSAGE);
-		}
+	public void stop() {
+		System.out.println("BUILDINGS! stop");
+	    this.setVisible(false);
 	}
 	
-	public void buildingsPopup(int hex_number) {//the building pop-up
-		build = new Frame();
-		mainbuild = new JPanel(new GridBagLayout());
-		build.setSize(600,500);//setting where the frame is
-	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dimension.getWidth() - build.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - build.getHeight()) / 2);
-	    build.setLocation(x, y);
-		build.setTitle(getter.listofhexes.get(hex_number).name+"'s Buildings and Fortifications");
-	    build.addWindowListener(new WindowAdapter() {//close frame on closing window
+	public void getInputs(int hex_number) {
+		System.out.println("BUILDINGS! getInputs");
+		Utility utility = new Utility();
+		this.hex = getter.listofhexes.get(hex_number);
+		this.all_buildings = new String[this.hex.buildings.size()];
+		for (int i=0;i<this.hex.buildings.size();i++)
+			this.all_buildings[i] = this.hex.buildings.get(i);
+		int lord = utility.findLord(this.hex.owner);
+		double[] tempmod = getter.listoflords.get(lord).modifiers;
+		String lifestyle = getter.listoflords.get(lord).government.style;
+		if (lifestyle.equals("Nomadic")){
+			this.active_forts = new String[3];
+			this.active_forts[0] = "";
+			this.active_forts[1] = "Aerial Defenses";
+			this.active_forts[2] = "Pallisade";
+			this.active_walls = new String[2];
+			this.active_walls[0] = "";
+			this.active_walls[1] = "Primitive";
+		}else if (lifestyle.equals("Tribalistic")){
+			this.active_forts = new String[5];
+			this.active_forts[0] = "";
+			this.active_forts[1] = "Aerial Defenses";
+			this.active_forts[2] = "Pallisade";
+			this.active_forts[3] = "Hill Fort";
+			this.active_forts[4] = "Castle";
+			this.active_walls = new String[3];
+			this.active_walls[0] = "";
+			this.active_walls[1] = "Primitive";
+			this.active_walls[2] = "Basic";
+		}else {
+			this.active_forts = fortificationlist;
+			this.active_walls = walllist;
+		}
+		if (this.hex.pop_size<4) {
+			this.active_buildings = new String[buildinglist.length-1];
+			for (int i=0;i<buildinglist.length-1;i++)
+				this.active_buildings[i] = buildinglist[i];
+		}else
+			this.active_buildings = buildinglist;
+		this.setCombos();
+		this.modifiers[0] = tempmod[20];//rgo/road
+		this.modifiers[1] = tempmod[21];//buildings
+		this.modifiers[2] = tempmod[25];//equipment
+		this.modifiers[3] = tempmod[26];//fortification
+		this.modifiers[4] = tempmod[27];//palace
+		this.loadBuildings();
+	}
+
+	public void setCombos() {
+		System.out.println("BUILDINGS! setCombos");
+		for (int i=0;i<this.buildings.size();i++) {
+			this.buildings.get(i).removeAllItems();
+			for (String s:this.active_buildings)
+				this.buildings.get(i).addItem(s);
+		}
+		for (int i=0;i<this.fortifications.size();i++){
+			this.fortifications.get(i).removeAllItems();
+			for (String s:this.active_forts)
+				this.fortifications.get(i).addItem(s);
+		}
+		this.walls.removeAllItems();
+		for (String s:this.active_walls)
+			this.walls.addItem(s);
+	}
+	
+	public void setFrame() {
+		System.out.println("BUILDINGS! setFrame");
+		JPanel mainbuild = new JPanel(new GridBagLayout());
+		this.setSize(600, 950);
+		this.setLocationRelativeTo(getter);
+	    this.addWindowListener(new WindowAdapter() {//close frame on closing window
 			public void windowClosing(WindowEvent windowEvent){
-				getBuilding();
-				getter.request = true;
-				getter.hex_request = true;
-				try {
-					TimeUnit.SECONDS.sleep(1);
-				} catch (Exception e) {
-					System.out.println(e);
-				}
-				build.dispose();//destroys frame on exit
+				update();
+				getter.hexpanel.getBuildings(hex_number);
+				getter.saveNation();
+				stop();
+				for (int i=0;i<addonframes.size();i++)
+					addonframes.get(i).stop();
+				wallframe.stop();
 			}
 		});
-	    //add building things
-	    c.gridy = 0;//first row
-	    c.gridwidth = 1;
-	    c.gridx = 4;
+	    this.c.gridwidth = 1;
+		this.c.gridy = 0;//starting with the first row
+	    this.c.gridx = 4;
 	    Button update_building_btn = new Button("Update");
 	    update_building_btn.addActionListener(new ActionListener() {
 	    	public void actionPerformed (ActionEvent e) {
-				getBuilding();
+				update();
 	    	}
 	    });
 	    mainbuild.add(update_building_btn,c);
-	    c.gridx = 0;
+	    this.c.gridx = 0;
 	    mainbuild.add(new JLabel("Buildings"),c);
-	    c.gridx = 1;
+	    this.c.gridx = 1;
 	    mainbuild.add(new JLabel("Tier/Unit eq. Cost/Capacity"),c);
-	    c.gridx = 2;
+	    this.c.gridx = 2;
 	    mainbuild.add(new JLabel("Cost"),c);
-	    c.gridx = 3;
+	    this.c.gridx = 3;
 	    mainbuild.add(new JLabel("Upkeep"),c);
+	    this.active_buildings = buildinglist;
 	    for (int j=0;j<11;j++) {
-	    	c.gridy = 2+j;
-	    	c.gridx = 0;
-	    	buildings.add(new JComboBox<>(buildinglist));
-	    	buildings.get(j).addActionListener(new ActionListener() {
-	    		public void actionPerformed(ActionEvent e){
-	    			updateBuilding(hex_number);
-	    		}
-	    	});
+	    	this.buildings.add(new JComboBox<>(this.active_buildings));
+	    	this.building_tiers.add(new JTextField("0"));
+	    	this.buildings_cost.add(new JLabel("0"));
+	    	this.buildings_upkeep.add(new JLabel("0"));
+	    	//ADDED CODE LAYER OF BUILDINGS
+	    	this.c.gridy = 2+j;
+	    	this.c.gridx = 0;
 	    	mainbuild.add(buildings.get(j),c);
-	    	c.gridx = 1;
-	    	building_tiers.add(new JTextField("0"));
+	    	this.c.gridx = 1;
 	    	mainbuild.add(building_tiers.get(j),c);
-	    	c.gridx = 2;
-	    	buildings_cost.add(new JLabel(""));
+	    	this.c.gridx = 2;
 	    	mainbuild.add(buildings_cost.get(j),c);
-	    	c.gridx = 3;
-	    	buildings_upkeep.add(new JLabel(""));
+	    	this.c.gridx = 3;
 	    	mainbuild.add(buildings_upkeep.get(j),c);
+	    	//ADDED VISUAL LAYER OF BUILDINGS
 	    }//all building rows added
-	    c.gridy = 13;//fortifications
-	    c.gridx = 0;
+	    this.c.gridy = 13;//fortifications
+	    this.c.gridx = 0;
 	    mainbuild.add(new JLabel("Fortifications"),c);
-	    c.gridx = 1;
+	    this.c.gridx = 1;
 	    mainbuild.add(new JLabel("Capacity"),c);
-	    c.gridx = 2;
+	    this.c.gridx = 2;
 	    mainbuild.add(new JLabel("Add-on"),c);
-	    c.gridx = 3;
+	    this.c.gridx = 3;
 	    mainbuild.add(new JLabel("Cost"),c);
-	    c.gridx = 4;
+	    this.c.gridx = 4;
 	    mainbuild.add(new JLabel("Upkeep"),c);
-	    for (int j=0;j<5;j++) {
-	    	c.gridy = 14+j;
-	    	c.gridx = 0;
-	    	fortifications.add(new JComboBox<>(fortificationlist));
-	    	fortifications.get(j).addActionListener(new ActionListener() {
-	    		public void actionPerformed (ActionEvent e) {
-					updateBuilding(hex_number);
-	    		}
-	    	});
-	    	mainbuild.add(fortifications.get(j),c);
-	    	c.gridx = 1;
-	    	fortifications_capacity.add(new JTextField("0"));
-	    	mainbuild.add(fortifications_capacity.get(j),c);
-	    	c.gridx = 2;
-	    	add_ons_btn.add(new Button("Add-on"));
-	    	int k = j;
-	    	add_ons_btn.get(j).addActionListener(new ActionListener() {
-	    		public void actionPerformed(ActionEvent e) {
-	    			if (!addon.isVisible())
-	    				addOnPopup(k,hex_number);
-	    		}
-	    	});
-	    	mainbuild.add(add_ons_btn.get(j),c);
-	    	c.gridx = 3;
-	    	fortifications_cost.add(new JLabel("0"));
-	    	mainbuild.add(fortifications_cost.get(j),c);
-	    	c.gridx = 4;
-	    	fortifications_upkeep.add(new JLabel(""));
-	    	mainbuild.add(fortifications_upkeep.get(j),c);
-		    JComboBox[] temp = new JComboBox[5];	//add add-on arrays for each fortification
-		    add_on.add(temp);
-		    JLabel[] tem = new JLabel[5];
-		    add_on_cost.add(tem);
-		    for (int m=0;m<5;m++){//initializing the add-on stuff
-		    	add_on.get(j)[m] = new JComboBox<>(addonlist);
-		    	add_on_cost.get(j)[m]= new JLabel("0");
-		    }
-	    }//fortification rows added
-	    c.gridy = 19;//walls
-	    c.gridx = 0;
-	    mainbuild.add(new JLabel("Walls"),c);/*
-	    c.gridx = 1;
-	    mainbuild.add(new JLabel("Capacity"),c);*/
-	    c.gridx = 2;
-	    mainbuild.add(new JLabel("Add-on"),c);
-	    c.gridx = 3;
-	    mainbuild.add(new JLabel("Cost"),c);
-	    c.gridx = 4;
-	    mainbuild.add(new JLabel("Upkeep"),c);
-    	c.gridy = 20;
-    	c.gridx = 0;
-    	walls = new JComboBox<>(walllist);
-    	walls.addActionListener(new ActionListener() {
-    		public void actionPerformed (ActionEvent e){
-    			updateBuilding(hex_number);
-    		}
-    	});
-    	mainbuild.add(walls,c);/*
-    	c.gridx = 1;
-    	fortifications_capacity.add(new JTextField("0"));
-    	mainbuild.add(fortifications_capacity.get(5),c);*/
-    	c.gridx = 2;
-    	add_ons_btn.add(new Button("Add-on"));
-    	add_ons_btn.get(5).addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			if (!walladdon.isVisible())
-    				wallAddOnPopup(hex_number);
-    		}
-    	});
-    	mainbuild.add(add_ons_btn.get(5),c);
-    	c.gridx = 3;
-    	fortifications_cost.add(new JLabel(""));
-    	mainbuild.add(fortifications_cost.get(5),c);
-    	c.gridx = 4;
-    	fortifications_upkeep.add(new JLabel(""));
-    	mainbuild.add(fortifications_upkeep.get(5),c);//walls added
-	    
-	    build.add(new JScrollPane(mainbuild));
-		build.setVisible(true);
-	}
-	public void addOnPopup(int i, int hex_number) {//there is a problem where there only exists one frame
-		addon = new Frame();		//so the next fortification to add add-ons to gives the same frame as the first.
-		JPanel addonpanel = new JPanel(new GridBagLayout());
-		addon.setSize(600,500);//setting where the frame is
-	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dimension.getWidth() - addon.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - addon.getHeight()) / 2);
-	    addon.setLocation(x, y);
-	    if (fortifications.get(i).getSelectedItem().equals("")){
-	    	JOptionPane.showMessageDialog(null, "There is no fortification set!","Fortification Error",JOptionPane.INFORMATION_MESSAGE);
-	    }else if  (fortifications.get(i).getSelectedItem().equals(fortificationlist[6])){
-	    	JOptionPane.showMessageDialog(null, fortificationlist[6]+" has no available add-ons!\nMoats don't do much against a flying enemy.",
-	    			"Fortification Error",JOptionPane.INFORMATION_MESSAGE);
-		}else{
-	    	addon.setTitle("Add-ons for "+fortifications.get(i).getSelectedItem());
-		    addon.addWindowListener(new WindowAdapter() {//close frame on closing window
-				public void windowClosing(WindowEvent windowEvent){
-					getBuilding();
-					getter.request = true;
-					getter.hex_request = true;
-					try {
-						TimeUnit.SECONDS.sleep(1);
-					} catch (Exception e) {
-						System.out.println(e);
-					}
-					addon.dispose();//destroys frame on exit
-					updateBuilding(hex_number);
-				}
-			});
-		    c.gridwidth = 1;//adding the first row
-		    c.gridy = 0;
-		    c.gridx = 0;
-		    addonpanel.add(new JLabel("Add-on"),c);
-		    c.gridx = 1;
-		    addonpanel.add(new JLabel("Cost"),c);
-		    for (int j=0;j<5;j++) {
-		    	c.gridy = 1+j;
-		    	c.gridx = 0;
-		    	int k = j;
-		    	add_on.get(i)[j].addActionListener(new ActionListener() {
-		    		public void actionPerformed (ActionEvent e){
-		    			updateBuilding(hex_number);
-		    		}//instantly see the cost of the add-on
-		    	});
-		    	addonpanel.add(add_on.get(i)[j],c);
-		    	c.gridx = 1;
-		    	addonpanel.add(add_on_cost.get(i)[j],c);
-		    }
-		    addon.add(new JScrollPane(addonpanel));
-		    addon.setVisible(true);
-		}
-	}
-	public void wallAddOnPopup(int hex_number) {
-		walladdon = new Frame();
-		JPanel walladdonpanel = new JPanel(new GridBagLayout());
-		walladdon.setSize(600,500);//setting where the frame is
-	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dimension.getWidth() - walladdon.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - walladdon.getHeight()) / 2);
-	    walladdon.setLocation(x, y);
-	    if (walls.getSelectedItem().equals("")) {
-	    	JOptionPane.showMessageDialog(null,"The walls must be constructed before we add the gate, sire!","Wall-Building Error",JOptionPane.INFORMATION_MESSAGE);
-	    } else {
-		    walladdon.setTitle("Wall add-ons");
-		    walladdon.addWindowListener(new WindowAdapter() {//close frame on closing window
-				public void windowClosing(WindowEvent windowEvent){
-					getBuilding();
-					getter.request = true;
-					getter.hex_request = true;
-					try {
-						TimeUnit.SECONDS.sleep(1);
-					} catch (Exception e) {
-						System.out.println(e);
-					}
-					walladdon.dispose();//destroys frame on exit
-					updateBuilding(hex_number);
-				}
-			});
-		    c.gridy = 0;//first row!
-		    c.gridx = 0;
-		    walladdonpanel.add(new JLabel("Add-On"),c);
-		    c.gridx = 1;
-		    walladdonpanel.add(new JLabel("Amount"),c);
-		    c.gridx = 2;
-		    walladdonpanel.add(new JLabel("Cost"),c);
-		    c.gridx = 3;
-		    walladdonpanel.add(new JLabel("Upkeep"),c);
-		    for (int i=0;i<5;i++) {
-		    	c.gridy = 1+i;
-		    	c.gridx = 0;
-		    	int k = i;
-		    	wall_add_on.add(new JComboBox<>(walladdonlist));
-		    	wall_add_on_amount.add(new JTextField("0"));
-		    	wall_add_on_cost.add(new JLabel(""));
-		    	wall_add_on_upkeep.add(new JLabel(""));
-		    	wall_add_on.get(i).addActionListener(new ActionListener() {
-		    		public void actionPerformed (ActionEvent e){
-		    			updateBuilding(hex_number);
-		    		}//instantly see the cost of the add-on
-		    	});
-		    	walladdonpanel.add(wall_add_on.get(i),c);
-		    	c.gridx = 1;
-		    	walladdonpanel.add(wall_add_on_amount.get(i),c);
-		    	c.gridx = 2;
-		    	walladdonpanel.add(wall_add_on_cost.get(i),c);	    	
-		    	c.gridx = 3;
-		    	walladdonpanel.add(wall_add_on_upkeep.get(i),c);
-		    }
-		    walladdon.add(new JScrollPane(walladdonpanel));
-		    walladdon.setVisible(true);
+	    this.active_forts = fortificationlist;
+	    if (this.addonframes.size()==0)
+	    	this.wallframe = new WallAddOns();
+	    for (int j=this.addonframes.size();j<5;j++) {
+	    	this.addonframes.add(new BuildingsAddOns());
 	    }
+	    for (int j=0;j<5;j++) {
+	    	this.fortifications.add(new JComboBox<>(this.active_forts));/*
+	    	this.fortifications.get(j).addActionListener(new ActionListener() {
+	    		public void actionPerformed (ActionEvent e) {
+					update();
+	    		}
+	    	});*/
+	    	this.fortifications_capacity.add(new JTextField("0"));
+	    	this.add_ons_btn.add(new Button("Add-on"));
+	    	int k = j;
+	    	this.add_ons_btn.get(j).addActionListener(new ActionListener() {
+	    		public void actionPerformed(ActionEvent e) {
+	    			update();
+	    			if (!addonframes.get(k).isVisible()) {
+	    				String b = (String) fortifications.get(k).getSelectedItem();
+	    				addonframes.get(k).start(hex_number,b);
+	    			}
+	    		}
+	    	});
+	    	this.fortifications_cost.add(new JLabel("0"));
+	    	this.fortifications_upkeep.add(new JLabel("0"));
+	    	//ADDED CODE LAYER FOR FORTIFICATIONS
+	    	this.c.gridy = 14+j;
+	    	this.c.gridx = 0;
+	    	mainbuild.add(this.fortifications.get(j),c);
+	    	this.c.gridx = 1;
+	    	mainbuild.add(this.fortifications_capacity.get(j),c);
+	    	this.c.gridx = 2;
+	    	mainbuild.add(this.add_ons_btn.get(j),c);
+	    	this.c.gridx = 3;
+	    	mainbuild.add(this.fortifications_cost.get(j),c);
+	    	this.c.gridx = 4;
+	    	mainbuild.add(this.fortifications_upkeep.get(j),c);
+	    	//ADDED VISUAL LAYER FOR FORTIFICATIONS
+	    }
+	    this.active_walls = walllist;
+	    this.walls = new JComboBox<>(this.active_walls);
+	    this.walls.setSelectedItem("");
+	    Button wall_btn = new Button("Add-on");
+	    wall_btn.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			update();
+    			if (!wallframe.isVisible()) {
+    				String b = (String) walls.getSelectedItem();
+    				wallframe.start(hex_number,b,modifiers[3]);
+    			}
+    		}
+    	});
+	    //ADDED CODE LAYER FOR WALLS
+	    this.c.gridy = 19;
+	    this.c.gridx = 0;
+	    mainbuild.add(new JLabel("Walls"),c);
+	    this.c.gridx = 2;
+	    mainbuild.add(new JLabel("Add-on"),c);
+	    this.c.gridx = 3;
+	    mainbuild.add(new JLabel("Cost"),c);
+	    this.c.gridx = 4;
+	    mainbuild.add(new JLabel("Upkeep"),c);
+	    this.c.gridy = 20;
+	    this.c.gridx = 0;
+	    mainbuild.add(walls,c);
+	    this.c.gridx = 2;
+	    mainbuild.add(wall_btn,c);
+	    this.c.gridx = 3;
+	    mainbuild.add(walls_cost,c);
+	    this.c.gridx = 4;
+	    mainbuild.add(walls_upkeep,c);
+	    //ADDED VISUAL LAYER FOR WALLS
+	    this.add(new JScrollPane(mainbuild));
 	}
-	
-	public void updateBuilding(int hex_number) {//should be the same as setBuildings
-		getBuilding();
-		updateBuildings(hex_number);
-		updateAddOns();
-		updateFortifications();
-		updateWall(hex_number);
-	}
-	public void updateBuildings(int hex_number) {
-		for (int i=0;i<buildings.size();i++){
-			if (buildings.get(i).getSelectedItem().equals("RGO"))//RGO
-				buildings_upkeep.get(i).setText(Integer.toString(Integer.parseInt(building_tiers.get(i).getText())*500+500));
-			else if (buildings.get(i).getSelectedItem().equals(buildinglist[2]))//road
-				buildings_upkeep.get(i).setText(Integer.toString((12-getter.listofhexes.get(hex_number).habitability)*75));
-			//and so on
-		}
-	}
-	public void updateAddOns() {
-		for (int i=0;i<fortifications.size();i++){
-			for (int j=0;j<5;j++) {
-				add_on_cost.get(i)[j].setText(Integer.toString(findCost((String) fortifications.get(i).getSelectedItem())*
-						Integer.parseInt(fortifications_capacity.get(i).getText())*findCost((String) add_on.get(i)[j].getSelectedItem())/100));
+
+	public void getVisuals() {//gets info from the visual layer and updates code accordingly (as well as updating visual layer)
+		System.out.println("BUILDINGS! getVisuals");
+		this.built_buildings.clear();
+		for (int i=0;i<this.buildings.size();i++) {
+			String build = (String) this.buildings.get(i).getSelectedItem();
+			if (!(build.equals(""))) {
+				int tier = 0;
+				try {
+					tier = Integer.parseInt(this.building_tiers.get(i).getText());
+				} catch (Exception e ) { System.out.println(e);}
+				this.built_buildings.add(build+"-"+Integer.toString(tier));
+				tier = findBuildingCost(build,tier);
+				this.buildings_cost.get(i).setText(Integer.toString(tier));
+				this.buildings_upkeep.get(i).setText(Integer.toString((int) Math.round(tier*0.2)));
+			}
+		}//done with buildings
+		this.built_fortifications.clear();
+		for (int i=0;i<this.fortifications.size();i++) {
+			String built = (String) this.fortifications.get(i).getSelectedItem();
+			if (!(built.equals(""))) {
+				int tier = 0;
+				try {
+					tier = Integer.parseInt(this.fortifications_capacity.get(i).getText());
+				} catch (Exception e ){System.out.println(e);}
+				String addons = "";
+				for (int j=0;j<this.addonframes.get(i).built_add_on.size();j++) {
+					if (j==0)
+						addons = "-";
+					else
+						addons += ",";
+					addons += this.addonframes.get(i).built_add_on.get(j);
+				}
+					this.built_fortifications.add(built+"-"+tier+addons);
+					tier = findFortificationCost(built,tier);
+					this.fortifications_upkeep.get(i).setText(Integer.toString((int) Math.round(tier*0.2)));
+					tier += this.addonframes.get(i).cost;
+					this.fortifications_cost.get(i).setText(Integer.toString(tier));
 			}
 		}
-	}
-	public void updateFortifications() {
-		int addoncost;
-		for (int i=0;i<fortifications.size();i++) {
-			addoncost = 0;
-			for (int j=0;j<add_on.size();j++) {
-				if (!(add_on.get(i)[j].getSelectedItem().equals("")))
-					addoncost = addoncost+Integer.parseInt(add_on_cost.get(i)[j].getText());
-			}
-			fortifications_cost.get(i).setText(Integer.toString(findCost((String) fortifications.get(i).getSelectedItem())*
-					Integer.parseInt(fortifications_capacity.get(i).getText())+addoncost));
+		String built = (String) this.walls.getSelectedItem();
+		String addons = "";
+		for (int j=0;j<this.wallframe.built_add_on.size();j++) {
+			addons += "-"+this.wallframe.built_add_on.get(j);
 		}
-	}
-	public void updateWallAddOns() {
-		for (int i=0;i<wall_add_on.size();i++) {
-			wall_add_on_cost.get(i).setText(Integer.toString(findCost((String) wall_add_on.get(i).getSelectedItem())*
-					Integer.parseInt(wall_add_on_amount.get(i).getText())));
-			wall_add_on_upkeep.get(i).setText(Integer.toString((int) Math.round(Integer.parseInt(wall_add_on_cost.get(i).getText())*0.2)));
-		}
-	}
-	public void updateWall(int hex_number) {
-		updateWallAddOns();
-		int addoncost = 0;
-		for (int i=0;i<wall_add_on.size();i++) {
-			if (wall_add_on.get(i).getSelectedItem().equals(walladdonlist[1]))
-				addoncost = Integer.parseInt(wall_add_on_cost.get(i).getText());//only bastions increase the cost of the walls
-		}    				
-		fortifications_cost.get(5).setText(Integer.toString(findCost((String) walls.getSelectedItem())*getter.listofhexes.get(hex_number).unit_cap+addoncost));
-		fortifications_upkeep.get(5).setText(Integer.toString((int) Math.round(Integer.parseInt(fortifications_cost.get(5).getText())*0.2)));
+		int tier = 0;
+		if (!(built.equals("")))
+			if (addons.equals(""))
+				this.built_walls = built;
+			else
+				this.built_walls = built+addons;
+		tier = findFortificationCost(built,0);
+		tier += this.wallframe.cost;
+		this.walls_cost.setText(Integer.toString(tier));
+		this.walls_upkeep.setText(Integer.toString((int) Math.round(tier*0.2)));
+		int wall = 0;
+		if (!(this.built_walls.equals("")))
+			wall = 1;
+		this.all_buildings = new String[this.built_buildings.size()+this.built_fortifications.size()+wall];
+		for (int i=0;i<this.built_buildings.size();i++)
+			this.all_buildings[i] = "B-"+this.built_buildings.get(i);
+		for (int i=0;i<this.built_fortifications.size();i++)
+			this.all_buildings[this.built_buildings.size()+i] = "F-"+this.built_fortifications.get(i);
+		if (!(this.built_walls.equals("")))
+			this.all_buildings[this.all_buildings.length-1] = "W-"+built_walls;
 	}
 	
-	public void getBuilding() {
-		built_buildings.clear();
-		built_fortifications.clear();
-		built_add_on.clear();
-		built_wall_add_on.clear();
-		for (int i=0;i<buildings.size();i++) {
-			if (!(buildings.get(i).getSelectedItem().equals("")))
-				built_buildings.add((String) buildings.get(i).getSelectedItem()+" "+Integer.parseInt(building_tiers.get(i).getText()));
-		}
-		String fortificate;
-		for (int i=0;i<fortifications.size();i++) {
-			if (!(fortifications.get(i).getSelectedItem().equals(""))){
-				fortificate = (String) fortifications.get(i).getSelectedItem()+" "+Integer.parseInt(fortifications_capacity.get(i).getText());
-				for (int j=0;j<add_on.get(i).length;j++) {
-					built_add_on.add(new String[add_on.get(i).length]);
-					if (!add_on.get(i)[j].getSelectedItem().equals("")){
-						built_add_on.get(i)[j] = (String) add_on.get(i)[j].getSelectedItem();
-						fortificate = fortificate+","+(String) add_on.get(i)[j].getSelectedItem();
+	public void update() {//calls getVisuals and updates outputs
+		System.out.println("BUILDINGS! update");
+		Utility ut = new Utility();
+		getVisuals();
+		System.out.println("Visuals got");
+		//fixing remaining outputs
+		this.upgrade_cost = 0;
+		if (this.hex.pop_size<10){
+			for (int i=0;i<this.built_buildings.size();i++) {
+				String[] splitter = ut.stringSplitter(this.built_buildings.get(i), "-");
+				if (!(this.built_buildings.get(i).equals(""))) {
+					int tier = Integer.parseInt(splitter[1]);
+					if (splitter[0].equals("Supply Cache"))
+						this.upgrade_cost += (int) Math.round(200*tier*this.modifiers[1]*(this.hex.list_pm[hex.pop_size]-this.hex.list_pm[hex.pop_size-1]));
+					if (splitter[0].equals("Bureau"))
+						this.upgrade_cost += (int) Math.round(100*this.modifiers[1]*(Math.pow(this.hex.list_pm[this.hex.pop_size],2)-Math.pow(this.hex.list_pm[this.hex.pop_size-1],2)));
+					if (splitter[0].equals("Center of Trade"))
+						this.upgrade_cost += (int) Math.round(400*this.modifiers[1]*(this.hex.list_pm[this.hex.pop_size]-this.hex.list_pm[this.hex.pop_size-1]));
+					if (splitter[0].equals("Public Order"))
+						this.upgrade_cost += (int) Math.round(100*2*tier*this.modifiers[1]*(this.hex.list_pm[this.hex.pop_size]-this.hex.list_pm[this.hex.pop_size-1]));
+					if (splitter[0].equals("Port"))
+						this.upgrade_cost += (int) Math.round(500*this.modifiers[1]*(Math.pow(this.hex.list_pm[this.hex.pop_size],2)-Math.pow(this.hex.list_pm[this.hex.pop_size-1],2)));
+				}
+			}
+		}//upgrade costs for buildings
+		if (!(this.built_walls.equals(""))){
+			String[] splitter = ut.stringSplitter(this.built_walls, "-");
+			int caphelper = this.hex.list_unit_cap[this.hex.pop_size]-this.hex.unit_cap;
+			if (splitter[0].equals(walllist[1]))
+				caphelper = (int) Math.round(caphelper*wall_costs[0]*this.modifiers[3]);
+			else if (splitter[0].equals(walllist[2]))
+				caphelper = (int) Math.round(caphelper*wall_costs[1]*this.modifiers[3]);
+			else if (splitter[0].equals(walllist[3]))
+				caphelper = (int) Math.round(caphelper*wall_costs[2]*this.modifiers[3]);
+			int addoncost = 0;
+			for (String s:splitter)
+			if (splitter.length>1) {
+				String[] wall_string = new String[splitter.length-1];
+				int[] wall_int = new int[splitter.length-1];
+				for (int j=1;j<splitter.length;j++) {
+					String[] wall_splitter = ut.stringSplitter(splitter[j],",");
+					wall_string[j-1] = wall_splitter[0];
+					wall_int[j-1] = Integer.parseInt(wall_splitter[1]);
+					for (int i=0;i<this.wallframe.wall_add_on_costs.length;i++){
+						if (wall_string[j-1].equals(this.wallframe.walladdonlist[i+1]))
+							addoncost += (int) Math.round(this.wallframe.wall_add_on_costs[i]*this.modifiers[3]*wall_int[j-1]);
 					}
 				}
-				built_fortifications.add(fortificate);
 			}
-		}
-		if (!(walls.getSelectedItem().equals(""))) {
-			built_walls = (String) walls.getSelectedItem();
-			for (int i=0;i<wall_add_on.size();i++) {
-				if (!(wall_add_on.get(i).getSelectedItem().equals(""))) {
-					built_wall_add_on.add((String) wall_add_on.get(i).getSelectedItem()+" "+wall_add_on_amount.get(i).getText());
-					built_walls = built_walls+","+(String) wall_add_on.get(i).getSelectedItem()+" "+wall_add_on_amount.get(i).getText();
-				}
-			}
-		}
+			this.upgrade_cost += caphelper;
+		}//all upgrade costs done
+		this.upkeep_cost = 0;
+		for (int i=0;i<this.buildings_upkeep.size();i++)
+			this.upkeep_cost += Integer.parseInt(this.buildings_upkeep.get(i).getText());
+		for (int i=0;i<this.fortifications_upkeep.size();i++)
+			this.upkeep_cost += Integer.parseInt(this.fortifications_upkeep.get(i).getText());
+		this.upkeep_cost += Integer.parseInt(walls_upkeep.getText());
+		//all upkeep costs done
 	}
+	
+	public void loadBuildings() {//should be called whenever this window is opened (loads buildings from hex and sets it into visual and code layer)
+		System.out.println("BUILDINGS! loadBuildings");
+		Utility utility = new Utility();
+		String[] splitter;
+		int b = 0;
+		int f = 0;
+		this.built_buildings.clear();
+		this.built_fortifications.clear();
+		this.built_walls = "";
+		for (int i=0;i<this.all_buildings.length;i++) {
+			String input = this.all_buildings[i];
+			splitter = (utility.stringSplitter(input,"-"));
+			if (splitter[0].equals("B")) {
+				this.buildings.get(b).setSelectedItem(splitter[1]);
+				this.building_tiers.get(b).setText(splitter[2]);
+				this.built_buildings.add(splitter[1]+"-"+splitter[2]);
+				b++;
+			}
+			if (splitter[0].equals("F")) {
+				this.fortifications.get(f).setSelectedItem(splitter[1]);
+				this.fortifications_capacity.get(f).setText(splitter[2]);
+				int costy = findFortificationCost(splitter[1],Integer.parseInt(splitter[2]));
+				if (splitter.length>3) {
+					String[] splittar = utility.stringSplitter(splitter[3],",");
+					this.addonframes.get(f).setAddOn(splittar,costy);
+					this.built_fortifications.add(splitter[1]+"-"+splitter[2]+"-"+splitter[3]);
+				} else
+					this.built_fortifications.add(splitter[1]+"-"+splitter[2]);
+				f++;
+			}
+			if (splitter[0].equals("W")) {
+				this.walls.setSelectedItem(splitter[1]);
+				String[] wall_string = new String[splitter.length-2];
+				int[] wall_int = new int[splitter.length-2];
+				this.built_walls = splitter[1];
+				for (int j=2;j<splitter.length;j++) {
+					String[] wall_splitter = utility.stringSplitter(splitter[j],",");
+					wall_string[j-2] = wall_splitter[0];
+					wall_int[j-2] = Integer.parseInt(wall_splitter[1]);
+					this.built_walls += "-"+wall_splitter[0]+","+wall_splitter[1];
+				}
+				this.wallframe.setAddOn(wall_string,wall_int);
+			}
+		}
+		update();
+	}
+
+	public int findFortificationCost(String s, int tier) {//find the cost of a fortification/wall
+		System.out.println("BUILDINGS! findFortificationCost");
+		int build_cost = 0;
+		for (int i=1;i<active_forts.length;i++){
+			if (s.equals(active_forts[i])) {
+				if (s.equals("Aerial Defenses"))
+					build_cost = (int) Math.round(fortifications_costs[i-1]*this.modifiers[3]);
+				else
+					build_cost = (int) Math.round(tier*fortifications_costs[i-1]*this.modifiers[3]);
+			}
+		}
+		for (int i=1;i<active_walls.length;i++){
+			if (s.equals(active_walls[i]))
+				build_cost = (int) Math.round(wall_costs[i-1]*this.modifiers[3]*this.hex.unit_cap);//that is done
+		}
+		return build_cost;
+	}
+	public int findBuildingCost(String s, int tier) {//find the cost of a building at position pos in the list
+		System.out.println("BUILDINGS! findBuildingCost");
+		int build_cost = 0;
+		if (s.equals(buildinglist[1])){//RGO
+			if (tier>2||tier<1)
+				JOptionPane.showMessageDialog(null,"The maximum logging rate is 2 and the minimum is 1.\nMore or less is not allowed.","RGO Error",JOptionPane.INFORMATION_MESSAGE);
+			build_cost = (int) Math.round((500+500*tier)*this.modifiers[0]*this.modifiers[1]);
+		}else if (s.equals(buildinglist[2])){//Road
+			build_cost = (int) Math.round(((12-this.hex.habitability)*75)*this.modifiers[0]*this.modifiers[1]);
+		}else if (s.equals(buildinglist[3])){//Highway
+			build_cost = (int) Math.round(((12-this.hex.habitability)*150)*this.modifiers[0]*this.modifiers[1]);
+		}else if (s.equals(buildinglist[4])){//Armoury
+			build_cost = (int) Math.round(250*this.modifiers[1]+tier*this.modifiers[2]);
+		}else if (s.equals(buildinglist[5])){//Signal Towers
+			build_cost = (int) Math.round(50*this.modifiers[1]);
+		}else if (s.equals(buildinglist[6])){//Hospital
+			build_cost = (int) Math.round(500*tier*this.modifiers[1]);
+		}else if (s.equals(buildinglist[7])){//Supply Cache
+			if (tier>13)
+				JOptionPane.showMessageDialog(null, "The maximum supply rate is 13.\nMore is not allowed.","Supply Error",JOptionPane.INFORMATION_MESSAGE);
+			build_cost = (int) Math.round(200*tier*this.hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
+		}else if (s.equals(buildinglist[8])){//Bureau
+			build_cost = (int) Math.round(100*this.hex.list_pm[this.hex.pop_size-1]*this.hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
+		}else if (s.equals(buildinglist[9])){//Center of Trade
+			build_cost = (int) Math.round(400*this.hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
+		}else if (s.equals(buildinglist[10])){//Palace
+			if (tier>3||tier<1)
+				JOptionPane.showMessageDialog(null,"The maximum legitimacy enforcement is 3 and the minimum is 1."
+						+ "\nMore or less is not allowed.","Palace Error",JOptionPane.INFORMATION_MESSAGE);
+			build_cost = (int) Math.round((2500+2500*tier)*this.modifiers[1]*this.modifiers[4]);
+		}else if (s.equals(buildinglist[11])){//Public Order
+			if (tier>2||tier<1)
+				JOptionPane.showMessageDialog(null,"The maximum unrest enforcement is 2 and the minimum is 1."
+						+ "\nMore or less is not allowed.","Public Order Error",JOptionPane.INFORMATION_MESSAGE);
+			build_cost = (int) Math.round(100*2*tier*this.hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
+		}else if (s.equals(buildinglist[12])){//Port
+			build_cost = (int) Math.round(500*this.hex.list_pm[this.hex.pop_size-1]*this.hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
+		}
+		return build_cost;
+	}
+
 }

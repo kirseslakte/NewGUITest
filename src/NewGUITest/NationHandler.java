@@ -16,11 +16,13 @@ public class NationHandler extends JFrame{
 	private static int min = 0;
 	private static JTabbedPane mainPane = new JTabbedPane();
 	private static ReadNWrite write = new ReadNWrite();
-	private static HexPane hexpanel = new HexPane();
+	public static HexPane hexpanel = new HexPane();
 	static boolean request = false;
 	static boolean vassal_request = false;
 	public static boolean save_request = false;
-	public static boolean hex_request = false;
+	public static boolean update_request = false;
+	public static int building_request = -1;
+	Culture bonuses = new Culture();
 	//private MilitaryWindow milwindow = new MilitaryWindw();
 	//private HexWindow hexwindow = new HexWindow();
 	
@@ -45,10 +47,13 @@ public class NationHandler extends JFrame{
 						System.out.println("saving");
 						saveNation();
 						save_request = false;
-					}else if (hex_request) {
-						hexpanel.getBuildings();
-						recalibrateHexes();
-						hex_request = false;
+					}else if (update_request) {
+						updateNation();
+						//hexpanel.getBuildings();
+						update_request = false;
+					}else if (!(building_request==-1)) {
+						hexpanel.getBuildings(building_request);
+						building_request = -1;
 					}
 				}
 			}catch (InterruptedException e){
@@ -61,6 +66,7 @@ public class NationHandler extends JFrame{
 		write.setNationName(s);
 		newLord(s,"");
 		mainSetup(s);
+		bonuses.createCulture();
 	}
 	
 	public void loadNation (String s) {//only ever called from MainThread when an old nation is loaded
@@ -78,20 +84,25 @@ public class NationHandler extends JFrame{
 			listoflords.get(listoflords.size()-1).title = lord;
 			listoflords.get(listoflords.size()-1).loadGovernment(write.loadLord(lord));
 			if (lord.equals("overlord")) {
-				listoflords.get(listoflords.size()-1).loadCulture(write.loadCulture());
+				bonuses.loadCulture(write.loadCulture());
 				mainSetup(s);
-				listoflords.get(listoflords.size()-1).setCulture();
+				bonuses.setCulture();
 				listoflords.get(listoflords.size()-1).setGovernment();
 			} else {
 				addVassalTab(loaded_lord[0]);
 				listoflords.get(listoflords.size()-1).setGovernment();
 			}
+			listoflords.get(listoflords.size()-1).loadModifiers();
 		}
 		//all lords have been loaded!!
+		System.out.println("NATIONHANDLER! Lords loaded");
 		listofhexes = write.loadHexes();
+		System.out.println("Loaded "+listofhexes.size()+" hexes");
 		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPane()));//loaded after all the lords
+		System.out.println("NATIONHANDLER! Updating hex");
+		//hexpanel.updateHexPane();
 		listofunits = write.loadUnits();
-		//mainPane.addTab("Units");
+		//mainPane.addTab("Units", new JScrollPane(unitpanel.unitPane()));
 		listofofficials = write.loadOfficials();
 		//update the nationpanes of the lords
 		//load notes
@@ -137,21 +148,21 @@ public class NationHandler extends JFrame{
 	}
 	
 	public void updateNation() {
+		recalibrateHexes();
 		for (Lord lord:listoflords) {
 			lord.getGovernment();
+			lord.loadModifiers();//this should not be in update
 			if (lord.title.equals("overlord"))
-				lord.getCulture();
+				bonuses.getCulture();
 		}
 	}
 	
 	public void mainSetup(String s) {
-		this.setSize(1500,1000);//x,y
-	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	    int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
-	    int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
-	    this.setLocation(x, y);
-	    this.addWindowListener(new WindowAdapter() {//close program on closing window
+		this.setSize(1500,1000);
+	    this.setLocationRelativeTo(null);
+		this.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
+				write.clean();
 				System.exit(0);
 			}
 		});
@@ -174,6 +185,27 @@ public class NationHandler extends JFrame{
 			exists = false;
 			if ((!(hexes.get(i)[0].equals("")))){
 				listofhexes.add(new Hex(hexes.get(i)));
+			}
+		}
+	}
+	public void recalibrateLords() {
+		for (int i=0;i<listofhexes.size();i++) {
+			int r = 0;
+			String resource = (String) hexpanel.resource_list.get(i).getSelectedItem();
+			for (int j=0;j<listofhexes.get(0).resources.length;j++) {
+				if (resource.equals(listofhexes.get(0).resources[j]))
+					r = j;
+			}
+			for (int j=0;j<listoflords.size();j++) {
+				if (listoflords.get(j).name.equals(hexpanel.owner_list.get(i).getSelectedItem()))
+					if (hexpanel.resource_check_list.get(i).isSelected()) {
+						resource = listoflords.get(j).master_title;
+						for (int k=0;k<listoflords.size();k++) {
+							if (listoflords.get(k).title.equals(resource))
+								listoflords.get(k).accessed_resources[r] = true;
+						}
+					} else
+						listoflords.get(j).accessed_resources[r] = true;
 			}
 		}
 	}

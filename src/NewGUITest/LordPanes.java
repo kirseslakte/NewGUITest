@@ -7,9 +7,14 @@ import java.util.List;
 
 public class LordPanes {
 	//nationPanel variables
-	public JLabel tax_eff,hex_prod,prod_eff,prov_inc,trade_eff,vassal_inc_eff,dev,bank_inc_eff,bank_dev_eff,
-	trade_value,prov_upk,ppop,vassal_tax_inc,guild_upk,trade_inc,army_upk,gov_upk,tot_inc,tot_upk,tot_prod;
-	public JTextField bank_dev,bank_rp,tax_rate,lord_tax_rate;
+	public JLabel[] nationlabels = new JLabel[21];
+	public String[] nationinfo = {"Tax Efficiency","Production of Own Hexes","Production Efficiency","Province Income","Trade Efficiency",
+			"Province Upkeep","Vassal Income Efficiency","Development","Bank Income Efficiency","Population (%)","Bank Development Efficiency",
+			"Vassal Tax Income","Plunder Efficiency","Trade Income","Guild Upkeep","Army Upkeep","Government Upkeep","Trade Value",
+			"Total Income","Total Upkeep","Total Production","Banked Development","Banked RP","Taxation Level","Lord Tax Rate"};//25 long
+	/*tax_eff,hex_prod,prod_eff,prov_inc,trade_eff,vassal_inc_eff,plunder_eff,dev,bank_inc_eff,bank_dev_eff,
+	trade_value,prov_upk,ppop,vassal_tax_inc,guild_upk,trade_inc,army_upk,gov_upk,tot_inc,tot_upk,tot_prod;*/
+	public JTextField[] inputs = new JTextField[4];//bank_dev,bank_rp,tax_rate,lord_tax_rate;
 	//governmentPanel variables
 	public Panel government_panel = new Panel(new GridLayout(0,4));
 	public JLabel legitimacy_label;
@@ -20,11 +25,8 @@ public class LordPanes {
 	public JTextField legitimacy;
 	public boolean histocheck;
 	//culture variables
-	public List<JTextField> culturefields = new ArrayList<JTextField>();
-	public String[] culture_names =  {"Unit Training Cost (%)","Undead Unit Cap (%)","Unit Cap (%)","Unit Equipment Cost (%)","Hit","AC",
-			"Morale","Command","Ranged Hit","Settlement Upkeep Cost (%)","Fortification Cost (%)","Settlement Upgrade Cost (%)","Base Production (%)",
-			"Production Efficiency (%)","Tax Efficiency (%)","Bank Efficiency (%)","Trade Efficiency (%)","Vassal Tax Income Efficiency (%)",
-			"Mage Guild Cost (%)","Tinker Guild Cost (%)","Spy Guild Cost (%)","All Guilds Cost (%)"};
+	public static List<JTextField> culturefields = new ArrayList<JTextField>();
+	Culture culturebon = new Culture();
 	
 	//TODO:
 	//make sure, when loading that the correct values are displayed,
@@ -36,55 +38,17 @@ public class LordPanes {
 	
 	public Panel nationPanel(Governments government,boolean b) {//creates the nation panel 
 		Panel nation_panel = new Panel(new GridLayout(0,4));
-		nation_panel.add(new JLabel("Tax Efficiency"));
-		nation_panel.add(tax_eff = new JLabel(Integer.toString((int)Math.rint(government.tax_eff))));
-		nation_panel.add(new JLabel("Production of Own Hexes"));
-		nation_panel.add(hex_prod = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Production Efficiency"));
-		nation_panel.add(prod_eff = new JLabel(Integer.toString((int)Math.rint(government.prod_eff))));
-		nation_panel.add(new JLabel("Province Income"));
-		nation_panel.add(prov_inc = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Trade Efficiency"));
-		nation_panel.add(trade_eff = new JLabel(Integer.toString((int)Math.rint(government.trade_eff))));
-		nation_panel.add(new JLabel("Province Upkeep"));
-		nation_panel.add(prov_upk = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Vassal Income Efficiency"));
-		nation_panel.add(vassal_inc_eff = new JLabel(Integer.toString((int)Math.rint(government.vassal_inc_eff))));
-		nation_panel.add(new JLabel("Development"));
-		nation_panel.add(dev = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Bank Income Efficiency"));
-		nation_panel.add(bank_inc_eff = new JLabel(Integer.toString((int)Math.rint(government.bank_inc_eff))));
-		nation_panel.add(new JLabel("Population (%)"));
-		nation_panel.add(ppop = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Bank Development Efficiency"));
-		nation_panel.add(bank_dev_eff = new JLabel(Integer.toString((int)Math.rint(government.bank_dev_eff))));
-		nation_panel.add(new JLabel("Vassal Tax Income"));
-		nation_panel.add(vassal_tax_inc = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Guild Upkeep"));
-		nation_panel.add(guild_upk = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Trade Income"));
-		nation_panel.add(trade_inc = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Army Upkeep"));
-		nation_panel.add(army_upk = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Government Upkeep"));
-		nation_panel.add(gov_upk = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Trade Value"));
-		nation_panel.add(trade_value = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Total Income"));
-		nation_panel.add(tot_inc = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Total Upkeep"));
-		nation_panel.add(tot_upk = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Total Production"));
-		nation_panel.add(tot_prod = new JLabel("0"));//needs updating
-		nation_panel.add(new JLabel("Banked Development"));
-		nation_panel.add(bank_dev = new JTextField(Integer.toString(government.eco[1])));//needs updating
-		nation_panel.add(new JLabel("Banked RP"));
-		nation_panel.add(bank_rp = new JTextField(Integer.toString(government.eco[0])));//needs updating
-		nation_panel.add(new JLabel("Taxation Level"));
-		nation_panel.add(tax_rate = new JTextField(Integer.toString(government.eco[2])));//needs updating
-		if (b) {
-			nation_panel.add(new JLabel("Lord Tax Rate"));
-			nation_panel.add(lord_tax_rate = new JTextField(Integer.toString(government.eco[3])));//needs updating
+		for (int i=0;i<nationlabels.length;i++) {
+			nationlabels[i] = new JLabel("0");
+			nation_panel.add(new JLabel(nationinfo[i]));
+			nation_panel.add(nationlabels[i]);
+		}
+		for (int i=0;i<inputs.length;i++){
+			if (b||i<3) {
+				inputs[i] = new JTextField("0");
+				nation_panel.add(new JLabel(nationinfo[nationlabels.length+i]));
+				nation_panel.add(inputs[i]);
+			}
 		}
 		return nation_panel;
 	}
@@ -166,16 +130,16 @@ public class LordPanes {
 	
 	public Panel culturePane() {//culture panel
 		Panel culture_panel = new Panel(new GridLayout(0,4));
-		for (int i=0;i<22;i++){
+		for (int i=0;i<culturebon.culture_names.length;i++){
 			culturefields.add(new JTextField("0"));
-			culture_panel.add(new JLabel(culture_names[i]));
+			culture_panel.add(new JLabel(culturebon.culture_names[i]));
 			culture_panel.add(culturefields.get(i));
 		}
 		return culture_panel;
 	}
 	
-	public void setCulturePane(int[] s) {//setting culture pane
-		for (int i=0;i<22;i++)//only ever called from lord.setCulture()
-			culturefields.get(i).setText(Integer.toString(s[i]));		
+	public void setCulturePane(double[] s) {//setting culture pane
+		for (int i=0;i<culturebon.culture_names.length;i++)//only ever called from lord.setCulture()
+			culturefields.get(i).setText(Integer.toString((int) (s[i]*100)));
 	}
 }

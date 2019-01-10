@@ -15,11 +15,12 @@ public class ReadNWrite {
 	public static int n_saves = 0;
 	public int number_of_building_slots = 18;
 	public static File directory = new File("");
+	LordPanes panes = new LordPanes();
+	Culture bonuses = new Culture();
 	
 	public ReadNWrite() {
 		updateSaves();
 	}
-	
 	
 	public int updateSaves() {//number of saves
 		String[] save_list = new File("Nations").list();//increased the requirements to be counted as a save
@@ -44,6 +45,15 @@ public class ReadNWrite {
 		directory.mkdir();
 	}
 	
+	public void clean() {
+		File file = new File("Nations");
+		File nation;
+		for (String s:file.list()) {
+			nation = new File(file+"\\"+s);
+			if (nation.list().length<6)
+				nation.delete();
+		}
+	}
 	////LOAD METHODS////
 	
 	//load lords
@@ -66,11 +76,11 @@ public class ReadNWrite {
 	//load culture
 	
 	public String[] loadCulture() {
-		String[] culture = new String[22];
+		String[] culture = new String[bonuses.culture_names.length];
 		File file = new File(directory+"\\culture"+filetype);
 		try {
 			Scanner sc = new Scanner(file);
-			for (int i=0;i<22;i++) {
+			for (int i=0;i<bonuses.culture_names.length;i++) {
 				culture[i] = sc.nextLine();
 			}
 			sc.close();
@@ -86,26 +96,25 @@ public class ReadNWrite {
 		List<Hex> listofhexes = new ArrayList<Hex>();
 		String s = directory+"\\hexes"+filetype;
 		File file = new File(s);
-		List<String> hexreader = new ArrayList<String>();
 		int max_hex_length = number_of_building_slots+9;
 		String[] hex_input = new String[max_hex_length];
 		int hex_length = 0;
-		//int number_of_hexes = 0;
-		Hex hex = new Hex();
 		try {
 			Scanner sc = new Scanner(file);
+			System.out.println("\nReaduing hex file");
 			while(sc.hasNextLine()){
 				s = sc.nextLine();
-				hexreader.add(s);			//scanning the entire document into hexlist
 				if (s.equals(separator)){
-					hex.loadHex(hex_input);
-					listofhexes.add(hex);
-					//number_of_hexes++;	//count the number of hexes
-					for (int i=0;i<hex_input.length;i++) {
-						hex_input[i] = "";//reset the hex_input
-					}
+					String[] ready_input = new String[hex_length];
+					for (int i=0;i<hex_length;i++)
+						ready_input[i] = hex_input[i];
+					System.out.println("HEX DONE");
+					listofhexes.add(new Hex(ready_input));
+					hex_length = 0;
+					hex_input = new String[max_hex_length];
 				}else {
 					hex_input[hex_length] = s;
+					System.out.println(hex_input[hex_length]);
 					hex_length++;
 				}
 			}
@@ -113,6 +122,7 @@ public class ReadNWrite {
 		} catch(Exception e){
 			System.out.println(e);
 		}
+		System.out.println("\nwriter loaded "+listofhexes.size()+" hexes");
 		return listofhexes;
 	}
 	
@@ -192,6 +202,8 @@ public class ReadNWrite {
 				fw.write(hex.unrest+System.getProperty("line.separator"));
 				fw.write(hex.resource+System.getProperty("line.separator"));
 				fw.write(hex.resource_check+System.getProperty("line.separator"));
+				fw.write(hex.building_upkeep+System.getProperty("line.separator"));
+				fw.write(hex.building_upgrade+System.getProperty("line.separator"));
 				for (String building: hex.built_buildings){
 					fw.write(building+System.getProperty("line.separator"));
 				}
@@ -247,12 +259,13 @@ public class ReadNWrite {
 		String s = directory+"\\culture"+filetype;
 		File file = new File(s);
 		file.delete();
+		String[] cultures = bonuses.readCulture();
 		try {
 			file.createNewFile();
 			System.out.println("created "+s);
 			FileWriter fw = new FileWriter(file);
-			for (int i=0;i<lord.number_of_culture_bonuses;i++){
-				fw.write(lord.culture_bonuses[i]+System.getProperty("line.separator"));
+			for (int i=0;i<bonuses.culture_names.length;i++){
+				fw.write(cultures[i]+System.getProperty("line.separator"));
 			}
 			fw.close();
 		} catch (Exception e) {

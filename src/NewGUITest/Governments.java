@@ -9,7 +9,7 @@ public class Governments {
 	public static String[] life = {"Settled","Tribalistic","Nomadic"};
 	public static String[] centralisation = {"Highly","Moderately","Decentralised"};
 	public static String[] alignments = {"LG","NG","CG","LN","NN","CN","LE","NE","CE"};
-	public static String[] histocratic_options = {"Tax Efficiency","Production Efficiency","Trade Efficiency","Vassal Income Efficiency",
+	public static String[] histocratic_options = {"Tax Efficiency","Production Efficiency","Trade Efficiency","Vassal Income Efficiency","Plunder Efficiency",
 			"Bank Income Efficiency","Bank Development Efficiency"};//6 options
 	//If you ever want to add anything above, just add it at the end and 
 	//look in the appropriate section below to add the method for it!
@@ -35,15 +35,25 @@ public class Governments {
 	double bank_dev_eff = 0;
 	double plunder_eff = 0;
 	double max_pop_size = 0;
+	double build_cost = 1;
 	int move_pop_mod = 1;
 	double unit_cap_mod = 1;
-	double max_bank_dev_eff = 0;
+	double max_bank_dev_eff = 10;
 	int min_unrest = 0;
 	double max_tax_rate = 0;
 	int[] eco = {0,0,0,0};
 	
 	public Governments() {
 		
+	}
+	
+	public void setGovernment(String[] s) {
+		setNull();
+		setSystem(s[0]);
+		setStruc(s[1]);
+		setRuler(s[2]);
+		setLifeStyle(s[3]);
+		setCentralisation(s[4]);
 	}
 	
 	public void setNull() {//reset everything!
@@ -66,7 +76,8 @@ public class Governments {
 		this.max_pop_size = 0;
 		this.move_pop_mod = 1;
 		this.unit_cap_mod = 1;
-		this.max_bank_dev_eff = 0;
+		this.build_cost = 1;
+		this.max_bank_dev_eff = 10;
 		this.min_unrest = 0;
 		this.max_tax_rate = 0;
 		this.histocracy_fault = false;

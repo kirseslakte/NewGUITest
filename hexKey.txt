@@ -7,18 +7,20 @@ pop_size				6
 unrest					7
 resource				8
 resource_check				9
-buildings				10-x
+building upkeep				10
+buildings upgrade			11
+buildings				12-x
 separator				x+1
 
 /*buildings have the following key:
-"B " String building " " int tier
-EX:	B Palace 2
+"B-" String building "-" int tier
+EX:	B-Palace-2
 
 fortifications have the following key:
-"F "String fortification " " int capacity "," String add-on1 "," String add-on2 ...
-EX: 	F Hill Fort 7,Moat,Curtain Wall
+"F-"String fortification "-" int capacity "," String add-on1 "," String add-on2 ...
+EX: 	F-Hill Fort-7-Moat,Curtain Wall
 
 walls have the following key:
-"W "String wall "," String add-on1 " " int amount "," String add-on2 " " int amount ...
-EX: 	W Primitive,Standard Wooden Gate 1,Bastion 3
+"W-"String wall "-" String add-on1 "," int amount "-" String add-on2 "," int amount ...
+EX: 	W-Primitive-Standard Wooden Gate,1-Bastion,3
 */

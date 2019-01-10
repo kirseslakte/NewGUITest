@@ -1,0 +1,47 @@
+//flat additions in %
+0 tax
+1 prod
+2 trade
+3 vassal
+4 plunder
+5 bank inc
+6 bank dev
+7 material income
+8 hex prod
+9 unit cap
+//flat additions
+10 unit speed
+11 unit damage
+12 hit
+13 ac
+14 morale
+15 command
+16 ranged hit
+17 legitimacy
+18 unrest
+19 trade rolls
+//multiplicative reducers in %
+20 road/rgo
+21 building
+22 settlement upkeep
+23 settlement cost
+24 unit training
+25 unit equipment
+26 fortification
+27 palace build cost
+28 mage
+29 druid
+30 spy
+31 tinker
+32 guild
+//33 in total
+
+sources of tax
+culture, government
+sources of prod
+culture, government
+sources of trade
+culture, government
+sources of vassal
+culture, government
+sources of plunder

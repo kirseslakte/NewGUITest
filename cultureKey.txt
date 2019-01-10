@@ -1,0 +1,33 @@
+//flat additions in %
+0 tax
+1 prod
+2 trade
+3 vassal
+4 plunder
+5 bank
+6 hex prod
+7 unit cap
+//flat additions
+8 unit speed
+9 unit damage
+10 hit
+11 ac
+12 morale
+13 command
+14 ranged hit
+15 legitimacy
+16 unrest
+//multiplicative reducers in %
+17 road/rgo
+18 building
+19 settlement upkeep
+20 settlement cost
+21 unit training
+22 unit equipment
+23 fortification
+24 mage
+25 druid
+26 spy
+27 tinker
+28 guild
+//29 in total

@@ -30,7 +30,6 @@ public class HexPane extends Hex{
 	static GridBagConstraints c = new GridBagConstraints();
 	public static List<String> lordnames = new ArrayList<String>();
 	public static List<Buildings> buildings = new ArrayList<Buildings>();
-	public static List<Boolean> open_building_window = new ArrayList<Boolean>();
 	public static List<String[]> built_buildings = new ArrayList<String[]>();
 	static NationHandler getter = new NationHandler();
 	
@@ -39,6 +38,7 @@ public class HexPane extends Hex{
 	}
 	
 	public Panel hexPane() {
+		System.out.println("HEXPANE! hexPane");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.ipady = 20;
@@ -53,13 +53,11 @@ public class HexPane extends Hex{
 				for (int i=0;i<hex_list.size();i++) {
 					if (!(hex_list.get(i).equals(""))){
 						if (Integer.parseInt(pop_size_list.get(i).getText())>10||Integer.parseInt(pop_size_list.get(i).getText())<1||
-								pop_size_list.get(i).getText().equals(""))
+								pop_size_list.get(i).getText().equals(""))//check if pop size input is ok
 							correct = false;
 					}
 				}
 				if (correct) {
-					getter.request = true;
-					getter.hex_request = true;
 					try {
 						TimeUnit.SECONDS.sleep(1);
 					} catch (Exception ge) {
@@ -133,6 +131,9 @@ public class HexPane extends Hex{
 	}
 	
 	public void updateHexPane() {
+		System.out.println("HEXPANE! updateHexPane");
+		getter.request = true;
+		getter.update_request = true;
 		if (hex_list.size()==0) {//check if we need to add another hex line
 			addHex();
 		}else {
@@ -163,9 +164,12 @@ public class HexPane extends Hex{
 	}
 	
 	public void loadHexPane(boolean loading) {
+		System.out.println("HEXPANE! loadHexPane "+getter.listofhexes.size());
 		for (int i=0;i<getter.listofhexes.size();i++) {
+			System.out.println("hex index "+i);
 			if (loading)//if this is a load or update
 				addHex();
+			buildings.get(i).getInputs(i);
 			hex_list.get(i).setText(getter.listofhexes.get(i).name);
 			owner_list.get(i).setSelectedItem(getter.listofhexes.get(i).owner);
 			hab_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).habitability));
@@ -183,6 +187,7 @@ public class HexPane extends Hex{
 		}
 	}
 	public void addHex() {//simply adds another row along with the structure
+		System.out.println("HEXPANE! addHex");
 		int i = hex_list.size();
 		c.gridy = 2+i;//starting at the 3rd row (2)
 		c.gridx = 0;
@@ -248,39 +253,48 @@ public class HexPane extends Hex{
 		c.gridx = 15;
 		c.ipadx = paddyx[15];
 		building_btn_list.add(new Button("Buildings"));
-		open_building_window.add(new Boolean(false));
+		buildings.add(new Buildings());
+		buildings.get(i).initialize();
 		building_btn_list.get(i).addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
-				if (!open_building_window.get(i))
-					buildingCaller(hex_list.get(i).getText(),i);
+				if ((!buildings.get(i).isVisible())&&i<(hex_list.size()-1))
+					buildingCaller(i);
 			}
 		});
 		hex_panel.add(building_btn_list.get(i),c);//added building button
 	}
 	
-	public String[] buildingCaller(String hex_name, int i) {
-		buildings.add(new Buildings());
-		buildings.get(buildings.size()-1).checkBeforeBuilding(i);
-		
-		String[] building = new String[15];
-		building = buildings.get(buildings.size()-1).doneBuilding();
-		return building;
+	public void buildingCaller(int i) {
+		System.out.println("HEXPANE! buildingCaller");
+		getter.request = true;
+		getter.update_request = true;
+		buildings.get(i).start(i);
 	}
 	
-	public void getBuildings() {
-		
+	public void getBuildings(int hex_number) {
+		System.out.println("HEXPANE! getBuildings");
+		//for (int i=0;i<hex_list.size()-1;i++) 
+			//buildings.get(i).getBuilding();
+		int k = buildings.get(hex_number).all_buildings.length;
+		getter.listofhexes.get(hex_number).built_buildings = new String[k];
+		for (int i=0;i<k;i++){
+			String string = buildings.get(hex_number).all_buildings[i];
+			getter.listofhexes.get(hex_number).built_buildings[i] = string;
+		}
+		System.out.println("HexPane.getBuildings: Done");
 	}
 	
 	
 	public List<String[]> getHex() {
+		System.out.println("HEXPANE! getHex");
 		List<String[]> hexlist = new ArrayList<String[]>();
 		boolean empty_buildings;
-		for (int i=0;i<hex_list.size();i++) {
-			if (built_buildings.size()==0){
-				hexlist.add(new String[9]);
+		for (int i=0;i<hex_list.size()-1;i++) {
+			if (buildings.get(i).all_buildings.length==0){
+				hexlist.add(new String[11]);
 				empty_buildings = true;
 			}else{
-				hexlist.add(new String[9+built_buildings.get(i).length]);
+				hexlist.add(new String[11+buildings.get(i).all_buildings.length]);
 				empty_buildings = false;
 			}
 			hexlist.get(i)[0] = hex_list.get(i).getText();
@@ -292,9 +306,11 @@ public class HexPane extends Hex{
 			hexlist.get(i)[6] = unrest_list.get(i).getText();
 			hexlist.get(i)[7] = (String) resource_list.get(i).getSelectedItem();
 			hexlist.get(i)[8] = Boolean.toString(resource_check_list.get(i).isSelected());
+			hexlist.get(i)[9] = Integer.toString(buildings.get(i).upkeep_cost);
+			hexlist.get(i)[10] = Integer.toString(buildings.get(i).upgrade_cost);
 			if (!empty_buildings){
-				for (int j=0;j<built_buildings.get(i).length;j++) {
-					hexlist.get(i)[9+j] = built_buildings.get(i)[j];
+				for (int j=0;j<buildings.get(i).all_buildings.length;j++) {
+					hexlist.get(i)[11+j] = buildings.get(i).all_buildings[j];
 				}
 			}
 		}

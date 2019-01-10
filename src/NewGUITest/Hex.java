@@ -27,6 +27,8 @@ public class Hex {
 	public int population_value;
 	public int unit_cap;
 	public int govnm_upkeep;
+	public int building_upkeep;
+	public int building_upgrade;
 	
 	public static int[] list_pv = {1,2,4,8,16,32,50,70,80,100};//all of these are rules
 	public static double[] list_pm = {0.25,0.5,1,1.5,2,2.75,3.5,4.25,5.25,6.5};
@@ -53,24 +55,37 @@ public class Hex {
 	public int[] walls_costs;
 	public int[] walls_add_costs;
 	
+	NationHandler getter = new NationHandler();
+	
 	public Hex() {
 		
 	}
 	
 	public Hex(String[] s) {
 		this.loadHex(s);
-		this.setHex();
 	}
-	public void setHex() {
-		if (pop_size>9)
+	
+	public void updateHex() {
+		Utility ut = new Utility();
+		double rgo_mod = 0;
+		for (String s:buildings) {
+			String[] splitter = ut.stringSplitter(s, "-");
+			if (splitter[1].equals("RGO"))
+				rgo_mod += 0.25*Integer.parseInt(splitter[2]);
+			if (splitter[1].equals("Road")||splitter[1].equals("Highway"))
+				rgo_mod += 0.1;
+		}
+		if (this.pop_size>9)
 			this.upgrade_cost = 0;
 		else
-			this.upgrade_cost = list_upgrade_cost[pop_size-1];
-		this.base_bp = (int) Math.round(base_pm*habitability*list_pm[pop_size-1]);
-		this.upkeep = list_upkeep_cost[pop_size-1];
-		this.govnm_upkeep = (int) Math.round(base_pm*10*list_pm[pop_size-1]);
-		this.population_value = list_pv[pop_size-1];
-		this.unit_cap = list_unit_cap[pop_size-1];
+			this.upgrade_cost = (int) Math.round(list_upgrade_cost[this.pop_size-1]*getter.listoflords.get(ut.findLord(owner)).modifiers[23]);
+		this.base_bp = (int) Math.round(base_pm*habitability*list_pm[this.pop_size-1]);
+		this.upkeep = (int) Math.round(list_upkeep_cost[this.pop_size-1]*getter.listoflords.get(ut.findLord(owner)).modifiers[22]);
+		this.govnm_upkeep = (int) Math.round(base_pm*10*list_pm[this.pop_size-1]);
+		this.population_value = list_pv[this.pop_size-1];
+		this.unit_cap = (int) Math.round(list_unit_cap[this.pop_size-1]*(1+getter.listoflords.get(ut.findLord(owner)).modifiers[9]));
+		this.base_production = (int) Math.round(this.base_bp*(1+rgo_mod+getter.listoflords.get(ut.findLord(owner)).modifiers[19]));
+		//^affected by culture boni,culture/religion,unrest,government,resources,buildings
 	}
 	
 	public void loadHex(String[] s){//assumes you have erased the separator
@@ -83,25 +98,14 @@ public class Hex {
 		this.unrest = Integer.parseInt(s[6]);
 		this.resource = s[7];
 		this.resource_check = Boolean.parseBoolean(s[8]);
-		String[] build_holder = Arrays.copyOfRange(s, 9, s.length);
-		int number_of_buildings = 0;
-		for (int i=0;i<build_holder.length;i++){
-			if (build_holder[i].equals("")){
-				number_of_buildings = i;
-				break;
-			}		//buildings look like this String building Int tier
-		}			//fortifications look like this String fortification Int tier String add-on Int amount
-		this.built_buildings = new String[number_of_buildings];
-		for (int i=0;i<number_of_buildings;i++){
-			this.built_buildings[i] = build_holder[i];
+		this.building_upkeep = Integer.parseInt(s[9]);
+		this.building_upgrade = Integer.parseInt(s[10]);
+		built_buildings = new String[s.length-11];//Arrays.copyOfRange(s, 9, s.length);
+		for (int i=0;i<s.length-11;i++){
+			built_buildings[i] = s[11+i];
+			if (!(built_buildings[i].equals("")))
+				buildings.add(built_buildings[i]);
 		}
-		
-		this.population_value = list_pv[this.pop_size-1];
-		this.base_bp = (int) Math.round(list_pm[this.pop_size-1]*base_pm*this.habitability);
-		if (!(this.pop_size==10))
-			this.upgrade_cost = (int) Math.round(list_upgrade_cost[this.pop_size-1]);//will be affected by buildings and culture as well
-		else
-			this.upgrade_cost = 0;
-		this.base_production = this.base_bp;//affected by culture boni,culture/religion,unrest,government,resources,buildings
+		updateHex();
 	}
 }
