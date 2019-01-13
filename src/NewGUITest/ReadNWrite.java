@@ -101,14 +101,12 @@ public class ReadNWrite {
 		int hex_length = 0;
 		try {
 			Scanner sc = new Scanner(file);
-			System.out.println("\nReaduing hex file");
 			while(sc.hasNextLine()){
 				s = sc.nextLine();
 				if (s.equals(separator)){
 					String[] ready_input = new String[hex_length];
 					for (int i=0;i<hex_length;i++)
 						ready_input[i] = hex_input[i];
-					System.out.println("HEX DONE");
 					listofhexes.add(new Hex(ready_input));
 					hex_length = 0;
 					hex_input = new String[max_hex_length];

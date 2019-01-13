@@ -63,6 +63,7 @@ public class HexPane extends Hex{
 					} catch (Exception ge) {
 						System.out.println(ge);
 					}
+					System.out.println("***UPDATING HEX BUTTON***");
 					updateHexPane();
 				} else
 					JOptionPane.showMessageDialog(null, "Hex not correctly configured","Update Error",
@@ -145,7 +146,7 @@ public class HexPane extends Hex{
 		for (int i=0;i<getter.listoflords.size();i++) {
 			lordnames.add(getter.listoflords.get(i).name);
 		}
-		for (int i=0;i<owner_list.size();i++) {
+		for (int i=0;i<owner_list.size();i++) {//update ownerlist
 			owner_list.get(i).removeAllItems();
 			for (String s:lordnames) {
 				owner_list.get(i).addItem(s);
@@ -153,6 +154,7 @@ public class HexPane extends Hex{
 		}
 		//need to update the values
 		for (int i=0;i<getter.listofhexes.size();i++) {//need to fetch all the values from hex
+			getter.listofhexes.get(i).updateHex();
 			upgrade_cost_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).upgrade_cost));
 			bp_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).base_production));
 			upkeep_list.get(i).setText(Integer.toString(getter.listofhexes.get(i).upkeep));
@@ -166,7 +168,6 @@ public class HexPane extends Hex{
 	public void loadHexPane(boolean loading) {
 		System.out.println("HEXPANE! loadHexPane "+getter.listofhexes.size());
 		for (int i=0;i<getter.listofhexes.size();i++) {
-			System.out.println("hex index "+i);
 			if (loading)//if this is a load or update
 				addHex();
 			buildings.get(i).getInputs(i);

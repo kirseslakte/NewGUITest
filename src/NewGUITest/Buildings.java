@@ -245,6 +245,11 @@ public class Buildings extends JFrame{
 	    	this.c.gridx = 4;
 	    	mainbuild.add(this.fortifications_upkeep.get(j),c);
 	    	//ADDED VISUAL LAYER FOR FORTIFICATIONS
+	    	try {
+	    		int t = this.all_buildings.length;//see if all_buildings is initialized
+	    	} catch (NullPointerException e) {
+	    		this.all_buildings = new String[0];//set it to a null string 
+	    	}
 	    }
 	    this.active_walls = walllist;
 	    this.walls = new JComboBox<>(this.active_walls);
@@ -295,7 +300,13 @@ public class Buildings extends JFrame{
 				this.built_buildings.add(build+"-"+Integer.toString(tier));
 				tier = findBuildingCost(build,tier);
 				this.buildings_cost.get(i).setText(Integer.toString(tier));
-				this.buildings_upkeep.get(i).setText(Integer.toString((int) Math.round(tier*0.2)));
+				if (build.equals("RGO")||build.equals("Supply Cache")||build.equals("Bureau")||build.equals("Center of Trade"))
+					this.buildings_upkeep.get(i).setText("0");
+				else
+					this.buildings_upkeep.get(i).setText(Integer.toString((int) Math.round(tier*0.2)));
+			} else {
+				this.buildings_cost.get(i).setText("0");
+				this.buildings_upkeep.get(i).setText("0");
 			}
 		}//done with buildings
 		this.built_fortifications.clear();
@@ -319,6 +330,9 @@ public class Buildings extends JFrame{
 					this.fortifications_upkeep.get(i).setText(Integer.toString((int) Math.round(tier*0.2)));
 					tier += this.addonframes.get(i).cost;
 					this.fortifications_cost.get(i).setText(Integer.toString(tier));
+			}else {
+				this.fortifications_cost.get(i).setText("0");
+				this.fortifications_upkeep.get(i).setText("0");
 			}
 		}
 		String built = (String) this.walls.getSelectedItem();

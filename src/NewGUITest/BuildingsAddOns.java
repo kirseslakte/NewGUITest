@@ -101,6 +101,7 @@ public class BuildingsAddOns extends JFrame{
 
 	public void setAddOn(String[] s, int fort_cost) {//set takes input into code and visual layers (should only be called when loading/opening pop-up!)
 		this.base_cost = fort_cost;
+		System.out.println("ADDON BASE COST IS "+fort_cost);
 		this.built_add_on.clear();
 		for (int i=0;i<s.length;i++) {
 			String addon = s[i];

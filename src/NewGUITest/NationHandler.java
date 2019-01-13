@@ -37,6 +37,8 @@ public class NationHandler extends JFrame{
 				min++;
 				if (min==3600)//reset every hour
 					min = 0;
+				//if (min==2)
+					//initializeHex();
 				if (request) {
 					request = false;
 					if (vassal_request){
@@ -96,8 +98,8 @@ public class NationHandler extends JFrame{
 		}
 		//all lords have been loaded!!
 		System.out.println("NATIONHANDLER! Lords loaded");
+		recalibrateLords();
 		listofhexes = write.loadHexes();
-		System.out.println("Loaded "+listofhexes.size()+" hexes");
 		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPane()));//loaded after all the lords
 		System.out.println("NATIONHANDLER! Updating hex");
 		//hexpanel.updateHexPane();
@@ -148,13 +150,15 @@ public class NationHandler extends JFrame{
 	}
 	
 	public void updateNation() {
-		recalibrateHexes();
+		System.out.println("NATIONHANDLER! updateNation");
 		for (Lord lord:listoflords) {
 			lord.getGovernment();
 			lord.loadModifiers();//this should not be in update
 			if (lord.title.equals("overlord"))
 				bonuses.getCulture();
 		}
+		recalibrateLords();
+		recalibrateHexes();
 	}
 	
 	public void mainSetup(String s) {
@@ -177,6 +181,8 @@ public class NationHandler extends JFrame{
 	}
 	
 	public void recalibrateHexes() {
+		for (int i=0;i<listoflords.size();i++)
+			listoflords.get(i).loadModifiers();
 		List<String[]> hexes = new ArrayList<String[]>();
 		boolean exists;
 		hexes = hexpanel.getHex();
@@ -206,7 +212,28 @@ public class NationHandler extends JFrame{
 						}
 					} else
 						listoflords.get(j).accessed_resources[r] = true;
+				listoflords.get(j).loadModifiers();
 			}
+		}
+	}
+	
+	public void initializeHex() {
+		Utility ut = new Utility();
+		for (int i=0;i<listofhexes.size();i++) {
+			hexpanel.buildings.get(i).start(i);
+			for (int j=0;j<hexpanel.buildings.get(i).built_fortifications.size();j++){
+				String fort_name = hexpanel.buildings.get(i).built_fortifications.get(j);
+				hexpanel.buildings.get(i).addonframes.get(j).start(i, fort_name);
+				hexpanel.buildings.get(i).addonframes.get(j).stop();
+			}
+			if (!(hexpanel.buildings.get(i).built_walls.equals(""))) {
+				String wall = hexpanel.buildings.get(i).built_walls;
+				int lordy = ut.findLord(hexpanel.buildings.get(i).hex.owner);
+				double mod = listoflords.get(lordy).modifiers[26];
+				hexpanel.buildings.get(i).wallframe.start(i,wall,mod);
+				hexpanel.buildings.get(i).wallframe.stop();
+			}
+			hexpanel.buildings.get(i).stop();
 		}
 	}
 }

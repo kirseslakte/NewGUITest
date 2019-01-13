@@ -66,6 +66,7 @@ public class Hex {
 	}
 	
 	public void updateHex() {
+		System.out.println("HEX! updateHex");
 		Utility ut = new Utility();
 		double rgo_mod = 0;
 		for (String s:buildings) {
