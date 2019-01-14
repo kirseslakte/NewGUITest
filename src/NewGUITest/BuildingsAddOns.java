@@ -35,6 +35,7 @@ public class BuildingsAddOns extends JFrame{
 	}
 	
 	public void start(int hex_index, String fort_name) {
+		System.out.println("BUILDINGADDON! start");
 		this.hex_index = hex_index;
 		for (int i=0;i<this.add_on.size();i++) {
 			try {
@@ -50,14 +51,17 @@ public class BuildingsAddOns extends JFrame{
 	    }
 	}
 	public void stop() {
+		System.out.println("BUILDINGADDON! stop");
 		this.setVisible(false);
 	}
 	
 	public void initialize() {
+		System.out.println("BUILDINGADDON! initialize");
 	    this.setFrame();
 	}
 	
 	public void setFrame() {//setting the visuals of the frame
+		System.out.println("BUILDINGADDON! setFrame");
 		//this.removeAll();
 		JPanel panel = new JPanel(new GridBagLayout());
 		this.setSize(600,500);
@@ -100,6 +104,7 @@ public class BuildingsAddOns extends JFrame{
 	}
 
 	public void setAddOn(String[] s, int fort_cost) {//set takes input into code and visual layers (should only be called when loading/opening pop-up!)
+		System.out.println("BUILDINGADDON! setAddOn");
 		this.base_cost = fort_cost;
 		System.out.println("ADDON BASE COST IS "+fort_cost);
 		this.built_add_on.clear();
@@ -113,6 +118,7 @@ public class BuildingsAddOns extends JFrame{
 	}
 	
 	public void update() {//called to update the visual layer as well as to put info from visual->code
+		System.out.println("BUILDINGADDON! update");
 		this.cost = 0;
 		this.built_add_on.clear();
 		for (int i=0;i<this.add_on.size();i++) {
@@ -128,6 +134,7 @@ public class BuildingsAddOns extends JFrame{
 	}
 	
 	public int findCost(String s) {// helper function
+		System.out.println("BUILDINGADDON! findCost");
 		int build_cost = 0;
 		for (int i=0;i<add_on_costs.length;i++){
 			if (s.equals(addonlist[i+1]))

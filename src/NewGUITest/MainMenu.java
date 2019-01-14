@@ -5,15 +5,14 @@ import java.awt.event.*;
 
 public class MainMenu extends Frame {
 	//add components that will go in the frame
-	private Frame menuFrame;
-	public String feedback = "";
-	public boolean running = false;
+	public LoadWindow load = new LoadWindow();
 	
 	public MainMenu() {//constructor constructs the frame
-		menuFrame = new Frame("Main Menu");
-		menuFrame.setSize(400,600);
-	    menuFrame.setLocationRelativeTo(null);
-		menuFrame.addWindowListener(new WindowAdapter() {//close program on closing window
+		System.out.println("MAINMENU! MainMenu");
+		this.setTitle("Main Menu");
+		this.setSize(400,600);
+		this.setLocationRelativeTo(null);
+		this.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				System.exit(0);
 			}
@@ -26,32 +25,33 @@ public class MainMenu extends Frame {
 		menuPnl.add(loadBtn);
 		Button quitBtn = new Button("Quit");
 		menuPnl.add(quitBtn);
-		menuFrame.add(menuPnl);
+		this.add(menuPnl);
 		newBtn.addActionListener(new ActionListener() {//add action event to new button
 			public void actionPerformed(ActionEvent e){
-				feedback = "New";
+				stop();
+				load.startNation();
 			}
 		});
 		loadBtn.addActionListener(new ActionListener() {//add action event to load button
 			public void actionPerformed(ActionEvent e){
-				feedback = "Load";
+				stop();
+				load.start();
 			}
 		});
 		quitBtn.addActionListener(new ActionListener() {//add action event to quit button
 			public void actionPerformed(ActionEvent e){
-				feedback = "Quit";
+				System.exit(0);
 			}
 		});
 	}
 	
 	public void start() {
-		running = true;
-		menuFrame.setVisible(true);
+		System.out.println("MAINMENU! start");
+		this.setVisible(true);
 	}
 	
 	public void stop() {
-		running = false;
-		feedback = "";
-		menuFrame.setVisible(false);
+		System.out.println("MAINMENU! stop");
+		this.setVisible(false);
 	}
 }

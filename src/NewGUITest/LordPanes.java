@@ -24,9 +24,6 @@ public class LordPanes {
 	public JTextField[] histocracy_values = new JTextField[4];
 	public JTextField legitimacy;
 	public boolean histocheck;
-	//culture variables
-	public static List<JTextField> culturefields = new ArrayList<JTextField>();
-	Culture culturebon = new Culture();
 	
 	//TODO:
 	//make sure, when loading that the correct values are displayed,
@@ -37,6 +34,7 @@ public class LordPanes {
 	}
 	
 	public Panel nationPanel(Governments government,boolean b) {//creates the nation panel 
+		System.out.println("LORDPANE! nationPanel");
 		Panel nation_panel = new Panel(new GridLayout(0,4));
 		for (int i=0;i<nationlabels.length;i++) {
 			nationlabels[i] = new JLabel("0");
@@ -54,6 +52,7 @@ public class LordPanes {
 	}
 	
 	public Panel governmentPane(Governments government, Institutions institutes) {//government panel
+		System.out.println("LORDPANE! governmentPane");
 		this.government_panel.add(new JLabel("Culture"));
 		this.government_panel.add(culture = new JComboBox<>(government.alignments));
 		this.government_panel.add(legitimacy_label = new JLabel("Legitimacy"));
@@ -80,6 +79,7 @@ public class LordPanes {
 	}
 	
 	public void setGovernmentPane(Governments government, Institutions institutes) {//load visuals for government pane
+		System.out.println("LORDPANE! setGovernmentPane");
 		this.culture.setSelectedItem(government.culture);
 		this.legitimacy.setText(Integer.toString(government.legitimacy));
 		this.religion.setSelectedItem(government.religion);
@@ -103,6 +103,7 @@ public class LordPanes {
 	}
 	
 	public void updateGovernmentPane(Governments government) {//update if hive/hist are selected
+		System.out.println("LORDPANE! updateGovernmentPane");
 		if (government.sys.equals("Hive"))  //set legitimacy text for hive or not hive
 			this.legitimacy_label.setText("Control");
 		else if (!government.sys.equals("Hive")&&legitimacy_label.getText().equals("Control"))
@@ -128,18 +129,4 @@ public class LordPanes {
 		this.government_panel.revalidate();		
 	}
 	
-	public Panel culturePane() {//culture panel
-		Panel culture_panel = new Panel(new GridLayout(0,4));
-		for (int i=0;i<culturebon.culture_names.length;i++){
-			culturefields.add(new JTextField("0"));
-			culture_panel.add(new JLabel(culturebon.culture_names[i]));
-			culture_panel.add(culturefields.get(i));
-		}
-		return culture_panel;
-	}
-	
-	public void setCulturePane(double[] s) {//setting culture pane
-		for (int i=0;i<culturebon.culture_names.length;i++)//only ever called from lord.setCulture()
-			culturefields.get(i).setText(Integer.toString((int) (s[i]*100)));
-	}
 }

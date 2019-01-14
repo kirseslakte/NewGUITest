@@ -1,5 +1,5 @@
 WHEN CREATING VASSALS ONE MUST ASSIGN NAME TO THE VASSAL AND THE LORD OF THE VASSAL!!!!
 
-reading the input values on buildings into built_buildings,built_fortifications and so on seems to be working!
-1. next step is to be able to read these strings and put them into the visuals.
-2. after that we need to fix so that when we load the nation, hexes are loaded properly, and that the built_strings are loaded!
+there seems to be an issue with reading costs and upkeeps from add-ons into buildings. they are never added by themselves at start.
+
+FIX HEX AND CULTURE SO THAT WE CAN CREATE THE PANES SEPARATE FROM THE CODE LAYER

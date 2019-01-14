@@ -36,8 +36,7 @@ public class Lord extends NationHandler {
 	
 	//TradeWindow trade = new TradeWindow();
 	
-	NationHandler getter = new NationHandler();
-	Culture culture = new Culture();
+	static NationHandler getter = new NationHandler();
 	/*													MAYBE ROLL ALL THESE OFFICALS INTO SEPARATE CLASS
 	 * bank income roll								4	OFFICIAL
 	 * tax collect roll								5	OFFICIAL
@@ -64,14 +63,15 @@ public class Lord extends NationHandler {
 	}
 	
 	public Panel setPanel(boolean master) {
+		System.out.println("LORD! setPanel");
 		int layers = 1;
 		if (master)
 			layers = 2;
 		Panel mainPnl = new Panel(new GridLayout(layers,2));//set up panel
 		mainPnl.add(panes.nationPanel(government,!master_title.equals("")));
 		mainPnl.add(panes.governmentPane(government, institutes));
-		if (master) {
-			mainPnl.add(panes.culturePane());
+		if (master) {/*
+			mainPnl.add(Culture.culturePane());*/
 			Panel pnl4 = new Panel(new GridLayout(1,1));//setting up dummybuttons on the dummypane
 			Button newVassalBtn = new Button("New Vassal");//adding buttons
 			Button saveBtn = new Button("Save Nation");
@@ -80,14 +80,12 @@ public class Lord extends NationHandler {
 			////BUTTON FUNCTIONALITIES////
 			newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
 				public void actionPerformed(ActionEvent e){
-					request = true;
-					vassal_request = true;
+					//getter.newLord(new_lord, master);
 				}
 			});
 			saveBtn.addActionListener(new ActionListener() {//add action event to save button
 				public void actionPerformed(ActionEvent e){
-					request = true;
-					save_request = true;
+					getter.saveNation();
 				}
 			});
 		}
@@ -95,6 +93,7 @@ public class Lord extends NationHandler {
 	}
 	
 	public void getGovernment() {//getting the government tab things
+		System.out.println("LORD! getGovernment");
 		this.government.eco[0] = (int) Double.parseDouble(this.panes.inputs[0].getText());	
 		this.government.eco[1] = (int) Double.parseDouble(this.panes.inputs[1].getText());
 		this.government.eco[2] = (int) Double.parseDouble(this.panes.inputs[2].getText());
@@ -122,6 +121,7 @@ public class Lord extends NationHandler {
 	}
 	
 	public void loadGovernment(String[] s) {//only ever called when loading//has nothing to do with visual layer
+		System.out.println("LORD! loadGovernment");
 		this.government.setSystem(s[1]);
 		this.government.setStruc(s[2]);
 		this.government.setRuler(s[3]);
@@ -147,10 +147,12 @@ public class Lord extends NationHandler {
 	}
 	
 	public void setGovernment() {//visual update of government pane
+		System.out.println("LORD! setGovernment");
 		this.panes.setGovernmentPane(government, institutes);
 	}
 	
 	public void getModifiers() {//getting all modifiers from visual layers
+		System.out.println("LORD! getModifiers");
 		//NO!! getter layer should not communicate with
 	}
 	
@@ -179,38 +181,38 @@ public class Lord extends NationHandler {
 					traderolls += 2;
 			}
 		}
-		this.modifiers[0] = culture.used_bonus[0]+this.government.tax_eff*this.government.legitimacy*0.1;//taxeff
-		this.modifiers[1] = culture.used_bonus[1]+this.government.prod_eff*this.government.legitimacy*0.1;//prodeff
-		this.modifiers[2] = culture.used_bonus[2]+this.government.trade_eff*this.government.legitimacy*0.1+metals;//tradeeff
-		this.modifiers[3] = culture.used_bonus[3]+this.government.vassal_inc_eff*this.government.legitimacy*0.1;//vassaleff
-		this.modifiers[4] = culture.used_bonus[4]+this.government.plunder_eff*this.government.legitimacy*0.1;//plundereff
-		this.modifiers[5] = culture.used_bonus[5]+this.government.bank_inc_eff*this.government.legitimacy*0.1;//bank inc eff
-		this.modifiers[6] = Math.min(culture.used_bonus[5]+this.government.bank_dev_eff*this.government.legitimacy*0.1,this.government.max_bank_dev_eff);//bank dev eff
+		this.modifiers[0] = Culture.used_bonus[0]+this.government.tax_eff*this.government.legitimacy*0.1;//taxeff
+		this.modifiers[1] = Culture.used_bonus[1]+this.government.prod_eff*this.government.legitimacy*0.1;//prodeff
+		this.modifiers[2] = Culture.used_bonus[2]+this.government.trade_eff*this.government.legitimacy*0.1+metals;//tradeeff
+		this.modifiers[3] = Culture.used_bonus[3]+this.government.vassal_inc_eff*this.government.legitimacy*0.1;//vassaleff
+		this.modifiers[4] = Culture.used_bonus[4]+this.government.plunder_eff*this.government.legitimacy*0.1;//plundereff
+		this.modifiers[5] = Culture.used_bonus[5]+this.government.bank_inc_eff*this.government.legitimacy*0.1;//bank inc eff
+		this.modifiers[6] = Math.min(Culture.used_bonus[5]+this.government.bank_dev_eff*this.government.legitimacy*0.1,this.government.max_bank_dev_eff);//bank dev eff
 		this.modifiers[7] = 0;//material inc eff
-		this.modifiers[8] = culture.used_bonus[6];//hex prod mod
-		this.modifiers[9] = culture.used_bonus[7];//unit cap
-		this.modifiers[10] = culture.used_bonus[8];//speed
-		this.modifiers[11] = culture.used_bonus[9];//dmg
-		this.modifiers[12] = culture.used_bonus[10];//hit
-		this.modifiers[13] = culture.used_bonus[11];//ac
-		this.modifiers[14] = culture.used_bonus[12];//morale
-		this.modifiers[15] = culture.used_bonus[13];//command
-		this.modifiers[16] = culture.used_bonus[14];//ranged hit
-		this.modifiers[17] = culture.used_bonus[15];//legitimacy
-		this.modifiers[18] = culture.used_bonus[16];//unrest
+		this.modifiers[8] = Culture.used_bonus[6];//hex prod mod
+		this.modifiers[9] = Culture.used_bonus[7];//unit cap
+		this.modifiers[10] = Culture.used_bonus[8];//speed
+		this.modifiers[11] = Culture.used_bonus[9];//dmg
+		this.modifiers[12] = Culture.used_bonus[10];//hit
+		this.modifiers[13] = Culture.used_bonus[11];//ac
+		this.modifiers[14] = Culture.used_bonus[12];//morale
+		this.modifiers[15] = Culture.used_bonus[13];//command
+		this.modifiers[16] = Culture.used_bonus[14];//ranged hit
+		this.modifiers[17] = Culture.used_bonus[15];//legitimacy
+		this.modifiers[18] = Culture.used_bonus[16];//unrest
 		this.modifiers[19] = traderolls;//trade rolls
-		this.modifiers[20] = culture.used_bonus[17];//rgo/road
-		this.modifiers[21] = culture.used_bonus[18]*darkwood;//building
-		this.modifiers[22] = culture.used_bonus[19];//settlement upkeep
-		this.modifiers[23] = culture.used_bonus[20];//settlement cost
-		this.modifiers[24] = culture.used_bonus[21];//unit training
-		this.modifiers[25] = culture.used_bonus[22];//unit eq
-		this.modifiers[26] = culture.used_bonus[23]*stone;//fortification
+		this.modifiers[20] = Culture.used_bonus[17];//rgo/road
+		this.modifiers[21] = Culture.used_bonus[18]*darkwood;//building
+		this.modifiers[22] = Culture.used_bonus[19];//settlement upkeep
+		this.modifiers[23] = Culture.used_bonus[20];//settlement cost
+		this.modifiers[24] = Culture.used_bonus[21];//unit training
+		this.modifiers[25] = Culture.used_bonus[22];//unit eq
+		this.modifiers[26] = Culture.used_bonus[23]*stone;//fortification
 		this.modifiers[27] = marble;//palace
-		this.modifiers[28] = culture.used_bonus[24];//mage
-		this.modifiers[29] = culture.used_bonus[25];//druid
-		this.modifiers[30] = culture.used_bonus[26];//spy
-		this.modifiers[31] = culture.used_bonus[27];//tinker
-		this.modifiers[32] = culture.used_bonus[28];//guild
+		this.modifiers[28] = Culture.used_bonus[24];//mage
+		this.modifiers[29] = Culture.used_bonus[25];//druid
+		this.modifiers[30] = Culture.used_bonus[26];//spy
+		this.modifiers[31] = Culture.used_bonus[27];//tinker
+		this.modifiers[32] = Culture.used_bonus[28];//guild
 	}
 }

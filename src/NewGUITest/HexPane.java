@@ -133,8 +133,7 @@ public class HexPane extends Hex{
 	
 	public void updateHexPane() {
 		System.out.println("HEXPANE! updateHexPane");
-		getter.request = true;
-		getter.update_request = true;
+		getter.updateNation();
 		if (hex_list.size()==0) {//check if we need to add another hex line
 			addHex();
 		}else {
@@ -267,8 +266,7 @@ public class HexPane extends Hex{
 	
 	public void buildingCaller(int i) {
 		System.out.println("HEXPANE! buildingCaller");
-		getter.request = true;
-		getter.update_request = true;
+		getter.updateNation();
 		buildings.get(i).start(i);
 	}
 	

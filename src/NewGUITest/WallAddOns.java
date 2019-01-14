@@ -28,7 +28,7 @@ public class WallAddOns extends JFrame{
 	NationHandler getter = new NationHandler();
 		
 	public WallAddOns() {
-		System.out.println("ADDON! WallAddOns");
+		System.out.println("WALLADDON! WallAddOns");
 		this.c.fill = GridBagConstraints.HORIZONTAL;
 		this.c.weightx = 0.5;
 		this.c.ipady = 20;
@@ -36,7 +36,7 @@ public class WallAddOns extends JFrame{
 	}
 	
 	public void setFrame() {
-		System.out.println("ADDON! setFrame");
+		System.out.println("WALLADDON! setFrame");
 		JPanel panel = new JPanel(new GridBagLayout());
 		this.setSize(600,500);
 	    this.setLocationRelativeTo(getter);
@@ -85,7 +85,7 @@ public class WallAddOns extends JFrame{
 	}
 	
 	public void update() {	
-		System.out.println("ADDON! update");	
+		System.out.println("WALLADDON! update");	
 		int amount = 1;
 		this.cost = 0;
 		this.built_add_on.clear();
@@ -105,12 +105,12 @@ public class WallAddOns extends JFrame{
 	}
 	
 	public void initialize() {
-		System.out.println("ADDON! initialize");	
+		System.out.println("WALLADDON! initialize");	
 	    this.setFrame();
 	}
 	
 	public void setAddOn(String[] s,int[] amounts) {//walls load takes input into code and visual layers (should only be called when loading/opening pop-up!)
-		System.out.println("ADDON! setAddOn");
+		System.out.println("WALLADDON! setAddOn");
 		this.built_add_on.clear();
 		for (int i=0;i<s.length;i++) {
 			this.built_add_on.add(s[i]+","+Integer.toString(amounts[i]));
@@ -122,7 +122,7 @@ public class WallAddOns extends JFrame{
 	}
 	
 	public void start(int hex_index, String fort_name, double fort_reducer) {
-		System.out.println("ADDON! start");
+		System.out.println("WALLADDON! start");
 		this.hex_index = hex_index;
 		this.wall_mod = fort_reducer;
 		for (int i=0;i<this.add_on.size();i++) {
@@ -140,7 +140,7 @@ public class WallAddOns extends JFrame{
 	}
 	
 	public int findCost(String s) {// helper function
-		System.out.println("ADDON! findCost");
+		System.out.println("WALLADDON! findCost");
 		int build_cost = 0;
 		for (int i=0;i<wall_add_on_costs.length;i++){
 			if (s.equals(walladdonlist[i+1]))
@@ -150,7 +150,7 @@ public class WallAddOns extends JFrame{
 	}
 	
 	public void stop() {
-		System.out.println("ADDON! stop");
+		System.out.println("WALLADDON! stop");
 		this.setVisible(false);
 	}
 }

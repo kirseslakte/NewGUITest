@@ -90,6 +90,7 @@ public class Hex {
 	}
 	
 	public void loadHex(String[] s){//assumes you have erased the separator
+		System.out.println("HEX! loadHex");
 		this.name = s[0];
 		this.owner = s[1];
 		this.habitability = Integer.parseInt(s[2]);

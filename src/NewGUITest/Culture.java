@@ -1,5 +1,13 @@
 package NewGUITest;
 
+import java.awt.GridLayout;
+import java.awt.Panel;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
 public class Culture {
 
 	public static double[] culture_bonuses;//culture bonuses
@@ -13,16 +21,34 @@ public class Culture {
 			
 			//reducers are (-20), boni are (20)
 
-	int k;
+	public static int k;
+	//culture variables
+	public static List<JTextField> culturefields = new ArrayList<JTextField>();
 	
 	public Culture() {
 		
 	}
+	public static Panel culturePane() {//culture panel
+		System.out.println("LORDPANE! culturePane");
+		Panel culture_panel = new Panel(new GridLayout(0,4));
+		for (int i=0;i<culture_names.length;i++){
+			culturefields.add(new JTextField("0"));
+			culture_panel.add(new JLabel(culture_names[i]));
+			culture_panel.add(culturefields.get(i));
+		}
+		return culture_panel;
+	}
 	
-	public void getCulture() {//extracting all the culture modifiers
+	public static void setCulturePane(double[] s) {//setting culture pane
+		System.out.println("LORDPANE! setCulturePane");
+		for (int i=0;i<culture_names.length;i++)//only ever called from lord.setCulture()
+			culturefields.get(i).setText(Integer.toString((int) (s[i]*100)));
+	}
+	
+	public static void getCulture() {//extracting all the culture modifiers
+		System.out.println("CULTURE! getCulture");
 		for (int i=0;i<culture_names.length;i++) {//from visual layer	
-			NationHandler getter = new NationHandler();
-			culture_bonuses[i] = Double.parseDouble(getter.listoflords.get(k).panes.culturefields.get(i).getText())*0.01;
+			culture_bonuses[i] = Double.parseDouble(culturefields.get(i).getText())*0.01;
 			if (i<8)
 				used_bonus[i] = culture_bonuses[i];
 			else if (i>16)
@@ -32,31 +58,32 @@ public class Culture {
 		}
 	}
 	
-	public String[] readCulture() {//just print out the fields to the save file
-		NationHandler getter = new NationHandler();
+	public static String[] readCulture() {//just print out the fields to the save file
+		System.out.println("CULTURE! readCulture");
 		String[] reads = new String[culture_names.length];
 		for (int i=0;i<culture_names.length;i++)
-			reads[i] = getter.listoflords.get(k).panes.culturefields.get(i).getText();
+			reads[i] = culturefields.get(i).getText();
 		return reads;
 	}
 	
-	public void loadCulture(String[] boni) {//only ever called when loading, nothing to do with visual layer
-		NationHandler getter = new NationHandler();//we get where the overlord is first!
+	public static void loadCulture(String[] boni) {//only ever called when loading, nothing to do with visual layer
+		System.out.println("CULTURE! loadCulture");
 		createCulture();
-		for (int i=0;i<getter.listoflords.size();i++){
-			if (getter.listoflords.get(i).title.equals("overlord"))
+		for (int i=0;i<NationHandler.listoflords.size();i++){
+			if (NationHandler.listoflords.get(i).title.equals("overlord"))
 				k = i;
 		}
 		for (int i=0;i<culture_names.length;i++)
 			culture_bonuses[i] = Integer.parseInt(boni[i])*0.01;
 	}
 	
-	public void setCulture() {	
-		NationHandler getter = new NationHandler();
-		getter.listoflords.get(k).panes.setCulturePane(culture_bonuses);
+	public static void setCulture() {	
+		System.out.println("CULTURE! setCulture");
+		setCulturePane(culture_bonuses);
 	}
 	
-	public void createCulture() {
+	public static void createCulture() {
+		System.out.println("CULTURE! createCulture");
 		culture_bonuses = new double[culture_names.length];
 		used_bonus = new double[culture_names.length];
 	}
