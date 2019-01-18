@@ -55,8 +55,6 @@ public class Hex {
 	public int[] walls_costs;
 	public int[] walls_add_costs;
 	
-	NationHandler getter = new NationHandler();
-	
 	public Hex() {
 		
 	}
@@ -67,10 +65,9 @@ public class Hex {
 	
 	public void updateHex() {
 		System.out.println("HEX! updateHex");
-		Utility ut = new Utility();
 		double rgo_mod = 0;
 		for (String s:buildings) {
-			String[] splitter = ut.stringSplitter(s, "-");
+			String[] splitter = Utility.stringSplitter(s, "-");
 			if (splitter[1].equals("RGO"))
 				rgo_mod += 0.25*Integer.parseInt(splitter[2]);
 			if (splitter[1].equals("Road")||splitter[1].equals("Highway"))
@@ -79,13 +76,13 @@ public class Hex {
 		if (this.pop_size>9)
 			this.upgrade_cost = 0;
 		else
-			this.upgrade_cost = (int) Math.round(list_upgrade_cost[this.pop_size-1]*getter.listoflords.get(ut.findLord(owner)).modifiers[23]);
+			this.upgrade_cost = (int) Math.round(list_upgrade_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[23]);
 		this.base_bp = (int) Math.round(base_pm*habitability*list_pm[this.pop_size-1]);
-		this.upkeep = (int) Math.round(list_upkeep_cost[this.pop_size-1]*getter.listoflords.get(ut.findLord(owner)).modifiers[22]);
+		this.upkeep = (int) Math.round(list_upkeep_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[22]);
 		this.govnm_upkeep = (int) Math.round(base_pm*10*list_pm[this.pop_size-1]);
 		this.population_value = list_pv[this.pop_size-1];
-		this.unit_cap = (int) Math.round(list_unit_cap[this.pop_size-1]*(1+getter.listoflords.get(ut.findLord(owner)).modifiers[9]));
-		this.base_production = (int) Math.round(this.base_bp*(1+rgo_mod+getter.listoflords.get(ut.findLord(owner)).modifiers[19]));
+		this.unit_cap = (int) Math.round(list_unit_cap[this.pop_size-1]*(1+NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[9]));
+		this.base_production = (int) Math.round(this.base_bp*(1+rgo_mod+NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[8]));
 		//^affected by culture boni,culture/religion,unrest,government,resources,buildings
 	}
 	
@@ -108,6 +105,6 @@ public class Hex {
 			if (!(built_buildings[i].equals("")))
 				buildings.add(built_buildings[i]);
 		}
-		updateHex();
+		this.updateHex();
 	}
 }

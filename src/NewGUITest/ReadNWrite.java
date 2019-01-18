@@ -118,7 +118,6 @@ public class ReadNWrite {
 					hex_input = new String[max_hex_length];
 				}else {
 					hex_input[hex_length] = s;
-					System.out.println(hex_input[hex_length]);
 					hex_length++;
 				}
 			}
@@ -176,10 +175,19 @@ public class ReadNWrite {
 		List<Official> listofofficials = new ArrayList<Official>();
 		String s = directory+"/officials"+filetype;
 		File file = new File(s);
+		String[] official = new String[5];
+		int i = 0;
 		try {
 			Scanner sc = new Scanner(file);
 			while(sc.hasNextLine()){
-						
+				s = sc.nextLine();
+				if (s.equals(separator)){
+					listofofficials.add(new Official(official));
+					i = 0;
+				}else {
+					official[i] = s;
+					i++;
+				}
 				//listofofficials.add(hex);
 			}
 			sc.close();
@@ -418,10 +426,10 @@ public class ReadNWrite {
 			FileWriter fw = new FileWriter(file);
 			for (Official official:listofofficials){
 				fw.write(official.name+System.getProperty("line.separator"));
-				fw.write(official.type+System.getProperty("line.separator"));
+				fw.write(official.job+System.getProperty("line.separator"));
 				fw.write(Integer.toString(official.roll)+System.getProperty("line.separator"));
-				fw.write(official.hex+System.getProperty("line.separator"));
 				fw.write(official.lord+System.getProperty("line.separator"));
+				fw.write(official.free+System.getProperty("line.separator"));
 				fw.write(separator+System.getProperty("line.separator"));//use separator since that might be easier to load?
 			}						//might not be, but just remove it then
 			fw.close();

@@ -10,6 +10,7 @@ public class Route{//trade route object
 	public int partner_BP;
 	
 	public Route(String[] s) {
+		System.out.println("ROUTE! Route");
 		this.name = s[0];//the name of the trade route
 		this.lord = s[1];//the owner of it (title)
 		this.active = Boolean.parseBoolean(s[2]);//if it is active or passive

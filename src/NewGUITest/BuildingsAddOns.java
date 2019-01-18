@@ -65,12 +65,12 @@ public class BuildingsAddOns extends JFrame{
 		//this.removeAll();
 		JPanel panel = new JPanel(new GridBagLayout());
 		this.setSize(600,500);
-	    this.setLocationRelativeTo(getter);
+	    this.setLocationRelativeTo(null);
     	this.setTitle("Fortification add-ons");
     	this.addWindowListener(new WindowAdapter() {//close frame on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				update();
-				getter.hexpanel.buildings.get(hex_index).update();
+				HexPane.buildings.get(hex_index).update();
 			}
 		});
     	this.c.gridy = 0;//first row!
@@ -89,7 +89,7 @@ public class BuildingsAddOns extends JFrame{
 	    this.c.gridx = 4;
 	    panel.add(updater,c);
 	    for (int i=0;i<5;i++) {
-	    	this.add_on.add(new JComboBox<>(this.addonlist));
+	    	this.add_on.add(new JComboBox<>(addonlist));
 	    	this.add_on_cost.add(new JLabel("0"));
 	    	this.add_on_upkeep.add(new JLabel("0"));
 	    	this.c.gridy = 1+i;

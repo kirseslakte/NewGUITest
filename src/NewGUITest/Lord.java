@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class Lord extends NationHandler {
+public class Lord {
 	
 	public final int max_number_of_institutions = 4;//rule variables
 	
@@ -25,18 +25,20 @@ public class Lord extends NationHandler {
 	public double overlord_tax_rate;
 	public String master_title;
 	public String title;
-	public boolean[] accessed_resources = new boolean[17];//darkwood->Drugs
+	public boolean[] accessed_resources = new boolean[Hex.passive_resources.length];//darkwood->Drugs
 	public Institutions institutes = new Institutions();
 	public Governments government = new Governments();
+	public OfficialWindow official = new OfficialWindow();
 	public double[] modifiers = new double[33];
 	public static String[] mod_names =  {"Tax Efficiency","Production Efficiency","Trade Efficiency","Vassal Tax Income Efficiency","Plunder Efficinecy","Bank Income Efficiency",
 			"Bank Development Efficiency","Rare Resource Income","Unit Speed","Unit Damage","Hit","AC","Morale","Command","Ranged Hit","Unit Cap","Legitimacy Checks","Unrest Checks",
 			"Trade Rolls","Base Production","RGO/Road Cost","Building Cost","Settlement Upkeep Cost","Settlement Upgrade Cost","Unit Training Cost","Unit Equipment Cost",
 			"Fortification Cost","Palace Build Cost","Mage Guild Cost","Druid Guild Cost","Spy Guild Cost","Tinker Guild Cost","All Guilds Cost"};
+	public static double[] base_eff = {0.50,0.20,0.30,0.70,0.20,0.70};//tax,prod,trade,bank inc,bank dev,vassal inc
+	public int number_officials = 0;//purely used to determine the government upkeep of a lord
+	public int[] official_jobs = new int[5];//trade,bank,tax,welfare,interior
 	
 	//TradeWindow trade = new TradeWindow();
-	
-	static NationHandler getter = new NationHandler();
 	/*													MAYBE ROLL ALL THESE OFFICALS INTO SEPARATE CLASS
 	 * bank income roll								4	OFFICIAL
 	 * tax collect roll								5	OFFICIAL
@@ -58,37 +60,30 @@ public class Lord extends NationHandler {
 	public Lord(String s, String master) {
 		this.name = s;
 		this.master_title = master;
-		for (int i=0;i<accessed_resources.length;i++)
-			accessed_resources[i] = false;
+		for (int i=0;i<this.accessed_resources.length;i++)
+			this.accessed_resources[i] = false;
+		this.official.initialize(this);
 	}
 	
 	public Panel setPanel(boolean master) {
 		System.out.println("LORD! setPanel");
-		int layers = 1;
-		if (master)
-			layers = 2;
-		Panel mainPnl = new Panel(new GridLayout(layers,2));//set up panel
-		mainPnl.add(panes.nationPanel(government,!master_title.equals("")));
-		mainPnl.add(panes.governmentPane(government, institutes));
-		if (master) {/*
-			mainPnl.add(Culture.culturePane());*/
-			Panel pnl4 = new Panel(new GridLayout(1,1));//setting up dummybuttons on the dummypane
-			Button newVassalBtn = new Button("New Vassal");//adding buttons
-			Button saveBtn = new Button("Save Nation");
-			pnl4.add(saveBtn);
-			mainPnl.add(pnl4);
-			////BUTTON FUNCTIONALITIES////
-			newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
-				public void actionPerformed(ActionEvent e){
-					//getter.newLord(new_lord, master);
-				}
-			});
-			saveBtn.addActionListener(new ActionListener() {//add action event to save button
-				public void actionPerformed(ActionEvent e){
-					getter.saveNation();
-				}
-			});
-		}
+		Panel mainPnl = new Panel(new GridBagLayout());//set up panel
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 0.5;
+		c.weighty = 1;
+		c.gridy = 0;
+		c.gridx = 0;
+		mainPnl.add(this.panes.nationPane(this.government,!this.master_title.equals("")),c);
+		c.gridx = 1;
+		mainPnl.add(this.panes.governmentPane(this.government,this.institutes),c);
+		c.anchor = GridBagConstraints.PAGE_END;
+		c.gridy = 1;
+		c.gridx = 0;
+		c.gridwidth = 2;
+		c.weightx = 0.5;
+		c.weighty = 0.05;
+		mainPnl.add(this.panes.buttonPane(this.name),c);
 		return mainPnl;
 	}
 	
@@ -99,11 +94,13 @@ public class Lord extends NationHandler {
 		this.government.eco[2] = (int) Double.parseDouble(this.panes.inputs[2].getText());
 		if (!(this.master_title.equals("")))
 			this.government.eco[3] = (int) Double.parseDouble(this.panes.inputs[3].getText());
-		this.government.setSystem((String) this.panes.system.getSelectedItem());
-		this.government.setStruc((String) this.panes.soc_structure.getSelectedItem());
-		this.government.setRuler((String) this.panes.rule.getSelectedItem());
-		this.government.setLifeStyle((String) this.panes.life_style.getSelectedItem());
-		this.government.setCentralisation((String) this.panes.centralisation.getSelectedItem());
+		String[] gov = new String[5];
+		gov[0] = (String) this.panes.system.getSelectedItem();
+		gov[1] = (String) this.panes.soc_structure.getSelectedItem();
+		gov[2] = (String) this.panes.rule.getSelectedItem();
+		gov[3] = (String) this.panes.life_style.getSelectedItem();
+		gov[4] = (String) this.panes.centralisation.getSelectedItem();
+		this.government.setGovernment(gov);
 		this.government.culture = ((String) this.panes.culture.getSelectedItem());
 		this.government.religion = ((String) this.panes.religion.getSelectedItem());
 		this.government.legitimacy = (int) Double.parseDouble(this.panes.legitimacy.getText());
@@ -116,17 +113,16 @@ public class Lord extends NationHandler {
 				this.government.hist_val[i] = Integer.parseInt(this.panes.histocracy_values[i].getText());
 			}
 		}
-		this.panes.updateGovernmentPane(government);
+		this.panes.updateGovernmentPane(this.government);
 		//setGovernment();
 	}
 	
 	public void loadGovernment(String[] s) {//only ever called when loading//has nothing to do with visual layer
 		System.out.println("LORD! loadGovernment");
-		this.government.setSystem(s[1]);
-		this.government.setStruc(s[2]);
-		this.government.setRuler(s[3]);
-		this.government.setLifeStyle(s[4]);
-		this.government.setCentralisation(s[5]);
+		String[] gov = new String[5];
+		for (int i=0;i<gov.length;i++)
+			gov[i] = s[1+i];
+		this.government.setGovernment(gov);
 		this.government.culture = s[6];
 		this.government.religion = s[7];
 		this.government.legitimacy = (int) Double.parseDouble(s[8]);
@@ -148,12 +144,37 @@ public class Lord extends NationHandler {
 	
 	public void setGovernment() {//visual update of government pane
 		System.out.println("LORD! setGovernment");
-		this.panes.setGovernmentPane(government, institutes);
+		this.panes.setGovernmentPane(this.government, this.institutes);
 	}
 	
-	public void getModifiers() {//getting all modifiers from visual layers
-		System.out.println("LORD! getModifiers");
-		//NO!! getter layer should not communicate with
+	public void updateLord() {
+		System.out.println("LORD! updateLord");
+		this.getOfficials();
+		this.institutes.updateInstitutions(official_jobs[4]==1,official_jobs[3]==1);
+		this.getGovernment();//resets the government modifiers so that new can be applied without click-stacking
+		this.government.importModifiers(this.institutes.outputs);//get institution bonuses to government modifiers
+		this.loadModifiers();
+		this.panes.updateNationPane(Utility.findLord(this.name));
+	}
+	
+	public void getOfficials() {
+		this.number_officials = this.official.listofofficials.size();
+		for (int i=0;i<official_jobs.length;i++)
+			official_jobs[i] = 0;
+		for (Official o:this.official.listofofficials) {
+			if (o.free)
+				this.number_officials--;//reduce the number of officials with the number of free officials
+			if (o.job.equals("Maintain Trade Route"))
+				official_jobs[0] = o.effect;
+			else if (o.job.equals("Bank Income"))
+				official_jobs[1] = o.effect;
+			else if (o.job.equals("Collect Taxes"))
+				official_jobs[2] = o.effect;
+			else if (o.job.equals("Welfare"))
+				official_jobs[3] = 1;
+			else if (o.job.equals("Interior"))
+				official_jobs[4] = 0;
+		}
 	}
 	
 	public void loadModifiers() {//getting all modifiers from code layers
@@ -164,8 +185,8 @@ public class Lord extends NationHandler {
 		double marble = 1;
 		double iron = 1;
 		double stone = 1;
-		for (int i=0;i<accessed_resources.length;i++) {
-			if (accessed_resources[i]) {
+		for (int i=0;i<this.accessed_resources.length;i++) {
+			if (this.accessed_resources[i]) {
 				traderolls += 1;
 				if (i==0)
 					darkwood = 0.95;
@@ -180,16 +201,17 @@ public class Lord extends NationHandler {
 				else
 					traderolls += 2;
 			}
-		}
-		this.modifiers[0] = Culture.used_bonus[0]+this.government.tax_eff*this.government.legitimacy*0.1;//taxeff
-		this.modifiers[1] = Culture.used_bonus[1]+this.government.prod_eff*this.government.legitimacy*0.1;//prodeff
-		this.modifiers[2] = Culture.used_bonus[2]+this.government.trade_eff*this.government.legitimacy*0.1+metals;//tradeeff
-		this.modifiers[3] = Culture.used_bonus[3]+this.government.vassal_inc_eff*this.government.legitimacy*0.1;//vassaleff
+		}//NEED TO ADD A BUNCH OF THINGS FROM GOVERNMENT THAT ISN'T IN HERE!!
+		this.modifiers[0] = Culture.used_bonus[0]+base_eff[0]+this.government.tax_eff*this.government.legitimacy*0.1;//taxeff
+		this.modifiers[1] = Culture.used_bonus[1]+base_eff[1]+this.government.prod_eff*this.government.legitimacy*0.1;//prodeff
+		this.modifiers[2] = Culture.used_bonus[2]+base_eff[2]+this.government.trade_eff*this.government.legitimacy*0.1+metals;//tradeeff
+		this.modifiers[3] = Culture.used_bonus[3]+base_eff[5]+this.government.vassal_inc_eff*this.government.legitimacy*0.1;//vassaleff
 		this.modifiers[4] = Culture.used_bonus[4]+this.government.plunder_eff*this.government.legitimacy*0.1;//plundereff
-		this.modifiers[5] = Culture.used_bonus[5]+this.government.bank_inc_eff*this.government.legitimacy*0.1;//bank inc eff
-		this.modifiers[6] = Math.min(Culture.used_bonus[5]+this.government.bank_dev_eff*this.government.legitimacy*0.1,this.government.max_bank_dev_eff);//bank dev eff
+		this.modifiers[5] = Culture.used_bonus[5]+base_eff[3]+this.government.bank_inc_eff*this.government.legitimacy*0.1;//bank inc eff
+		this.modifiers[6] = Math.min(Culture.used_bonus[5]+base_eff[4]+this.government.bank_dev_eff*this.government.legitimacy*0.1,
+				this.government.max_bank_dev_eff);//bank dev eff
 		this.modifiers[7] = 0;//material inc eff
-		this.modifiers[8] = Culture.used_bonus[6];//hex prod mod
+		this.modifiers[8] = Culture.used_bonus[6]+this.institutes.outputs[3]*this.government.legitimacy*0.1;//hex prod mod
 		this.modifiers[9] = Culture.used_bonus[7];//unit cap
 		this.modifiers[10] = Culture.used_bonus[8];//speed
 		this.modifiers[11] = Culture.used_bonus[9];//dmg
@@ -201,12 +223,12 @@ public class Lord extends NationHandler {
 		this.modifiers[17] = Culture.used_bonus[15];//legitimacy
 		this.modifiers[18] = Culture.used_bonus[16];//unrest
 		this.modifiers[19] = traderolls;//trade rolls
-		this.modifiers[20] = Culture.used_bonus[17];//rgo/road
+		this.modifiers[20] = Culture.used_bonus[17]+this.institutes.outputs[5]*this.government.legitimacy*0.1;//rgo/road
 		this.modifiers[21] = Culture.used_bonus[18]*darkwood;//building
 		this.modifiers[22] = Culture.used_bonus[19];//settlement upkeep
 		this.modifiers[23] = Culture.used_bonus[20];//settlement cost
 		this.modifiers[24] = Culture.used_bonus[21];//unit training
-		this.modifiers[25] = Culture.used_bonus[22];//unit eq
+		this.modifiers[25] = Culture.used_bonus[22]*iron;//unit eq
 		this.modifiers[26] = Culture.used_bonus[23]*stone;//fortification
 		this.modifiers[27] = marble;//palace
 		this.modifiers[28] = Culture.used_bonus[24];//mage

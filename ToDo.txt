@@ -2,4 +2,4 @@ WHEN CREATING VASSALS ONE MUST ASSIGN NAME TO THE VASSAL AND THE LORD OF THE VAS
 
 there seems to be an issue with reading costs and upkeeps from add-ons into buildings. they are never added by themselves at start.
 
-FIX HEX AND CULTURE SO THAT WE CAN CREATE THE PANES SEPARATE FROM THE CODE LAYER
+Buildings.update() does not include the built fortifications?

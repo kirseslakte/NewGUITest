@@ -2,7 +2,6 @@ package NewGUITest;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,10 +34,9 @@ public class Buildings extends JFrame{
 	public JLabel walls_cost = new JLabel("0");
 	public JLabel walls_upkeep = new JLabel("0");
 	
-	static NationHandler getter = new NationHandler();
 	public List<Button> add_ons_btn = new ArrayList<Button>();
 	public List<BuildingsAddOns> addonframes = new ArrayList<BuildingsAddOns>();
-	public WallAddOns wallframe = new WallAddOns();
+	public WallAddOns wallframe;
 	public double[] modifiers = {1,1,1,1,1};//RGO,Building,Unit Equipment,Fortification,Palace
 	public Hex hex;
 	public int hex_number;
@@ -60,12 +58,12 @@ public class Buildings extends JFrame{
 	
 	public void initialize() {
 		System.out.println("BUILDINGS! initialize");
-		setFrame();
+		this.setFrame();
 	}
 	
 	public void start(int hex_number) {
 		System.out.println("BUILDINGS! start");
-		getInputs(hex_number);
+		this.getInputs(hex_number);
 		this.hex_number = hex_number;
 		this.setTitle(this.hex.name+": Buildings and Fortifications");
 	    this.setVisible(true);
@@ -79,14 +77,13 @@ public class Buildings extends JFrame{
 	
 	public void getInputs(int hex_number) {
 		System.out.println("BUILDINGS! getInputs");
-		Utility utility = new Utility();
-		this.hex = getter.listofhexes.get(hex_number);
+		this.hex = NationHandler.listofhexes.get(hex_number);
 		this.all_buildings = new String[this.hex.buildings.size()];
 		for (int i=0;i<this.hex.buildings.size();i++)
 			this.all_buildings[i] = this.hex.buildings.get(i);
-		int lord = utility.findLord(this.hex.owner);
-		double[] tempmod = getter.listoflords.get(lord).modifiers;
-		String lifestyle = getter.listoflords.get(lord).government.style;
+		int lord = Utility.findLord(this.hex.owner);
+		double[] tempmod = NationHandler.listoflords.get(lord).modifiers;
+		String lifestyle = NationHandler.listoflords.get(lord).government.style;
 		if (lifestyle.equals("Nomadic")){
 			this.active_forts = new String[3];
 			this.active_forts[0] = "";
@@ -146,12 +143,12 @@ public class Buildings extends JFrame{
 		System.out.println("BUILDINGS! setFrame");
 		JPanel mainbuild = new JPanel(new GridBagLayout());
 		this.setSize(600, 950);
-		this.setLocationRelativeTo(getter);
+		this.setLocationRelativeTo(null);
 	    this.addWindowListener(new WindowAdapter() {//close frame on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				update();
-				getter.hexpanel.getBuildings(hex_number);
-				getter.saveNation();
+				NationHandler.hexpanel.getBuildings(hex_number);
+				NationHandler.saveNation();
 				stop();
 				for (int i=0;i<addonframes.size();i++)
 					addonframes.get(i).stop();
@@ -364,32 +361,33 @@ public class Buildings extends JFrame{
 	
 	public void update() {//calls getVisuals and updates outputs
 		System.out.println("BUILDINGS! update");
-		Utility ut = new Utility();
-		getVisuals();
+		this.getVisuals();
 		System.out.println("Visuals got");
 		//fixing remaining outputs
 		this.upgrade_cost = 0;
 		if (this.hex.pop_size<10){
 			for (int i=0;i<this.built_buildings.size();i++) {
-				String[] splitter = ut.stringSplitter(this.built_buildings.get(i), "-");
+				String[] splitter = Utility.stringSplitter(this.built_buildings.get(i), "-");
 				if (!(this.built_buildings.get(i).equals(""))) {
 					int tier = Integer.parseInt(splitter[1]);
 					if (splitter[0].equals("Supply Cache"))
-						this.upgrade_cost += (int) Math.round(200*tier*this.modifiers[1]*(this.hex.list_pm[hex.pop_size]-this.hex.list_pm[hex.pop_size-1]));
+						this.upgrade_cost += (int) Math.round(200*tier*this.modifiers[1]*(Hex.list_pm[this.hex.pop_size]-Hex.list_pm[this.hex.pop_size-1]));
 					if (splitter[0].equals("Bureau"))
-						this.upgrade_cost += (int) Math.round(100*this.modifiers[1]*(Math.pow(this.hex.list_pm[this.hex.pop_size],2)-Math.pow(this.hex.list_pm[this.hex.pop_size-1],2)));
+						this.upgrade_cost += (int) Math.round(100*this.modifiers[1]*(Math.pow(Hex.list_pm[this.hex.pop_size],2)-
+								Math.pow(Hex.list_pm[this.hex.pop_size-1],2)));
 					if (splitter[0].equals("Center of Trade"))
-						this.upgrade_cost += (int) Math.round(400*this.modifiers[1]*(this.hex.list_pm[this.hex.pop_size]-this.hex.list_pm[this.hex.pop_size-1]));
+						this.upgrade_cost += (int) Math.round(400*this.modifiers[1]*(Hex.list_pm[this.hex.pop_size]-Hex.list_pm[this.hex.pop_size-1]));
 					if (splitter[0].equals("Public Order"))
-						this.upgrade_cost += (int) Math.round(100*2*tier*this.modifiers[1]*(this.hex.list_pm[this.hex.pop_size]-this.hex.list_pm[this.hex.pop_size-1]));
+						this.upgrade_cost += (int) Math.round(100*2*tier*this.modifiers[1]*(Hex.list_pm[this.hex.pop_size]-Hex.list_pm[this.hex.pop_size-1]));
 					if (splitter[0].equals("Port"))
-						this.upgrade_cost += (int) Math.round(500*this.modifiers[1]*(Math.pow(this.hex.list_pm[this.hex.pop_size],2)-Math.pow(this.hex.list_pm[this.hex.pop_size-1],2)));
+						this.upgrade_cost += (int) Math.round(500*this.modifiers[1]*(Math.pow(Hex.list_pm[this.hex.pop_size],2)-
+								Math.pow(Hex.list_pm[this.hex.pop_size-1],2)));
 				}
 			}
 		}//upgrade costs for buildings
 		if (!(this.built_walls.equals(""))){
-			String[] splitter = ut.stringSplitter(this.built_walls, "-");
-			int caphelper = this.hex.list_unit_cap[this.hex.pop_size]-this.hex.unit_cap;
+			String[] splitter = Utility.stringSplitter(this.built_walls, "-");
+			int caphelper = Hex.list_unit_cap[this.hex.pop_size]-this.hex.unit_cap;
 			if (splitter[0].equals(walllist[1]))
 				caphelper = (int) Math.round(caphelper*wall_costs[0]*this.modifiers[3]);
 			else if (splitter[0].equals(walllist[2]))
@@ -397,17 +395,17 @@ public class Buildings extends JFrame{
 			else if (splitter[0].equals(walllist[3]))
 				caphelper = (int) Math.round(caphelper*wall_costs[2]*this.modifiers[3]);
 			int addoncost = 0;
-			for (String s:splitter)
+			//for (String s:splitter)
 			if (splitter.length>1) {
 				String[] wall_string = new String[splitter.length-1];
 				int[] wall_int = new int[splitter.length-1];
 				for (int j=1;j<splitter.length;j++) {
-					String[] wall_splitter = ut.stringSplitter(splitter[j],",");
+					String[] wall_splitter = Utility.stringSplitter(splitter[j],",");
 					wall_string[j-1] = wall_splitter[0];
 					wall_int[j-1] = Integer.parseInt(wall_splitter[1]);
-					for (int i=0;i<this.wallframe.wall_add_on_costs.length;i++){
-						if (wall_string[j-1].equals(this.wallframe.walladdonlist[i+1]))
-							addoncost += (int) Math.round(this.wallframe.wall_add_on_costs[i]*this.modifiers[3]*wall_int[j-1]);
+					for (int i=0;i<WallAddOns.wall_add_on_costs.length;i++){
+						if (wall_string[j-1].equals(WallAddOns.walladdonlist[i+1]))
+							addoncost += (int) Math.round(WallAddOns.wall_add_on_costs[i]*this.modifiers[3]*wall_int[j-1]);
 					}
 				}
 			}
@@ -424,7 +422,6 @@ public class Buildings extends JFrame{
 	
 	public void loadBuildings() {//should be called whenever this window is opened (loads buildings from hex and sets it into visual and code layer)
 		System.out.println("BUILDINGS! loadBuildings");
-		Utility utility = new Utility();
 		String[] splitter;
 		int b = 0;
 		int f = 0;
@@ -433,7 +430,7 @@ public class Buildings extends JFrame{
 		this.built_walls = "";
 		for (int i=0;i<this.all_buildings.length;i++) {
 			String input = this.all_buildings[i];
-			splitter = (utility.stringSplitter(input,"-"));
+			splitter = (Utility.stringSplitter(input,"-"));
 			if (splitter[0].equals("B")) {
 				this.buildings.get(b).setSelectedItem(splitter[1]);
 				this.building_tiers.get(b).setText(splitter[2]);
@@ -445,7 +442,7 @@ public class Buildings extends JFrame{
 				this.fortifications_capacity.get(f).setText(splitter[2]);
 				int costy = findFortificationCost(splitter[1],Integer.parseInt(splitter[2]));
 				if (splitter.length>3) {
-					String[] splittar = utility.stringSplitter(splitter[3],",");
+					String[] splittar = Utility.stringSplitter(splitter[3],",");
 					this.addonframes.get(f).setAddOn(splittar,costy);
 					this.built_fortifications.add(splitter[1]+"-"+splitter[2]+"-"+splitter[3]);
 				} else
@@ -458,7 +455,7 @@ public class Buildings extends JFrame{
 				int[] wall_int = new int[splitter.length-2];
 				this.built_walls = splitter[1];
 				for (int j=2;j<splitter.length;j++) {
-					String[] wall_splitter = utility.stringSplitter(splitter[j],",");
+					String[] wall_splitter = Utility.stringSplitter(splitter[j],",");
 					wall_string[j-2] = wall_splitter[0];
 					wall_int[j-2] = Integer.parseInt(wall_splitter[1]);
 					this.built_walls += "-"+wall_splitter[0]+","+wall_splitter[1];
@@ -466,7 +463,7 @@ public class Buildings extends JFrame{
 				this.wallframe.setAddOn(wall_string,wall_int);
 			}
 		}
-		update();
+		this.update();
 	}
 
 	public int findFortificationCost(String s, int tier) {//find the cost of a fortification/wall
@@ -486,6 +483,7 @@ public class Buildings extends JFrame{
 		}
 		return build_cost;
 	}
+	
 	public int findBuildingCost(String s, int tier) {//find the cost of a building at position pos in the list
 		System.out.println("BUILDINGS! findBuildingCost");
 		int build_cost = 0;
@@ -506,11 +504,11 @@ public class Buildings extends JFrame{
 		}else if (s.equals(buildinglist[7])){//Supply Cache
 			if (tier>13)
 				JOptionPane.showMessageDialog(null, "The maximum supply rate is 13.\nMore is not allowed.","Supply Error",JOptionPane.INFORMATION_MESSAGE);
-			build_cost = (int) Math.round(200*tier*this.hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
+			build_cost = (int) Math.round(200*tier*Hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
 		}else if (s.equals(buildinglist[8])){//Bureau
-			build_cost = (int) Math.round(100*this.hex.list_pm[this.hex.pop_size-1]*this.hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
+			build_cost = (int) Math.round(100*Hex.list_pm[this.hex.pop_size-1]*Hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
 		}else if (s.equals(buildinglist[9])){//Center of Trade
-			build_cost = (int) Math.round(400*this.hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
+			build_cost = (int) Math.round(400*Hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
 		}else if (s.equals(buildinglist[10])){//Palace
 			if (tier>3||tier<1)
 				JOptionPane.showMessageDialog(null,"The maximum legitimacy enforcement is 3 and the minimum is 1."
@@ -520,9 +518,9 @@ public class Buildings extends JFrame{
 			if (tier>2||tier<1)
 				JOptionPane.showMessageDialog(null,"The maximum unrest enforcement is 2 and the minimum is 1."
 						+ "\nMore or less is not allowed.","Public Order Error",JOptionPane.INFORMATION_MESSAGE);
-			build_cost = (int) Math.round(100*2*tier*this.hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
+			build_cost = (int) Math.round(100*2*tier*Hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
 		}else if (s.equals(buildinglist[12])){//Port
-			build_cost = (int) Math.round(500*this.hex.list_pm[this.hex.pop_size-1]*this.hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
+			build_cost = (int) Math.round(500*Hex.list_pm[this.hex.pop_size-1]*Hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
 		}
 		return build_cost;
 	}

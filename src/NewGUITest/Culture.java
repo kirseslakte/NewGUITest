@@ -29,7 +29,7 @@ public class Culture {
 		
 	}
 	public static Panel culturePane() {//culture panel
-		System.out.println("LORDPANE! culturePane");
+		System.out.println("CULTURE! culturePane");
 		Panel culture_panel = new Panel(new GridLayout(0,4));
 		for (int i=0;i<culture_names.length;i++){
 			culturefields.add(new JTextField("0"));
@@ -40,7 +40,7 @@ public class Culture {
 	}
 	
 	public static void setCulturePane(double[] s) {//setting culture pane
-		System.out.println("LORDPANE! setCulturePane");
+		System.out.println("CULTURE! setCulturePane");
 		for (int i=0;i<culture_names.length;i++)//only ever called from lord.setCulture()
 			culturefields.get(i).setText(Integer.toString((int) (s[i]*100)));
 	}
@@ -75,6 +75,8 @@ public class Culture {
 		}
 		for (int i=0;i<culture_names.length;i++)
 			culture_bonuses[i] = Integer.parseInt(boni[i])*0.01;
+		culturePane();
+		setCulture();
 	}
 	
 	public static void setCulture() {	

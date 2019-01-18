@@ -56,6 +56,15 @@ public class Governments {
 		setCentralisation(s[4]);
 	}
 	
+	public void importModifiers(double[] d) {//should be reset before this is called
+		//input is trade/bank inc/plunder/hpm/settlement cost/road,rgo/building cost
+		this.trade_eff += d[0];
+		this.bank_inc_eff += d[1];
+		this.plunder_eff += d[2];
+		this.settlement_cost_mod *= d[4];
+		this.build_cost *= d[6];
+	}
+	
 	public void setNull() {//reset everything!
 		this.sys = "";
 		this.struc = "";
@@ -105,55 +114,55 @@ public class Governments {
 	
 	public void setDemocratic() {//modifiers for the democratic system
 		this.sys = systems[0];
-		this.settlement_cost_mod *= 0.9;
-		this.tax_eff += 0.1;
-		this.prod_eff += 0.1;
-		this.bank_inc_eff += 0.2;
-		this.bank_dev_eff += 0.2;
-		this.trade_eff += 0.2;
+		this.settlement_cost_mod = 0.9;
+		this.tax_eff = 0.1;
+		this.prod_eff = 0.1;
+		this.bank_inc_eff = 0.2;
+		this.bank_dev_eff = 0.2;
+		this.trade_eff = 0.2;
 	}
 	public void setAutocratic() {//modifiers for the autocratic system
 		this.sys = systems[1];
-		this.unit_training_cost_mod *= 0.95;
-		this.tax_eff += 0.1;
-		this.bank_inc_eff += 0.2;
-		this.vassal_inc_eff += 0.2;
-		this.trade_eff += 0.2;
+		this.unit_training_cost_mod = 0.95;
+		this.tax_eff = 0.1;
+		this.bank_inc_eff = 0.2;
+		this.vassal_inc_eff = 0.2;
+		this.trade_eff = 0.2;
 	}
 	public void setMeritocratic() {//modifiers for the meritocratic system
 		this.sys = systems[2];
-		this.tax_eff += 0.1;
-		this.prod_eff += 0.3;
-		this.bank_dev_eff += 0.2;
+		this.tax_eff = 0.1;
+		this.prod_eff = 0.3;
+		this.bank_dev_eff = 0.2;
 	}
 	public void setTheocratic() {//modifiers for the theocratic system
 		this.sys = systems[3];
-		this.tax_eff += 0.2;
-		this.prod_eff += 0.1;
-		this.bank_inc_eff += 0.2;
-		this.vassal_inc_eff += 0.1;
+		this.tax_eff = 0.2;
+		this.prod_eff = 0.1;
+		this.bank_inc_eff = 0.2;
+		this.vassal_inc_eff = 0.1;
 	}
 	public void setHistocratic(){//modifiers for the histocratic system
 		this.sys = systems[4];
 		double value_checker = 0;
 		for (int i=0;i<4;i++) {
 			if (this.histocratic_choices[i].equals(histocratic_options[0])) {
-				this.tax_eff += this.hist_val[i]/100;
+				this.tax_eff = this.hist_val[i]/100;
 				value_checker += this.hist_val[i];
 			}else if(this.histocratic_choices[i].equals(histocratic_options[1])) {
-				this.prod_eff += this.hist_val[i]/100;
+				this.prod_eff = this.hist_val[i]/100;
 				value_checker += this.hist_val[i];
 			}else if(this.histocratic_choices[i].equals(histocratic_options[2])) {
-				this.trade_eff += this.hist_val[i]/100;
+				this.trade_eff = this.hist_val[i]/100;
 				value_checker += this.hist_val[i];
 			}else if(this.histocratic_choices[i].equals(histocratic_options[3])) {
-				this.vassal_inc_eff += this.hist_val[i]/100;
+				this.vassal_inc_eff = this.hist_val[i]/100;
 				value_checker += this.hist_val[i];
 			}else if(this.histocratic_choices[i].equals(histocratic_options[4])) {
-				this.bank_inc_eff += this.hist_val[i]/100;
+				this.bank_inc_eff = this.hist_val[i]/100;
 				value_checker += this.hist_val[i]/2;
 			}else if(this.histocratic_choices[i].equals(histocratic_options[5])) {
-				this.bank_dev_eff += this.hist_val[i]/100;
+				this.bank_dev_eff = this.hist_val[i]/100;
 				value_checker += this.hist_val[i]/2;
 			}
 		}
@@ -164,10 +173,10 @@ public class Governments {
 	}
 	public void setPlutocratic() {//modifiers for the plutocratic system
 		this.sys = systems[5];
-		this.tax_eff += 0.1;
-		this.prod_eff += 0.1;
-		this.bank_dev_eff += 0.2;
-		this.trade_eff += 0.4;
+		this.tax_eff = 0.1;
+		this.prod_eff = 0.1;
+		this.bank_dev_eff = 0.2;
+		this.trade_eff = 0.4;
 	}
 	public void setHive() {//modifiers for the hive system
 		this.sys = systems[6];
@@ -175,45 +184,19 @@ public class Governments {
 	}
 	public void setFederation() {//modifiers for the federation system
 		this.sys = systems[7];
-		this.bank_inc_eff += 0.2;
-		this.vassal_inc_eff += 0.3;
-		this.trade_eff += 0.2;
+		this.bank_inc_eff = 0.2;
+		this.vassal_inc_eff = 0.3;
+		this.trade_eff = 0.2;
 	}
 	//STOP SYSTEMS!!
 	//START SOC STRUC!!
 	public void setStruc(String s) {
-		if (s.equals(strucs[0])){
-			this.setClassisist();
-		}else if(s.equals(strucs[1])){
-			this.setIndividualistic();
-		}
-	}
-	public void setClassisist() {
-		this.struc = strucs[0];
-	}
-	public void setIndividualistic() {
-		this.struc = strucs[1];
-		this.min_unrest = -1;
+		this.struc = s;
 	}
 	//STOP SOC STRUC!!
 	//START RULER!!
 	public void setRuler(String s) {
-		if (s.equals(rule[0])){
-			this.setMonarchy();
-		}else if(s.equals(rule[1])){
-			this.setOligarchy();
-		}else if(s.equals(rule[2])){
-			this.setPolyarchy();
-		}
-	}
-	public void setMonarchy() {
-		this.ruler = rule[0];
-	}
-	public void setOligarchy() {
-		this.ruler = rule[1];
-	}
-	public void setPolyarchy() {
-		this.ruler = rule[2];
+		this.ruler = s;
 	}
 	//STOP RULER!!
 	//START LIFE STYLE!!
@@ -231,23 +214,23 @@ public class Governments {
 		this.max_bank_dev_eff = 10;
 		this.bank_dev_eff += 0.1;
 		this.max_pop_size = 10;
-		this.move_pop_mod *= 16;
+		this.move_pop_mod = 16;
 		this.plunder_eff = 0.25;
 	}
 	public void setTribalistic() {
 		this.style = life[1];
 		this.max_bank_dev_eff = 0.5;
 		this.max_pop_size = 6;
-		this.move_pop_mod *= 4;
+		this.move_pop_mod = 4;
 		this.plunder_eff += 0.5;
 	}
 	public void setNomadic() {
 		this.style = life[2];
 		this.max_bank_dev_eff = 0.3;
 		this.unit_training_cost_mod *= 0.9;
-		this.unit_cap_mod *= 0.9;
+		this.unit_cap_mod = 1.5;
 		this.max_pop_size = 4;
-		this.move_pop_mod *= 1;
+		this.move_pop_mod = 1;
 		this.plunder_eff += 0.75;
 	}
 	//STOP LIFE STYLE!!
@@ -264,16 +247,16 @@ public class Governments {
 	public void setHighly() {
 		this.cent = centralisation[0];
 		this.prod_eff += -0.1;
-		this.max_tax_rate = Math.max(max_tax_rate,0.7);
+		this.max_tax_rate = Math.max(this.max_tax_rate,0.7);
 	}
 	public void setModerately() {
 		this.cent = centralisation[1];
 		this.prod_eff += -0.5;
-		this.max_tax_rate = Math.max(max_tax_rate,0.5);
+		this.max_tax_rate = Math.max(this.max_tax_rate,0.5);
 	}
 	public void setDecentralised() {
 		this.cent = centralisation[2];
-		this.max_tax_rate = Math.max(max_tax_rate,0.3);
+		this.max_tax_rate = Math.max(this.max_tax_rate,0.3);
 	}
 	//STOP CENTRALISATION!!
 }

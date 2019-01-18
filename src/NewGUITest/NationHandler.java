@@ -15,9 +15,10 @@ public class NationHandler extends JFrame{
 	private static JTabbedPane mainPane = new JTabbedPane();
 	private static ReadNWrite write = new ReadNWrite();
 	public static HexPane hexpanel = new HexPane();
+	//public static OfficialTab officialpanel = new OfficialTab();
+	//public static RouteTab routepanel = new RouteTab();
 	Culture bonuses = new Culture();
 	//private MilitaryWindow milwindow = new MilitaryWindow();
-	//private HexWindow hexwindow = new HexWindow();
 	
 	public NationHandler() {
 		
@@ -47,12 +48,10 @@ public class NationHandler extends JFrame{
 			String[] loaded_lord = write.loadLord(lord);//then vassal1, then vassals of 1, then vassal2, then vassals of 2, aso
 			listoflords.add(new Lord(loaded_lord[0],loaded_lord[9]));//name, master_title
 			listoflords.get(listoflords.size()-1).title = lord;
-			listoflords.get(listoflords.size()-1).loadGovernment(write.loadLord(lord));
+			listoflords.get(listoflords.size()-1).loadGovernment(loaded_lord);
 			if (lord.equals("overlord")) {
 				Culture.loadCulture(write.loadCulture());
 				mainSetup(s);
-				Culture.culturePane();
-				Culture.setCulture();
 				listoflords.get(listoflords.size()-1).setGovernment();
 			} else {
 				addVassalTab(loaded_lord[0]);
@@ -61,21 +60,26 @@ public class NationHandler extends JFrame{
 			listoflords.get(listoflords.size()-1).loadModifiers();
 		}
 		//all lords have been loaded!!
-		recalibrateLords();
 		listofhexes = write.loadHexes();
 		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPane()));//loaded after all the lords
 		mainPane.addTab("Culture & Portfolio", new JScrollPane(Culture.culturePane()));
+		recalibrateLords();
+		recalibrateHexes();
+		//mainPane.addTab("Trade Routes", new JScrollPane(routepanel.panel()));
 		//hexpanel.updateHexPane();
 		listofunits = write.loadUnits();
 		//mainPane.addTab("Units", new JScrollPane(unitpanel.unitPane()));
 		listofofficials = write.loadOfficials();
+		for (Lord lord:listoflords) {//load all officials into the lords
+			lord.official.loadOfficials();
+		}
 		//update the nationpanes of the lords
 		//load notes
 		//mainPane.addTab("Notes");
 		mainPane.revalidate();
 	}
 	
-	public void saveNation() {//only ever called from save_request
+	public static void saveNation() {//only ever called from save_request
 		System.out.println("NATIONHANDLER! saveNation");
 		updateNation();
 		for (Lord lord: listoflords) {
@@ -115,9 +119,10 @@ public class NationHandler extends JFrame{
 		}
 	}
 	
-	public void updateNation() {
+	public static void updateNation() {
 		System.out.println("NATIONHANDLER! updateNation");
 		for (Lord lord:listoflords) {
+			lord.updateLord();
 			lord.getGovernment();
 			lord.loadModifiers();//this should not be in update
 			if (lord.title.equals("overlord"))
@@ -125,11 +130,12 @@ public class NationHandler extends JFrame{
 		}
 		recalibrateLords();
 		recalibrateHexes();
+		getOfficials();
 	}
 	
 	public void mainSetup(String s) {
 		System.out.println("NATIONHANDLER! mainSetup");
-		this.setSize(1500,1000);
+		this.setSize(1500,400);
 	    this.setLocationRelativeTo(null);
 		this.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
@@ -148,7 +154,7 @@ public class NationHandler extends JFrame{
 		mainPane.addTab(s,listoflords.get(listoflords.size()-1).setPanel(false));
 	}
 	
-	public void recalibrateHexes() {
+	public static void recalibrateHexes() {
 		System.out.println("NATIONHANDLER! recalibrateHexes");
 		for (int i=0;i<listoflords.size();i++)
 			listoflords.get(i).loadModifiers();
@@ -163,9 +169,9 @@ public class NationHandler extends JFrame{
 			}
 		}
 	}
-	public void recalibrateLords() {
+	public static void recalibrateLords() {
 		System.out.println("NATIONHANDLER! recalibrateLords");
-		for (int i=0;i<listofhexes.size();i++) {
+		for (int i=0;i<listofhexes.size();i++) {//updating resources for lords
 			int r = 0;
 			String resource = (String) HexPane.resource_list.get(i).getSelectedItem();
 			for (int j=0;j<Hex.resources.length;j++) {
@@ -205,5 +211,19 @@ public class NationHandler extends JFrame{
 			}
 			HexPane.buildings.get(i).stop();
 		}
+	}
+	
+	public static void getOfficials() {//get all of the lords officials
+		listofofficials.clear();
+		for (Lord lord:listoflords)
+			getOfficials(lord.name);
+	}
+	public static void getOfficials(String s) {//lord-specific
+		for (int i=0;i<listofofficials.size();i++) {//remove all officials of that lord
+			if (listofofficials.get(i).lord.equals(s))
+				listofofficials.remove(i);
+		}
+		for (Official o:listoflords.get(Utility.findLord(s)).official.listofofficials)
+			listofofficials.add(o);
 	}
 }

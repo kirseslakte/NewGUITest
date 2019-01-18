@@ -36,6 +36,7 @@ public class Unit {
 	}
 	
 	public void setUnit(String[] s) {
+		System.out.println("UNIT! setUnit");
 		this.name = s[0];
 		for (int i=0;i<stats.length;i++) {
 			this.stats[i] = Integer.parseInt(s[i+1]);
@@ -92,6 +93,7 @@ public class Unit {
 		}
 		
 		public void setWeapon(String[] s){
+			System.out.println("UNIT! Weapon:setWeapon");
 			this.name = s[0];
 			this.cost = Integer.parseInt(s[1]);
 			this.damage_dice = Integer.parseInt(s[2]);
@@ -116,6 +118,7 @@ public class Unit {
 		}
 		
 		public void setArmour(String[] s) {
+			System.out.println("UNIT! Armour:setArmour");
 			this.name = s[0];
 			this.cost = Integer.parseInt(s[1]);
 			this.max_dex = Integer.parseInt(s[2]);
@@ -149,6 +152,7 @@ public class Unit {
 		}
 		
 		public void setMount(String[] s) {
+			System.out.println("UNIT! Mount:setMount");
 			this.name = s[0];
 			this.type = s[1];
 			this.hd_type = s[2];
