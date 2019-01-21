@@ -29,12 +29,14 @@ public class Lord {
 	public Institutions institutes = new Institutions();
 	public Governments government = new Governments();
 	public OfficialWindow official = new OfficialWindow();
+	public RouteWindow route = new RouteWindow();
 	public double[] modifiers = new double[33];
 	public static String[] mod_names =  {"Tax Efficiency","Production Efficiency","Trade Efficiency","Vassal Tax Income Efficiency","Plunder Efficinecy","Bank Income Efficiency",
 			"Bank Development Efficiency","Rare Resource Income","Unit Speed","Unit Damage","Hit","AC","Morale","Command","Ranged Hit","Unit Cap","Legitimacy Checks","Unrest Checks",
 			"Trade Rolls","Base Production","RGO/Road Cost","Building Cost","Settlement Upkeep Cost","Settlement Upgrade Cost","Unit Training Cost","Unit Equipment Cost",
 			"Fortification Cost","Palace Build Cost","Mage Guild Cost","Druid Guild Cost","Spy Guild Cost","Tinker Guild Cost","All Guilds Cost"};
-	public static double[] base_eff = {0.50,0.20,0.30,0.70,0.20,0.70};//tax,prod,trade,bank inc,bank dev,vassal inc
+	public static double[] base_eff = {0.20,0.20,0.20,0.20,0.20,0.20};//tax,prod,trade,bank inc,bank dev,vassal inc
+	public static double[] gov_base_eff = {0.50,0.20,0.30,0.70,0.20,0.70};//tax,prod,trade,bank inc,bank dev,vassal inc
 	public int number_officials = 0;//purely used to determine the government upkeep of a lord
 	public int[] official_jobs = new int[5];//trade,bank,tax,welfare,interior
 	
@@ -63,6 +65,7 @@ public class Lord {
 		for (int i=0;i<this.accessed_resources.length;i++)
 			this.accessed_resources[i] = false;
 		this.official.initialize(this);
+		this.route.initialize(this);
 	}
 	
 	public Panel setPanel(boolean master) {
@@ -150,7 +153,7 @@ public class Lord {
 	public void updateLord() {
 		System.out.println("LORD! updateLord");
 		this.getOfficials();
-		this.institutes.updateInstitutions(official_jobs[4]==1,official_jobs[3]==1);
+		this.institutes.updateInstitutions(this.official_jobs[3]==1,this.official_jobs[4]==1);
 		this.getGovernment();//resets the government modifiers so that new can be applied without click-stacking
 		this.government.importModifiers(this.institutes.outputs);//get institution bonuses to government modifiers
 		this.loadModifiers();
@@ -159,24 +162,27 @@ public class Lord {
 	
 	public void getOfficials() {
 		this.number_officials = this.official.listofofficials.size();
-		for (int i=0;i<official_jobs.length;i++)
-			official_jobs[i] = 0;
+		for (int i=0;i<this.official_jobs.length;i++)
+			this.official_jobs[i] = 0;
 		for (Official o:this.official.listofofficials) {
 			if (o.free)
 				this.number_officials--;//reduce the number of officials with the number of free officials
 			if (o.job.equals("Maintain Trade Route"))
-				official_jobs[0] = o.effect;
+				this.official_jobs[0] += o.effect;
 			else if (o.job.equals("Bank Income"))
-				official_jobs[1] = o.effect;
+				this.official_jobs[1] = o.effect;
 			else if (o.job.equals("Collect Taxes"))
-				official_jobs[2] = o.effect;
-			else if (o.job.equals("Welfare"))
-				official_jobs[3] = 1;
+				this.official_jobs[2] = o.effect;
 			else if (o.job.equals("Interior"))
-				official_jobs[4] = 0;
+				this.official_jobs[3] = 1;
+			else if (o.job.equals("Welfare"))
+				this.official_jobs[4] = 1;
 		}
 	}
 	
+	public void getRoutes() {
+		
+	}
 	public void loadModifiers() {//getting all modifiers from code layers
 		System.out.println("LORD! loadModifiers");
 		int traderolls = 0;
@@ -202,13 +208,13 @@ public class Lord {
 					traderolls += 2;
 			}
 		}//NEED TO ADD A BUNCH OF THINGS FROM GOVERNMENT THAT ISN'T IN HERE!!
-		this.modifiers[0] = Culture.used_bonus[0]+base_eff[0]+this.government.tax_eff*this.government.legitimacy*0.1;//taxeff
-		this.modifiers[1] = Culture.used_bonus[1]+base_eff[1]+this.government.prod_eff*this.government.legitimacy*0.1;//prodeff
-		this.modifiers[2] = Culture.used_bonus[2]+base_eff[2]+this.government.trade_eff*this.government.legitimacy*0.1+metals;//tradeeff
-		this.modifiers[3] = Culture.used_bonus[3]+base_eff[5]+this.government.vassal_inc_eff*this.government.legitimacy*0.1;//vassaleff
+		this.modifiers[0] = Culture.used_bonus[0]+base_eff[0]+(gov_base_eff[0]+this.government.tax_eff)*this.government.legitimacy*0.1;//taxeff
+		this.modifiers[1] = Culture.used_bonus[1]+base_eff[1]+(gov_base_eff[1]+this.government.prod_eff)*this.government.legitimacy*0.1;//prodeff
+		this.modifiers[2] = Culture.used_bonus[2]+base_eff[2]+(gov_base_eff[2]+this.government.trade_eff)*this.government.legitimacy*0.1+metals;//tradeeff
+		this.modifiers[3] = Culture.used_bonus[3]+base_eff[5]+(gov_base_eff[5]+this.government.vassal_inc_eff)*this.government.legitimacy*0.1;//vassaleff
 		this.modifiers[4] = Culture.used_bonus[4]+this.government.plunder_eff*this.government.legitimacy*0.1;//plundereff
-		this.modifiers[5] = Culture.used_bonus[5]+base_eff[3]+this.government.bank_inc_eff*this.government.legitimacy*0.1;//bank inc eff
-		this.modifiers[6] = Math.min(Culture.used_bonus[5]+base_eff[4]+this.government.bank_dev_eff*this.government.legitimacy*0.1,
+		this.modifiers[5] = Culture.used_bonus[5]+base_eff[3]+(gov_base_eff[3]+this.government.bank_inc_eff)*this.government.legitimacy*0.1;//bank inc eff
+		this.modifiers[6] = Math.min(Culture.used_bonus[5]+base_eff[4]+(gov_base_eff[4]+this.government.bank_dev_eff)*this.government.legitimacy*0.1,
 				this.government.max_bank_dev_eff);//bank dev eff
 		this.modifiers[7] = 0;//material inc eff
 		this.modifiers[8] = Culture.used_bonus[6]+this.institutes.outputs[3]*this.government.legitimacy*0.1;//hex prod mod

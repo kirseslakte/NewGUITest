@@ -224,6 +224,19 @@ public class NationHandler extends JFrame{
 				listofofficials.remove(i);
 		}
 		for (Official o:listoflords.get(Utility.findLord(s)).official.listofofficials)
-			listofofficials.add(o);
+			listofofficials.add(o);//add all officials of that lord
+	}
+	public static void getRoutes() {//get all of the lords routes
+		listofroutes.clear();
+		for (Lord lord:listoflords)
+			getRoutes(lord.name);
+	}
+	public static void getRoutes(String s) {//lord-specific
+		for (int i=0;i<listofroutes.size();i++) {//remove that lords routes
+			if (listofroutes.get(i).lord.equals(s))
+				listofroutes.remove(i);
+		}
+		for (Route r:listoflords.get(Utility.findLord(s)).route.listofroutes)
+			listofroutes.add(r);//add that lords routes
 	}
 }

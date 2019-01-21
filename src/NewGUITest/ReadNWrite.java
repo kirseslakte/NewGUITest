@@ -188,7 +188,6 @@ public class ReadNWrite {
 					official[i] = s;
 					i++;
 				}
-				//listofofficials.add(hex);
 			}
 			sc.close();
 		} catch(Exception e){

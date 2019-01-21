@@ -2,4 +2,16 @@ WHEN CREATING VASSALS ONE MUST ASSIGN NAME TO THE VASSAL AND THE LORD OF THE VAS
 
 there seems to be an issue with reading costs and upkeeps from add-ons into buildings. they are never added by themselves at start.
 
-Buildings.update() does not include the built fortifications?
+Buildings.update() does not include the built fortifications?<- that might be a problem
+
+4. addVassal button should get some functionality... should be easy?
+
+3. the nationpanel does not show the correct information...
+
+2. when the nation is loaded, it requires an update before things actually registers as they should... check load procedure and exactly what updates actually does.
+
+1. create routes window
+
+officials are not loaded properly, but require a save-press before they work
+
+having two empty official rows makes it crash

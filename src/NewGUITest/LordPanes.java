@@ -63,7 +63,8 @@ public class LordPanes {
 		});
 		routes.addActionListener(new ActionListener() {//add action event to save button
 			public void actionPerformed(ActionEvent e){
-				NationHandler.saveNation();
+				if (!(NationHandler.listoflords.get(lordindex).route.isVisible()))
+					NationHandler.listoflords.get(lordindex).route.start(NationHandler.listoflords.get(lordindex));
 			}
 		});
 		officials.addActionListener(new ActionListener() {//add action event to save button
