@@ -9,12 +9,21 @@ import java.util.ArrayList;
 public class RouteWindow extends JFrame{
 	
 	public List<Route> listofroutes = new ArrayList<Route>();
-	public List<JTextField> names = new ArrayList<JTextField>();
-	public List<Boolean> active = new ArrayList<Boolean>();
-	public List<JTextField> lord_tar = new ArrayList<JTextField>();
-	public List<JTextField> partner_tar = new ArrayList<JTextField>();
-	public List<JTextField> partner_bp = new ArrayList<JTextField>();
+	
+	public List<JTextField> anames = new ArrayList<JTextField>();
+	public List<JTextField> alord_tar = new ArrayList<JTextField>();
+	public List<JTextField> apartner_tar = new ArrayList<JTextField>();
+	public List<JTextField> apartner_bp = new ArrayList<JTextField>();
+	public List<JLabel> atrade_value = new ArrayList<JLabel>();
+	
+	public List<JTextField> pnames = new ArrayList<JTextField>();
+	public List<JTextField> plord_tar = new ArrayList<JTextField>();
+	public List<JTextField> ppartner_tar = new ArrayList<JTextField>();
+	public List<JTextField> ppartner_bp = new ArrayList<JTextField>();
+	public List<JLabel> ptrade_value = new ArrayList<JLabel>();
+	public List<Panel> passiveroute = new ArrayList<Panel>();
 	public Lord lord;
+	
 	Panel basepanel = new Panel(new GridBagLayout());
 	Panel main = new Panel(new GridLayout(1,2));//panel with all routes
 	Panel activemain = new Panel(new GridLayout(0,2));//panel with all active routes
@@ -38,7 +47,7 @@ public class RouteWindow extends JFrame{
 		this.setTitle("Trade routes of "+this.lord.name);
 	    this.addWindowListener(new WindowAdapter() {//close frame on closing window
 			public void windowClosing(WindowEvent windowEvent){
-				readRoutes();
+				saveRoutes();
 				NationHandler.getRoutes(lord.name);
 			}
 		});
@@ -52,7 +61,7 @@ public class RouteWindow extends JFrame{
 	    Button update = new Button("Save & Update");
 	    update.addActionListener(new ActionListener() {
 	    	public void actionPerformed (ActionEvent e) {
-	    		readRoutes();
+	    		updateRoutes();
 	    	}
 	    });
 	    this.basepanel.add(update,constraints);
@@ -68,46 +77,41 @@ public class RouteWindow extends JFrame{
 	
 	public void setActiveRoutes() {//removes all routes from local memory
 		this.activemain.removeAll();
-		this.names.clear();
-		this.active.clear();
-		this.lord_tar.clear();
-		this.partner_tar.clear();
-		this.partner_bp.clear();
 	    GridBagConstraints constraints = new GridBagConstraints();
 	    constraints.fill = GridBagConstraints.BOTH;
 	    constraints.weightx = 0.5;
 	    for (int i=0;i<this.lord.official_jobs[0];i++) {
-	    	this.active.add(true);
 			Panel routepanel = new Panel(new GridBagLayout());
 		    constraints.gridy = 0;
 		    constraints.gridx = 0;
 		    constraints.gridwidth = 2;
-		    this.names.add(new JTextField("Name of Trade Route"));
-		    routepanel.add(names.get(i), constraints);
+		    this.anames.add(new JTextField("Name of Trade Route"));
+		    routepanel.add(anames.get(i), constraints);
 		    constraints.gridx = 2;
 		    routepanel.add(new JLabel("Partner"), constraints);
 		    constraints.gridwidth = 1;
 		    constraints.gridy = 1;
 		    constraints.gridx = 0;
-		    constraints.gridwidth = 2;
+		    routepanel.add(new JLabel("Trade Value"), constraints);
+		    constraints.gridx = 1;
 		    routepanel.add(new JLabel("TAR"), constraints);
-		    constraints.gridwidth = 1;
 		    constraints.gridx = 2;
 		    routepanel.add(new JLabel("BP"), constraints);
 		    constraints.gridx = 3;
 		    routepanel.add(new JLabel("TAR"), constraints);
 		    constraints.gridy = 2;
 		    constraints.gridx = 0;
-		    constraints.gridwidth = 2;
-		    this.lord_tar.add(new JTextField("0"));
-		    routepanel.add(this.lord_tar.get(i), constraints);
-		    constraints.gridwidth = 1;
+		    this.atrade_value.add(new JLabel("0"));
+		    routepanel.add(this.atrade_value.get(this.atrade_value.size()-1), constraints);
+		    constraints.gridx = 1;
+		    this.alord_tar.add(new JTextField("0"));
+		    routepanel.add(this.alord_tar.get(i), constraints);
 		    constraints.gridx = 2;
-		    this.partner_bp.add(new JTextField("0"));
-		    routepanel.add(this.partner_bp.get(i), constraints);
+		    this.apartner_bp.add(new JTextField("0"));
+		    routepanel.add(this.apartner_bp.get(i), constraints);
 		    constraints.gridx = 3;
-		    this.partner_tar.add(new JTextField("0"));
-		    routepanel.add(this.partner_tar.get(i), constraints);
+		    this.apartner_tar.add(new JTextField("0"));
+		    routepanel.add(this.apartner_tar.get(i), constraints);
 	    	this.activemain.add(routepanel);
 	    }
 	    constraints.gridy = 2;
@@ -116,7 +120,7 @@ public class RouteWindow extends JFrame{
 	    this.main.add(this.activemain);
 	    this.main.add(this.passivemain);
 	    this.basepanel.add(this.main,constraints);
-	    this.setSize(this.getWidth(), 70+30*this.names.size());
+	    this.setSize(this.getWidth(), 200+30*(this.anames.size()+this.pnames.size()));
 	    this.revalidate();
 	}
 	
@@ -128,64 +132,119 @@ public class RouteWindow extends JFrame{
 			}
 		});	
 	    this.passivemain.add(addRoute);
-		addPassiveRoute();
+		this.addPassiveRoute();
 	}
 	
 	public void addPassiveRoute() {
 	    GridBagConstraints constraints = new GridBagConstraints();
 	    constraints.fill = GridBagConstraints.BOTH;
 	    constraints.weightx = 0.5;
-    	this.active.add(false);
-		Panel routepanel = new Panel(new GridBagLayout());
+		this.passiveroute.add(new Panel(new GridBagLayout()));
 	    constraints.gridy = 0;
 	    constraints.gridx = 0;
 	    constraints.gridwidth = 2;
-	    this.names.add(new JTextField("Name of Trade Route"));
-	    routepanel.add(names.get(this.names.size()-1), constraints);
+	    this.pnames.add(new JTextField("Name of Trade Route"));
+	    this.passiveroute.get(this.passiveroute.size()-1).add(pnames.get(this.pnames.size()-1), constraints);
 	    constraints.gridx = 2;
-	    routepanel.add(new JLabel("Partner"), constraints);
+	    this.passiveroute.get(this.passiveroute.size()-1).add(new JLabel("Partner"), constraints);
 	    constraints.gridwidth = 1;
 	    constraints.gridy = 1;
 	    constraints.gridx = 0;
-	    constraints.gridwidth = 2;
-	    routepanel.add(new JLabel("TAR"), constraints);
-	    constraints.gridwidth = 1;
+	    this.passiveroute.get(this.passiveroute.size()-1).add(new JLabel("Trade Value"), constraints);
+	    constraints.gridx = 1;
+	    this.passiveroute.get(this.passiveroute.size()-1).add(new JLabel("TAR"), constraints);
 	    constraints.gridx = 2;
-	    routepanel.add(new JLabel("BP"), constraints);
+	    this.passiveroute.get(this.passiveroute.size()-1).add(new JLabel("BP"), constraints);
 	    constraints.gridx = 3;
-	    routepanel.add(new JLabel("TAR"), constraints);
+	    this.passiveroute.get(this.passiveroute.size()-1).add(new JLabel("TAR"), constraints);
 	    constraints.gridy = 2;
 	    constraints.gridx = 0;
-	    constraints.gridwidth = 2;
-	    this.lord_tar.add(new JTextField("0"));
-	    routepanel.add(this.lord_tar.get(this.lord_tar.size()-1), constraints);
-	    constraints.gridwidth = 1;
+	    this.ptrade_value.add(new JLabel("0"));
+	    this.passiveroute.get(this.passiveroute.size()-1).add(this.ptrade_value.get(this.ptrade_value.size()-1), constraints);
+	    constraints.gridx = 1;
+	    this.plord_tar.add(new JTextField("0"));
+	    this.passiveroute.get(this.passiveroute.size()-1).add(this.plord_tar.get(this.plord_tar.size()-1), constraints);
 	    constraints.gridx = 2;
-	    this.partner_bp.add(new JTextField("0"));
-	    routepanel.add(this.partner_bp.get(this.partner_bp.size()-1), constraints);
+	    this.ppartner_bp.add(new JTextField("0"));
+	    this.passiveroute.get(this.passiveroute.size()-1).add(this.ppartner_bp.get(this.ppartner_bp.size()-1), constraints);
 	    constraints.gridx = 3;
-	    this.partner_tar.add(new JTextField("0"));
-	    routepanel.add(this.partner_tar.get(this.partner_tar.size()-1), constraints);
-    	this.passivemain.add(routepanel);
+	    this.ppartner_tar.add(new JTextField("0"));
+	    this.passiveroute.get(this.passiveroute.size()-1).add(this.ppartner_tar.get(this.ppartner_tar.size()-1), constraints);
+    	this.passivemain.add(this.passiveroute.get(this.passiveroute.size()-1));
     	this.revalidate();
 	}
 	
-	public void readRoutes() {
-		
-	}
-	
-	public void loadRoute() {
-		
-	}
-	
-	public void start(Lord lord) {
-		this.lord = lord;
-		if (lord.official_jobs[0]<1)
-			JOptionPane.showMessageDialog(null,"This lord has no trading officials!","Trade Error",JOptionPane.INFORMATION_MESSAGE);
-		else {
-			this.setVisible(true);
-			this.setActiveRoutes();
+	public void updateRoutes() {
+		System.out.println("Updating things");
+		this.saveRoutes();
+		for (int i=1;i<this.pnames.size();i++) {
+			System.out.println(i);
+			if (this.ppartner_bp.get(i).getText().equals("")||this.ppartner_bp.get(i).getText().equals("0")) {
+				System.out.println("Empty passive detected at "+i+" in passive list");
+				this.passivemain.remove(this.passiveroute.get(i));
+				this.passiveroute.remove(i);
+				this.pnames.remove(i);
+				this.ptrade_value.remove(i);
+				this.plord_tar.remove(i);
+				this.ppartner_bp.remove(i);
+				this.ppartner_tar.remove(i);
+				i--;
+			}
 		}
+		for (int i=0;i<this.anames.size();i++)
+			this.atrade_value.get(i).setText(Integer.toString((int) Math.round(this.listofroutes.get(i).trade_value)));
+		for (int i=0;i<this.pnames.size();i++)
+			this.ptrade_value.get(i).setText(Integer.toString((int) Math.round(this.listofroutes.get(i).trade_value)));
+		this.revalidate();
+	}
+	
+	public void clearRoutes() {
+		this.anames.clear();
+		this.alord_tar.clear();
+		this.apartner_tar.clear();
+		this.apartner_bp.clear();
+		this.pnames.clear();
+		this.plord_tar.clear();
+		this.ppartner_tar.clear();
+		this.ppartner_bp.clear();
+	}
+	
+	public void saveRoutes() {//reads routes from visual layer and puts into codelayer
+		this.listofroutes.clear();
+		String[] route = new String[6];
+		for (int i=0;i<this.anames.size();i++) {
+			for (int j=0;j<route.length;j++)
+				route[j] = "";
+			route[0] = this.anames.get(i).getText();
+			route[1] = this.lord.name;
+			route[2] = "true";
+			route[3] = this.alord_tar.get(i).getText();
+			route[4] = this.apartner_tar.get(i).getText();
+			route[5] = this.apartner_bp.get(i).getText();
+			this.listofroutes.add(new Route(route));
+		}
+		
+		for (int i=0;i<this.pnames.size();i++) {
+			for (int j=0;j<route.length;j++)
+				route[j] = "";
+			route[0] = this.pnames.get(i).getText();
+			route[1] = this.lord.name;
+			route[2] = "false";
+			route[3] = this.plord_tar.get(i).getText();
+			route[4] = this.ppartner_tar.get(i).getText();
+			route[5] = this.ppartner_bp.get(i).getText();
+			this.listofroutes.add(new Route(route));
+		}
+	}
+	
+	public void loadRoute() {//loads directly from saved layer and puts into code and visual layers
+		
+	}
+	
+	public void start() {
+		this.setVisible(true);
+		this.clearRoutes();
+		this.setActiveRoutes();
 	}
 	
 	public void stop() {

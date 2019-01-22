@@ -58,6 +58,7 @@ public class NationHandler extends JFrame{
 				listoflords.get(listoflords.size()-1).setGovernment();
 			}
 			listoflords.get(listoflords.size()-1).loadModifiers();
+			listoflords.get(listoflords.size()-1).updateLord();
 		}
 		//all lords have been loaded!!
 		listofhexes = write.loadHexes();

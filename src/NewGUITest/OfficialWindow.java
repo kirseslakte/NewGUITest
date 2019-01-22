@@ -83,6 +83,7 @@ public class OfficialWindow extends JFrame{
 	    this.main.add(new JLabel("Free?"));
 	    this.add_button.addActionListener(new ActionListener() {
 	    	public void actionPerformed (ActionEvent e) {
+	    		System.out.println("***OFFICIAL ADDBUTTON PRESSED***");
 	    		addOfficial();
 	    		readOfficials();
 	    	}
@@ -93,6 +94,7 @@ public class OfficialWindow extends JFrame{
 	
 	public void addOfficial() {
 		System.out.println("OFFICIALWINDOW! addOfficial");
+		System.out.println("THE NUMBER OF OFFICIALS IS "+this.names.size());
 		this.setJobsList();
 		try {
 			if (!(this.names.get(this.names.size()-1).getText().equals(""))) {
@@ -109,8 +111,32 @@ public class OfficialWindow extends JFrame{
 				this.free.add(new JCheckBox());
 				this.main.add(this.free.get(this.free.size()-1));
 				this.main.add(add_button);
-				this.main.revalidate();
-			}	
+			} else {
+				for (int i=0;i<this.names.size()-1;i++){
+					if (this.names.get(i).getText().equals("")) {//&&this.jobs.get(i).getSelectedItem().equals("")&&
+							//this.rolls.get(i).getText().equals("")) {
+						System.out.println("Removing official index "+i+" with name "+this.names.get(i).getText());
+						this.main.remove(this.names.get(i));
+						System.out.println("1");
+						this.main.remove(this.jobs.get(i));
+						System.out.println("2");
+						this.main.remove(this.rolls.get(i));
+						System.out.println("3");
+						this.main.remove(this.effects.get(i));
+						System.out.println("4");
+						this.main.remove(this.free.get(i));
+						this.names.remove(i);
+						this.jobs.remove(i);
+						this.rolls.remove(i);
+						this.effects.remove(i);
+						this.free.remove(i);
+						this.main.revalidate();
+						i = 0;
+						System.out.println("Done Removing ");
+					}
+				}
+			}
+			this.main.revalidate();
 		} catch (IndexOutOfBoundsException e) {
 			System.out.println("OUT OF BOUNDS");
 			this.remove(add_button);

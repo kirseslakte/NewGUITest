@@ -10,8 +10,8 @@ Buildings.update() does not include the built fortifications?<- that might be a 
 
 2. when the nation is loaded, it requires an update before things actually registers as they should... check load procedure and exactly what updates actually does.
 
-1. create routes window
+1. create routes window---DONE!
 
-officials are not loaded properly, but require a save-press before they work
-
-having two empty official rows makes it crash
+--officials are not loaded properly, but require a save-press before they work
+--the eco variables are not loaded properly. 
+--military/guilds upkeeps need to be textfields.

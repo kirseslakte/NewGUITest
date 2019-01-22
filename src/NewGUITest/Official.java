@@ -22,7 +22,8 @@ public class Official {//initializing an 'official' object where you can create 
 		System.out.println("OFFICIAL! Official");
 		this.name = s[0];						//name
 		this.job = s[1];						//official action
-		this.roll = Integer.parseInt(s[2]);		//the roll/skill/whatever value is applicable
+		if (!(s[2].equals("")))
+			this.roll = Integer.parseInt(s[2]);	//the roll/skill/whatever value is applicable
 		this.lord = s[3];						//which lord the official belongs to
 		this.free = Boolean.parseBoolean(s[4]);
 		this.rollhelper = -1;
