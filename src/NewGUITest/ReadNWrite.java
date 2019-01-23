@@ -13,10 +13,8 @@ public class ReadNWrite {
 	private static String separator = "xxxxxx";
 	public static String[] save_names;
 	public static int n_saves = 0;
-	public int number_of_building_slots = 18;
+	public static int number_of_building_slots = 18;
 	public static File directory = new File("");
-	LordPanes panes = new LordPanes();
-	Culture bonuses = new Culture();
 	
 	public ReadNWrite() {
 		//updateSaves();
@@ -41,13 +39,13 @@ public class ReadNWrite {
 		return n_saves;
 	}
 	
-	public void setNationName(String s) {//create and name the current nation save
+	public static void setNationName(String s) {//create and name the current nation save
 		System.out.println("READNWRITE! setNationName");
 		directory = new File("Nations/"+s);
 		directory.mkdir();
 	}
 	
-	public void clean() {
+	public static void clean() {
 		System.out.println("READNWRITE! clean");
 		File file = new File("Nations");
 		File nation;
@@ -61,7 +59,7 @@ public class ReadNWrite {
 	
 	//load lords
 	
-	public String[] loadLord(String title) {//reading a save file with nation file directory as input
+	public static String[] loadLord(String title) {//reading a save file with nation file directory as input
 		System.out.println("READNWRITE! loadLord");
 		String[] lord = new String[26];
 		File file = new File(directory+"\\"+title+filetype);
@@ -79,7 +77,7 @@ public class ReadNWrite {
 	
 	//load culture
 	
-	public String[] loadCulture() {
+	public static String[] loadCulture() {
 		System.out.println("READNWRITE! loadCulture");
 		String[] culture = new String[Culture.culture_names.length];
 		File file = new File(directory+"\\culture"+filetype);
@@ -97,7 +95,7 @@ public class ReadNWrite {
 	
 	//load hexes
 	
-	public List<Hex> loadHexes() {//loading hexes!
+	public static List<Hex> loadHexes() {//loading hexes!
 		System.out.println("READNWRITE! loadHexes");
 		List<Hex> listofhexes = new ArrayList<Hex>();
 		String s = directory+"\\hexes"+filetype;
@@ -130,7 +128,7 @@ public class ReadNWrite {
 	
 	//load units
 	
-	public List<Unit> loadUnits(){
+	public static List<Unit> loadUnits(){
 		System.out.println("READNWRITE! loadUnits");
 		List<Unit> listofunits = new ArrayList<Unit>();
 		String s = directory+"\\units"+filetype;
@@ -150,16 +148,26 @@ public class ReadNWrite {
 	
 	//load routes
 	
-	public List<Route> loadRoutes(File k) {
+	public static List<Route> loadRoutes(String lord_name) {
 		System.out.println("READNWRITE! loadRoutes");
 		List<Route> listofroutes = new ArrayList<Route>();
 		String s = directory+"\\routes"+filetype;
 		File file = new File(s);
+		String[] route = new String[6];
+		int i = 0;
 		try {
 			Scanner sc = new Scanner(file);
 			while(sc.hasNextLine()){
-						
-				//listofroutes.add(hex);
+				s = sc.nextLine();
+				if (s.equals(separator)){
+					if (route[1].equals(lord_name)){//only add the routes of the specified lord
+						listofroutes.add(new Route(route));
+						i = 0;
+					}
+				} else {
+					route[i] = s;
+					i++;
+				}
 			}
 			sc.close();
 		} catch(Exception e){
@@ -167,10 +175,34 @@ public class ReadNWrite {
 		}
 		return listofroutes;
 	}
-	
+	public static List<Route> loadRoutes() {
+		System.out.println("READNWRITE! loadRoutes");
+		List<Route> listofroutes = new ArrayList<Route>();
+		String s = directory+"\\routes"+filetype;
+		File file = new File(s);
+		String[] route = new String[6];
+		int i = 0;
+		try {
+			Scanner sc = new Scanner(file);
+			while(sc.hasNextLine()){
+				s = sc.nextLine();
+				if (s.equals(separator)){
+					listofroutes.add(new Route(route));
+					i = 0;
+				} else {
+					route[i] = s;
+					i++;
+				}
+			}
+			sc.close();
+		} catch(Exception e){
+			System.out.println(e);
+		}
+		return listofroutes;
+	}
 	//load officials
 	
-	public List<Official> loadOfficials() {
+	public static List<Official> loadOfficials() {
 		System.out.println("READNWRITE! loadOfficials");
 		List<Official> listofofficials = new ArrayList<Official>();
 		String s = directory+"/officials"+filetype;
@@ -200,7 +232,7 @@ public class ReadNWrite {
 	
 	//Saving hex
 	
-	public void saveHexes(List<Hex> listofhexes) {//writing 
+	public static void saveHexes(List<Hex> listofhexes) {//writing 
 		System.out.println("READNWRITE! saveHexes");
 		String s = directory+"\\hexes"+filetype;
 		File file = new File(s);
@@ -233,7 +265,7 @@ public class ReadNWrite {
 	
 	//saving lord
 	
-	public void saveLord(Lord lord) {//Writing the save file. needs to be called for each vassal?
+	public static void saveLord(Lord lord) {//Writing the save file. needs to be called for each vassal?
 		System.out.println("READNWRITE! saveLord");
 		String s = directory+"\\"+lord.title+filetype;
 		File file = new File(s);
@@ -271,12 +303,12 @@ public class ReadNWrite {
 	
 	//saving culture
 	
-	public void saveCulture(Lord lord) {
+	public static void saveCulture(Lord lord) {
 		System.out.println("READNWRITE! saveCulture");
 		String s = directory+"\\culture"+filetype;
 		File file = new File(s);
 		file.delete();
-		String[] cultures = bonuses.readCulture();
+		String[] cultures = Culture.readCulture();
 		try {
 			file.createNewFile();
 			FileWriter fw = new FileWriter(file);
@@ -291,7 +323,7 @@ public class ReadNWrite {
 	
 	//saving units
 	
-	public void saveUnit(List<Unit> listofunits) {
+	public static void saveUnit(List<Unit> listofunits) {
 		System.out.println("READNWRITE! saveUnit");
 		String s = directory+"\\units"+filetype;
 		File file = new File(s);
@@ -390,7 +422,7 @@ public class ReadNWrite {
 	
 	//save routes
 	
-	public void saveRoute(List<Route> listofroutes){//self-explanatory save procedure
+	public static void saveRoute(List<Route> listofroutes){//self-explanatory save procedure
 		System.out.println("READNWRITE! saveRoute");
 		String s = directory+"\\routes"+filetype;
 		File file = new File(s);
@@ -415,7 +447,7 @@ public class ReadNWrite {
 	
 	//save officials
 	
-	public void saveOfficial(List<Official> listofofficials) {//self-explanatory save procedure
+	public static void saveOfficial(List<Official> listofofficials) {//self-explanatory save procedure
 		System.out.println("READNWRITE! saveOfficial");
 		String s = directory+"\\officials"+filetype;
 		File file = new File(s);

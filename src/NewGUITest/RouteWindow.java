@@ -76,6 +76,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void setActiveRoutes() {//removes all routes from local memory
+		System.out.println("ROUTEWINDOW! setActiveRoutes");
 		this.activemain.removeAll();
 	    GridBagConstraints constraints = new GridBagConstraints();
 	    constraints.fill = GridBagConstraints.BOTH;
@@ -125,6 +126,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void passivePanel() {
+		System.out.println("ROUTEWINDOW! passivePanel");
 		Button addRoute = new Button("Add Passive Trade Route");
 		addRoute.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
@@ -136,6 +138,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void addPassiveRoute() {
+		System.out.println("ROUTEWINDOW! addPassiveRoute");
 	    GridBagConstraints constraints = new GridBagConstraints();
 	    constraints.fill = GridBagConstraints.BOTH;
 	    constraints.weightx = 0.5;
@@ -175,9 +178,9 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void updateRoutes() {
-		System.out.println("Updating things");
+		System.out.println("ROUTEWINDOW! updateRoutes");
 		this.saveRoutes();
-		for (int i=1;i<this.pnames.size();i++) {
+		for (int i=0;i<this.pnames.size();i++) {
 			System.out.println(i);
 			if (this.ppartner_bp.get(i).getText().equals("")||this.ppartner_bp.get(i).getText().equals("0")) {
 				System.out.println("Empty passive detected at "+i+" in passive list");
@@ -199,6 +202,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void clearRoutes() {
+		System.out.println("ROUTEWINDOW! clearRoutes");
 		this.anames.clear();
 		this.alord_tar.clear();
 		this.apartner_tar.clear();
@@ -210,6 +214,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void saveRoutes() {//reads routes from visual layer and puts into codelayer
+		System.out.println("ROUTEWINDOW! saveRoutes");
 		this.listofroutes.clear();
 		String[] route = new String[6];
 		for (int i=0;i<this.anames.size();i++) {
@@ -235,19 +240,45 @@ public class RouteWindow extends JFrame{
 			route[5] = this.ppartner_bp.get(i).getText();
 			this.listofroutes.add(new Route(route));
 		}
+		NationHandler.getRoutes(this.lord.name);
+		NationHandler.saveNation();
 	}
 	
-	public void loadRoute() {//loads directly from saved layer and puts into code and visual layers
-		
+	public void loadRoutes() {//loads directly from saved layer and puts into code and visual layers
+		System.out.println("ROUTEWINDOW! loadRoutes");
+		this.listofroutes = ReadNWrite.loadRoutes(this.lord.name);
+		this.clearRoutes();
+		NationHandler.listoflords.get(Utility.findLord(this.lord.name)).getOfficials();
+		this.setActiveRoutes();
+		int a = 0,p = 0;
+		for (Route route:this.listofroutes) {
+			if (route.active) {
+				this.anames.get(a).setText(route.name);
+				this.atrade_value.get(a).setText(Integer.toString((int) Math.round(route.trade_value)));
+				this.alord_tar.get(a).setText(Integer.toString(route.lord_TAR));
+				this.apartner_bp.get(a).setText(Integer.toString(route.partner_BP));
+				this.apartner_tar.get(a).setText(Integer.toString(route.partner_TAR));
+				a++;
+			}else {
+				this.addPassiveRoute();
+				this.pnames.get(p).setText(route.name);
+				this.ptrade_value.get(p).setText(Integer.toString((int) Math.round(route.trade_value)));
+				this.plord_tar.get(p).setText(Integer.toString(route.lord_TAR));
+				this.ppartner_bp.get(p).setText(Integer.toString(route.partner_BP));
+				this.ppartner_tar.get(p).setText(Integer.toString(route.partner_TAR));
+				p++;
+			}
+		}
 	}
 	
 	public void start() {
+		System.out.println("ROUTEWINDOW! start");
 		this.setVisible(true);
-		this.clearRoutes();
-		this.setActiveRoutes();
+		this.loadRoutes();
 	}
 	
 	public void stop() {
+		System.out.println("ROUTEWINDOW! stop");
 		this.setVisible(false);
 	}
 }

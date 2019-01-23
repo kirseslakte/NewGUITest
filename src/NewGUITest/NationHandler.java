@@ -13,7 +13,6 @@ public class NationHandler extends JFrame{
 	static List<Route> listofroutes = new ArrayList<Route>();
 	static List<Official> listofofficials = new ArrayList<Official>();
 	private static JTabbedPane mainPane = new JTabbedPane();
-	private static ReadNWrite write = new ReadNWrite();
 	public static HexPane hexpanel = new HexPane();
 	//public static OfficialTab officialpanel = new OfficialTab();
 	//public static RouteTab routepanel = new RouteTab();
@@ -26,7 +25,7 @@ public class NationHandler extends JFrame{
 	
 	public void createNation(String s) {//only ever called from MainThread when a new nation is created
 		System.out.println("NATIONHANDLER! createNation");
-		write.setNationName(s);
+		ReadNWrite.setNationName(s);
 		newLord(s,"");
 		mainSetup(s);
 		Culture.createCulture();
@@ -36,7 +35,7 @@ public class NationHandler extends JFrame{
 	
 	public void loadNation (String s) {//only ever called from MainThread when an old nation is loaded
 		System.out.println("NATIONHANDLER! loadNation");
-		write.setNationName(s);
+		ReadNWrite.setNationName(s);
 		List<String> listofloads = new ArrayList<String>();
 		for (String loadstr:ReadNWrite.directory.list()) {
 			loadstr = loadstr.replace(ReadNWrite.filetype, "");
@@ -45,12 +44,12 @@ public class NationHandler extends JFrame{
 		listofloads.remove("hexes");listofloads.remove("units");listofloads.remove("officials");
 		listofloads.remove("culture");listofloads.remove("routes");//remove all non-lords
 		for (String lord:listofloads){//lords SHOULD be sorted alphabetically meaning overlord is first,
-			String[] loaded_lord = write.loadLord(lord);//then vassal1, then vassals of 1, then vassal2, then vassals of 2, aso
+			String[] loaded_lord = ReadNWrite.loadLord(lord);//then vassal1, then vassals of 1, then vassal2, then vassals of 2, aso
 			listoflords.add(new Lord(loaded_lord[0],loaded_lord[9]));//name, master_title
 			listoflords.get(listoflords.size()-1).title = lord;
 			listoflords.get(listoflords.size()-1).loadGovernment(loaded_lord);
 			if (lord.equals("overlord")) {
-				Culture.loadCulture(write.loadCulture());
+				Culture.loadCulture(ReadNWrite.loadCulture());
 				mainSetup(s);
 				listoflords.get(listoflords.size()-1).setGovernment();
 			} else {
@@ -61,19 +60,20 @@ public class NationHandler extends JFrame{
 			listoflords.get(listoflords.size()-1).updateLord();
 		}
 		//all lords have been loaded!!
-		listofhexes = write.loadHexes();
+		listofhexes = ReadNWrite.loadHexes();
 		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPane()));//loaded after all the lords
 		mainPane.addTab("Culture & Portfolio", new JScrollPane(Culture.culturePane()));
 		recalibrateLords();
 		recalibrateHexes();
-		//mainPane.addTab("Trade Routes", new JScrollPane(routepanel.panel()));
-		//hexpanel.updateHexPane();
-		listofunits = write.loadUnits();
+		listofunits = ReadNWrite.loadUnits();
 		//mainPane.addTab("Units", new JScrollPane(unitpanel.unitPane()));
-		listofofficials = write.loadOfficials();
+		listofofficials = ReadNWrite.loadOfficials();
+		listofroutes = ReadNWrite.loadRoutes();
 		for (Lord lord:listoflords) {//load all officials into the lords
 			lord.official.loadOfficials();
+			lord.route.loadRoutes();
 		}
+			
 		//update the nationpanes of the lords
 		//load notes
 		//mainPane.addTab("Notes");
@@ -84,12 +84,12 @@ public class NationHandler extends JFrame{
 		System.out.println("NATIONHANDLER! saveNation");
 		updateNation();
 		for (Lord lord: listoflords) {
-			write.saveLord(lord);
+			ReadNWrite.saveLord(lord);
 		}
-		write.saveHexes(listofhexes);
-		write.saveUnit(listofunits);
-		write.saveRoute(listofroutes);
-		write.saveOfficial(listofofficials);
+		ReadNWrite.saveHexes(listofhexes);
+		ReadNWrite.saveUnit(listofunits);
+		ReadNWrite.saveRoute(listofroutes);
+		ReadNWrite.saveOfficial(listofofficials);
 	}//that was pretty straight forward, right?
 	
 	public void newLord(String new_lord,String master) {//create a new lordWindow
@@ -140,7 +140,7 @@ public class NationHandler extends JFrame{
 	    this.setLocationRelativeTo(null);
 		this.addWindowListener(new WindowAdapter() {//close program on closing window
 			public void windowClosing(WindowEvent windowEvent){
-				write.clean();
+				ReadNWrite.clean();
 				System.exit(0);
 			}
 		});

@@ -12,6 +12,7 @@ Buildings.update() does not include the built fortifications?<- that might be a 
 
 1. create routes window---DONE!
 
---officials are not loaded properly, but require a save-press before they work
+--officials are not loaded properly, but require a save-press before they work--fixed?
 --the eco variables are not loaded properly. 
 --military/guilds upkeeps need to be textfields.
+--trade routes are not saved properly.
