@@ -181,9 +181,7 @@ public class RouteWindow extends JFrame{
 		System.out.println("ROUTEWINDOW! updateRoutes");
 		this.saveRoutes();
 		for (int i=0;i<this.pnames.size();i++) {
-			System.out.println(i);
 			if (this.ppartner_bp.get(i).getText().equals("")||this.ppartner_bp.get(i).getText().equals("0")) {
-				System.out.println("Empty passive detected at "+i+" in passive list");
 				this.passivemain.remove(this.passiveroute.get(i));
 				this.passiveroute.remove(i);
 				this.pnames.remove(i);
@@ -191,26 +189,40 @@ public class RouteWindow extends JFrame{
 				this.plord_tar.remove(i);
 				this.ppartner_bp.remove(i);
 				this.ppartner_tar.remove(i);
+				this.listofroutes.remove(this.anames.size()+i);
 				i--;
 			}
 		}
-		for (int i=0;i<this.anames.size();i++)
-			this.atrade_value.get(i).setText(Integer.toString((int) Math.round(this.listofroutes.get(i).trade_value)));
-		for (int i=0;i<this.pnames.size();i++)
-			this.ptrade_value.get(i).setText(Integer.toString((int) Math.round(this.listofroutes.get(i).trade_value)));
+		int a=0,p=0;
+		for (Route route:this.listofroutes) {
+			if (route.active) {
+				this.atrade_value.get(a).setText(Integer.toString(route.rounded_tv));
+				a++;
+			} else {
+				this.ptrade_value.get(p).setText(Integer.toString(route.rounded_tv));
+				p++;
+			}
+		}
 		this.revalidate();
 	}
 	
 	public void clearRoutes() {
 		System.out.println("ROUTEWINDOW! clearRoutes");
 		this.anames.clear();
+		this.atrade_value.clear();
 		this.alord_tar.clear();
 		this.apartner_tar.clear();
 		this.apartner_bp.clear();
 		this.pnames.clear();
+		this.ptrade_value.clear();
 		this.plord_tar.clear();
 		this.ppartner_tar.clear();
 		this.ppartner_bp.clear();
+		for (int i=0;i<this.passiveroute.size();i++) {
+			this.passivemain.remove(this.passiveroute.get(i));
+			this.passiveroute.remove(i);
+			i--;
+		}
 	}
 	
 	public void saveRoutes() {//reads routes from visual layer and puts into codelayer
@@ -230,6 +242,7 @@ public class RouteWindow extends JFrame{
 		}
 		
 		for (int i=0;i<this.pnames.size();i++) {
+			System.out.println("*******Creating a passive route");
 			for (int j=0;j<route.length;j++)
 				route[j] = "";
 			route[0] = this.pnames.get(i).getText();
@@ -247,6 +260,8 @@ public class RouteWindow extends JFrame{
 	public void loadRoutes() {//loads directly from saved layer and puts into code and visual layers
 		System.out.println("ROUTEWINDOW! loadRoutes");
 		this.listofroutes = ReadNWrite.loadRoutes(this.lord.name);
+		for (Route route:this.listofroutes)
+			System.out.println("***IMPORTED ROUTE: "+route.name);
 		this.clearRoutes();
 		NationHandler.listoflords.get(Utility.findLord(this.lord.name)).getOfficials();
 		this.setActiveRoutes();
@@ -254,7 +269,7 @@ public class RouteWindow extends JFrame{
 		for (Route route:this.listofroutes) {
 			if (route.active) {
 				this.anames.get(a).setText(route.name);
-				this.atrade_value.get(a).setText(Integer.toString((int) Math.round(route.trade_value)));
+				this.atrade_value.get(a).setText(Integer.toString(route.rounded_tv));
 				this.alord_tar.get(a).setText(Integer.toString(route.lord_TAR));
 				this.apartner_bp.get(a).setText(Integer.toString(route.partner_BP));
 				this.apartner_tar.get(a).setText(Integer.toString(route.partner_TAR));
@@ -262,13 +277,14 @@ public class RouteWindow extends JFrame{
 			}else {
 				this.addPassiveRoute();
 				this.pnames.get(p).setText(route.name);
-				this.ptrade_value.get(p).setText(Integer.toString((int) Math.round(route.trade_value)));
+				this.ptrade_value.get(p).setText(Integer.toString(route.rounded_tv));
 				this.plord_tar.get(p).setText(Integer.toString(route.lord_TAR));
 				this.ppartner_bp.get(p).setText(Integer.toString(route.partner_BP));
 				this.ppartner_tar.get(p).setText(Integer.toString(route.partner_TAR));
 				p++;
 			}
 		}
+		this.updateRoutes();
 	}
 	
 	public void start() {

@@ -29,7 +29,7 @@ public class Culture {
 		
 	}
 	public static Panel culturePane() {//culture panel
-		System.out.println("CULTURE! culturePane");
+		//System.out.println("CULTURE! culturePane");
 		Panel culture_panel = new Panel(new GridLayout(0,4));
 		for (int i=0;i<culture_names.length;i++){
 			culturefields.add(new JTextField("0"));
@@ -40,13 +40,13 @@ public class Culture {
 	}
 	
 	public static void setCulturePane(double[] s) {//setting culture pane
-		System.out.println("CULTURE! setCulturePane");
+		//System.out.println("CULTURE! setCulturePane");
 		for (int i=0;i<culture_names.length;i++)//only ever called from lord.setCulture()
 			culturefields.get(i).setText(Integer.toString((int) (s[i]*100)));
 	}
 	
 	public static void getCulture() {//extracting all the culture modifiers
-		System.out.println("CULTURE! getCulture");
+		//System.out.println("CULTURE! getCulture");
 		for (int i=0;i<culture_names.length;i++) {//from visual layer	
 			culture_bonuses[i] = Double.parseDouble(culturefields.get(i).getText())*0.01;
 			if (i<8)
@@ -59,7 +59,7 @@ public class Culture {
 	}
 	
 	public static String[] readCulture() {//just print out the fields to the save file
-		System.out.println("CULTURE! readCulture");
+		//System.out.println("CULTURE! readCulture");
 		String[] reads = new String[culture_names.length];
 		for (int i=0;i<culture_names.length;i++)
 			reads[i] = culturefields.get(i).getText();
@@ -67,7 +67,7 @@ public class Culture {
 	}
 	
 	public static void loadCulture(String[] boni) {//only ever called when loading, nothing to do with visual layer
-		System.out.println("CULTURE! loadCulture");
+		//System.out.println("CULTURE! loadCulture");
 		createCulture();
 		for (int i=0;i<NationHandler.listoflords.size();i++){
 			if (NationHandler.listoflords.get(i).title.equals("overlord"))
@@ -80,12 +80,12 @@ public class Culture {
 	}
 	
 	public static void setCulture() {	
-		System.out.println("CULTURE! setCulture");
+		//System.out.println("CULTURE! setCulture");
 		setCulturePane(culture_bonuses);
 	}
 	
 	public static void createCulture() {
-		System.out.println("CULTURE! createCulture");
+		//System.out.println("CULTURE! createCulture");
 		culture_bonuses = new double[culture_names.length];
 		used_bonus = new double[culture_names.length];
 	}

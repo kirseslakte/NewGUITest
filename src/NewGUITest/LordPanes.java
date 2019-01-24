@@ -77,7 +77,7 @@ public class LordPanes {
 	}
 	
 	public Panel nationPane(Governments government,boolean b) {//creates the nation panel 
-		System.out.println("LORDPANE! nationPanel");
+		//System.out.println("LORDPANE! nationPanel");
 		for (int i=0;i<this.nationlabels.length;i++) {
 			c.gridy = (int) Math.floor(i/2);
 			this.nationlabels[i] = new JLabel("0");
@@ -114,7 +114,7 @@ public class LordPanes {
 	}
 	
 	public void updateNationPane(int lordindex) {
-		System.out.println("LORDPANE! updateNationPane");
+		//System.out.println("LORDPANE! updateNationPane");
 		this.nationlabels[0].setText(Integer.toString((int) Math.round(NationHandler.listoflords.get(lordindex).modifiers[0]*100)));//tax
 		this.nationlabels[1].setText("");
 		this.nationlabels[2].setText(Integer.toString((int) Math.round(NationHandler.listoflords.get(lordindex).modifiers[1]*100)));//prod
@@ -149,7 +149,7 @@ public class LordPanes {
 	}
 	
 	public Panel governmentPane(Governments government, Institutions institutes) {//government panel
-		System.out.println("LORDPANE! governmentPane");
+		//System.out.println("LORDPANE! governmentPane");
 		this.government_panel.add(new JLabel("Culture"));
 		this.government_panel.add(culture = new JComboBox<>(Governments.alignments));
 		this.government_panel.add(legitimacy_label = new JLabel("Legitimacy"));
@@ -176,7 +176,7 @@ public class LordPanes {
 	}
 	
 	public void setGovernmentPane(Governments government, Institutions institutes) {//load visuals for government pane
-		System.out.println("LORDPANE! setGovernmentPane");
+		//System.out.println("LORDPANE! setGovernmentPane");
 		this.culture.setSelectedItem(government.culture);
 		this.legitimacy.setText(Integer.toString(government.legitimacy));
 		this.religion.setSelectedItem(government.religion);
@@ -200,7 +200,7 @@ public class LordPanes {
 	}
 	
 	public void updateGovernmentPane(Governments government) {//update if hive/hist are selected
-		System.out.println("LORDPANE! updateGovernmentPane");
+		//System.out.println("LORDPANE! updateGovernmentPane");
 		if (government.sys.equals("Hive"))  //set legitimacy text for hive or not hive
 			this.legitimacy_label.setText("Control");
 		else if (!government.sys.equals("Hive")&&legitimacy_label.getText().equals("Control"))

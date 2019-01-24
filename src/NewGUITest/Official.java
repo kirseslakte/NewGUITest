@@ -19,7 +19,7 @@ public class Official {//initializing an 'official' object where you can create 
 	}
 	
 	public Official(String[] s){				//requires input:
-		System.out.println("OFFICIAL! Official");
+		//System.out.println("OFFICIAL! Official");
 		this.name = s[0];						//name
 		this.job = s[1];						//official action
 		if (!(s[2].equals("")))

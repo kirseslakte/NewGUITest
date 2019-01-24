@@ -30,14 +30,14 @@ public class OfficialWindow extends JFrame{
 	}
 	
 	public void initialize(Lord lord) {
-		System.out.println("OFFICIALWINDOW! initialize");
+		//System.out.println("OFFICIALWINDOW! initialize");
 		this.lord = lord;
 		setJobsList();
 		setFrame();
 	}
 	
 	public void setJobsList() {
-		System.out.println("OFFICIALWINDOW! setJobsList");
+		//System.out.println("OFFICIALWINDOW! setJobsList");
 		try { 		this.lord = NationHandler.listoflords.get(Utility.findLord(this.lord.name));
 		} catch (IndexOutOfBoundsException e) {
 			//System.out.println(e);
@@ -47,7 +47,6 @@ public class OfficialWindow extends JFrame{
 		for (int i=0;i<jobslist.length-2;i++)
 			temp.add(jobslist[i]);
 		for (int i=0;i<this.lord.institutes.active_institutions.length;i++) {
-			System.out.println(this.lord.institutes.active_institutions[i]);
 			if (this.lord.institutes.active_institutions[i].equals("Welfare"))
 				temp.add(jobslist[jobslist.length-2]);
 			if (this.lord.institutes.active_institutions[i].equals("Interior"))
@@ -66,7 +65,7 @@ public class OfficialWindow extends JFrame{
 	}
 	
 	public void setFrame() {	
-		System.out.println("OFFICIALWINDOW! setFrame");
+		//System.out.println("OFFICIALWINDOW! setFrame");
 		this.setSize(800, 100);
 		this.setLocationRelativeTo(null);
 		this.setTitle("Officials for "+this.lord.name);
@@ -83,7 +82,6 @@ public class OfficialWindow extends JFrame{
 	    this.main.add(new JLabel("Free?"));
 	    this.add_button.addActionListener(new ActionListener() {
 	    	public void actionPerformed (ActionEvent e) {
-	    		System.out.println("***OFFICIAL ADDBUTTON PRESSED***");
 	    		addOfficial();
 	    		readOfficials();
 	    	}
@@ -93,12 +91,12 @@ public class OfficialWindow extends JFrame{
 	}
 	
 	public void addOfficial() {
-		System.out.println("OFFICIALWINDOW! addOfficial");
-		System.out.println("THE NUMBER OF OFFICIALS IS "+this.names.size());
+		//System.out.println("OFFICIALWINDOW! addOfficial");
+		//System.out.println("THE NUMBER OF OFFICIALS IS "+this.names.size());
 		this.setJobsList();
 		try {
 			if (!(this.names.get(this.names.size()-1).getText().equals(""))) {
-				System.out.println("ADDING ANOTHER LINE, PREVIOUS OFFICIAL NAME: ");
+				//System.out.println("ADDING ANOTHER LINE, PREVIOUS OFFICIAL NAME: ");
 				this.remove(add_button);
 				this.names.add(new JTextField(""));
 				this.main.add(this.names.get(this.names.size()-1));
@@ -115,15 +113,10 @@ public class OfficialWindow extends JFrame{
 				for (int i=0;i<this.names.size()-1;i++){
 					if (this.names.get(i).getText().equals("")) {//&&this.jobs.get(i).getSelectedItem().equals("")&&
 							//this.rolls.get(i).getText().equals("")) {
-						System.out.println("Removing official index "+i+" with name "+this.names.get(i).getText());
 						this.main.remove(this.names.get(i));
-						System.out.println("1");
 						this.main.remove(this.jobs.get(i));
-						System.out.println("2");
 						this.main.remove(this.rolls.get(i));
-						System.out.println("3");
 						this.main.remove(this.effects.get(i));
-						System.out.println("4");
 						this.main.remove(this.free.get(i));
 						this.names.remove(i);
 						this.jobs.remove(i);
@@ -132,13 +125,12 @@ public class OfficialWindow extends JFrame{
 						this.free.remove(i);
 						this.main.revalidate();
 						i = 0;
-						System.out.println("Done Removing ");
 					}
 				}
 			}
 			this.main.revalidate();
 		} catch (IndexOutOfBoundsException e) {
-			System.out.println("OUT OF BOUNDS");
+			//System.out.println("OUT OF BOUNDS");
 			this.remove(add_button);
 			this.names.add(new JTextField(""));
 			this.main.add(this.names.get(this.names.size()-1));
@@ -165,7 +157,7 @@ public class OfficialWindow extends JFrame{
 	}
 	
 	public void readOfficials() {
-		System.out.println("OFFICIALWINDOW! readOfficials");
+		//System.out.println("OFFICIALWINDOW! readOfficials");
 		this.listofofficials.clear();
 		for (int i=0;i<this.names.size()-1;i++) {
 			String[] official = new String[5];
@@ -179,7 +171,7 @@ public class OfficialWindow extends JFrame{
 	}
 	
 	public void loadOfficials() {
-		System.out.println("OFFICIALWINDOW! loadOfficials");
+		//System.out.println("OFFICIALWINDOW! loadOfficials");
 		int i = 0;
 		for (Official official:NationHandler.listofofficials) {
 			if (official.lord.equals(this.lord.name)){
@@ -195,12 +187,12 @@ public class OfficialWindow extends JFrame{
 	}
 	
 	public void start() {
-		System.out.println("OFFICIALWINDOW! start");
+		//System.out.println("OFFICIALWINDOW! start");
 		this.setVisible(true);
 		this.setJobsList();
 	}
 	public void stop() {
-		System.out.println("OFFICIALWINDOW! stop");
+		//System.out.println("OFFICIALWINDOW! stop");
 		this.setVisible(false);
 	}
 }

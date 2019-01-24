@@ -24,7 +24,7 @@ public class NationHandler extends JFrame{
 	}
 	
 	public void createNation(String s) {//only ever called from MainThread when a new nation is created
-		System.out.println("NATIONHANDLER! createNation");
+		//System.out.println("NATIONHANDLER! createNation");
 		ReadNWrite.setNationName(s);
 		newLord(s,"");
 		mainSetup(s);
@@ -34,7 +34,7 @@ public class NationHandler extends JFrame{
 	}
 	
 	public void loadNation (String s) {//only ever called from MainThread when an old nation is loaded
-		System.out.println("NATIONHANDLER! loadNation");
+		//System.out.println("NATIONHANDLER! loadNation");
 		ReadNWrite.setNationName(s);
 		List<String> listofloads = new ArrayList<String>();
 		for (String loadstr:ReadNWrite.directory.list()) {
@@ -81,7 +81,7 @@ public class NationHandler extends JFrame{
 	}
 	
 	public static void saveNation() {//only ever called from save_request
-		System.out.println("NATIONHANDLER! saveNation");
+		//System.out.println("NATIONHANDLER! saveNation");
 		updateNation();
 		for (Lord lord: listoflords) {
 			ReadNWrite.saveLord(lord);
@@ -93,7 +93,7 @@ public class NationHandler extends JFrame{
 	}//that was pretty straight forward, right?
 	
 	public void newLord(String new_lord,String master) {//create a new lordWindow
-		System.out.println("NATIONHANDLER! newLord");
+		//System.out.println("NATIONHANDLER! newLord");
 		if (master.equals("")){//this is a new nation
 			listoflords.add(new Lord(new_lord,master));//add lord
 			listoflords.get(0).title = "overlord";//set title to overlord
@@ -121,7 +121,7 @@ public class NationHandler extends JFrame{
 	}
 	
 	public static void updateNation() {
-		System.out.println("NATIONHANDLER! updateNation");
+		//System.out.println("NATIONHANDLER! updateNation");
 		for (Lord lord:listoflords) {
 			lord.updateLord();
 			lord.getGovernment();
@@ -135,7 +135,7 @@ public class NationHandler extends JFrame{
 	}
 	
 	public void mainSetup(String s) {
-		System.out.println("NATIONHANDLER! mainSetup");
+		//System.out.println("NATIONHANDLER! mainSetup");
 		this.setSize(1500,400);
 	    this.setLocationRelativeTo(null);
 		this.addWindowListener(new WindowAdapter() {//close program on closing window
@@ -151,12 +151,12 @@ public class NationHandler extends JFrame{
 	}
 	
 	public void addVassalTab(String s) {
-		System.out.println("NATIONHANDLER! addVassalTab");
+		//System.out.println("NATIONHANDLER! addVassalTab");
 		mainPane.addTab(s,listoflords.get(listoflords.size()-1).setPanel(false));
 	}
 	
 	public static void recalibrateHexes() {
-		System.out.println("NATIONHANDLER! recalibrateHexes");
+		//System.out.println("NATIONHANDLER! recalibrateHexes");
 		for (int i=0;i<listoflords.size();i++)
 			listoflords.get(i).loadModifiers();
 		List<String[]> hexes = new ArrayList<String[]>();
@@ -171,7 +171,7 @@ public class NationHandler extends JFrame{
 		}
 	}
 	public static void recalibrateLords() {
-		System.out.println("NATIONHANDLER! recalibrateLords");
+		//System.out.println("NATIONHANDLER! recalibrateLords");
 		for (int i=0;i<listofhexes.size();i++) {//updating resources for lords
 			int r = 0;
 			String resource = (String) HexPane.resource_list.get(i).getSelectedItem();
@@ -195,7 +195,7 @@ public class NationHandler extends JFrame{
 	}
 	
 	public void initializeHex() {
-		System.out.println("NATIONHANDLER! initializeHex");
+		//System.out.println("NATIONHANDLER! initializeHex");
 		for (int i=0;i<listofhexes.size();i++) {
 			HexPane.buildings.get(i).start(i);
 			for (int j=0;j<HexPane.buildings.get(i).built_fortifications.size();j++){
@@ -228,14 +228,16 @@ public class NationHandler extends JFrame{
 			listofofficials.add(o);//add all officials of that lord
 	}
 	public static void getRoutes() {//get all of the lords routes
-		listofroutes.clear();
+		//listofroutes.clear();
 		for (Lord lord:listoflords)
 			getRoutes(lord.name);
 	}
 	public static void getRoutes(String s) {//lord-specific
 		for (int i=0;i<listofroutes.size();i++) {//remove that lords routes
-			if (listofroutes.get(i).lord.equals(s))
+			if (listofroutes.get(i).lord.equals(s)) {
 				listofroutes.remove(i);
+				i--;
+			}
 		}
 		for (Route r:listoflords.get(Utility.findLord(s)).route.listofroutes)
 			listofroutes.add(r);//add that lords routes

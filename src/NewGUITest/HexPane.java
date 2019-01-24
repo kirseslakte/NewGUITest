@@ -37,7 +37,7 @@ public class HexPane extends Hex{
 	}
 	
 	public Panel hexPane() {
-		System.out.println("HEXPANE! hexPane");
+		//System.out.println("HEXPANE! hexPane");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.ipady = 20;
@@ -131,7 +131,7 @@ public class HexPane extends Hex{
 	}
 	
 	public void updateHexPane() {
-		System.out.println("HEXPANE! updateHexPane");
+		//System.out.println("HEXPANE! updateHexPane");
 		NationHandler.updateNation();
 		if (hex_list.size()==0) {//check if we need to add another hex line
 			addHex();
@@ -164,7 +164,7 @@ public class HexPane extends Hex{
 	}
 	
 	public void loadHexPane(boolean loading) {
-		System.out.println("HEXPANE! loadHexPane "+NationHandler.listofhexes.size());
+		//System.out.println("HEXPANE! loadHexPane "+NationHandler.listofhexes.size());
 		for (int i=0;i<NationHandler.listofhexes.size();i++) {
 			if (loading)//if this is a load or update
 				addHex();
@@ -186,7 +186,7 @@ public class HexPane extends Hex{
 		}
 	}
 	public void addHex() {//simply adds another row along with the structure
-		System.out.println("HEXPANE! addHex");
+		//System.out.println("HEXPANE! addHex");
 		int i = hex_list.size();
 		c.gridy = 2+i;//starting at the 3rd row (2)
 		c.gridx = 0;
@@ -264,13 +264,13 @@ public class HexPane extends Hex{
 	}
 	
 	public void buildingCaller(int i) {
-		System.out.println("HEXPANE! buildingCaller");
+		//System.out.println("HEXPANE! buildingCaller");
 		NationHandler.updateNation();
 		buildings.get(i).start(i);
 	}
 	
 	public void getBuildings(int hex_number) {
-		System.out.println("HEXPANE! getBuildings");
+		//System.out.println("HEXPANE! getBuildings");
 		//for (int i=0;i<hex_list.size()-1;i++) 
 			//buildings.get(i).getBuilding();
 		int k = buildings.get(hex_number).all_buildings.length;
@@ -279,12 +279,12 @@ public class HexPane extends Hex{
 			String string = buildings.get(hex_number).all_buildings[i];
 			NationHandler.listofhexes.get(hex_number).built_buildings[i] = string;
 		}
-		System.out.println("HexPane.getBuildings: Done");
+		//System.out.println("HexPane.getBuildings: Done");
 	}
 	
 	
 	public List<String[]> getHex() {
-		System.out.println("HEXPANE! getHex");
+		//System.out.println("HEXPANE! getHex");
 		List<String[]> hexlist = new ArrayList<String[]>();
 		boolean empty_buildings;//is this needed???
 		for (int i=0;i<hex_list.size()-1;i++) {

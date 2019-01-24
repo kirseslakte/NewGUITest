@@ -8,7 +8,7 @@ public class MainMenu extends Frame {
 	public LoadWindow load = new LoadWindow();
 	
 	public MainMenu() {//constructor constructs the frame
-		System.out.println("MAINMENU! MainMenu");
+		//System.out.println("MAINMENU! MainMenu");
 		this.setTitle("Main Menu");
 		this.setSize(400,600);
 		this.setLocationRelativeTo(null);
@@ -46,12 +46,12 @@ public class MainMenu extends Frame {
 	}
 	
 	public void start() {
-		System.out.println("MAINMENU! start");
+		//System.out.println("MAINMENU! start");
 		this.setVisible(true);
 	}
 	
 	public void stop() {
-		System.out.println("MAINMENU! stop");
+		//System.out.println("MAINMENU! stop");
 		this.setVisible(false);
 	}
 }

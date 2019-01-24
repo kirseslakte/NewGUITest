@@ -69,7 +69,7 @@ public class Lord {
 	}
 	
 	public Panel setPanel(boolean master) {
-		System.out.println("LORD! setPanel");
+		//System.out.println("LORD! setPanel");
 		Panel mainPnl = new Panel(new GridBagLayout());//set up panel
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -91,7 +91,7 @@ public class Lord {
 	}
 	
 	public void getGovernment() {//getting the government tab things
-		System.out.println("LORD! getGovernment");
+		//System.out.println("LORD! getGovernment");
 		this.government.eco[0] = (int) Double.parseDouble(this.panes.inputs[0].getText());	
 		this.government.eco[1] = (int) Double.parseDouble(this.panes.inputs[1].getText());
 		this.government.eco[2] = (int) Double.parseDouble(this.panes.inputs[2].getText());
@@ -121,7 +121,7 @@ public class Lord {
 	}
 	
 	public void loadGovernment(String[] s) {//only ever called when loading//has nothing to do with visual layer
-		System.out.println("LORD! loadGovernment");
+		//System.out.println("LORD! loadGovernment");
 		String[] gov = new String[5];
 		for (int i=0;i<gov.length;i++)
 			gov[i] = s[1+i];
@@ -146,12 +146,12 @@ public class Lord {
 	}
 	
 	public void setGovernment() {//visual update of government pane
-		System.out.println("LORD! setGovernment");
+		//System.out.println("LORD! setGovernment");
 		this.panes.setGovernmentPane(this.government, this.institutes);
 	}
 	
 	public void updateLord() {
-		System.out.println("LORD! updateLord");
+		//System.out.println("LORD! updateLord");
 		this.getOfficials();
 		this.institutes.updateInstitutions(this.official_jobs[3]==1,this.official_jobs[4]==1);
 		this.getGovernment();//resets the government modifiers so that new can be applied without click-stacking
@@ -184,7 +184,7 @@ public class Lord {
 		
 	}
 	public void loadModifiers() {//getting all modifiers from code layers
-		System.out.println("LORD! loadModifiers");
+		//System.out.println("LORD! loadModifiers");
 		int traderolls = 0;
 		double darkwood = 1;
 		double metals = 0;

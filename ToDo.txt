@@ -8,11 +8,12 @@ Buildings.update() does not include the built fortifications?<- that might be a 
 
 3. the nationpanel does not show the correct information...
 
-2. when the nation is loaded, it requires an update before things actually registers as they should... check load procedure and exactly what updates actually does.
+2. when the nation is loaded, it requires an update before things actually registers as they should... check load procedure and exactly what updates actually does.---DONE!
 
 1. create routes window---DONE!
 
---officials are not loaded properly, but require a save-press before they work--fixed?
+--officials are not loaded properly, but require a save-press before they work---DONE!
 --the eco variables are not loaded properly. 
 --military/guilds upkeeps need to be textfields.
---trade routes are not saved properly.
+--institutions needs to be added.
+--

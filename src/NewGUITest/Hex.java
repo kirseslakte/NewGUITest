@@ -64,7 +64,7 @@ public class Hex {
 	}
 	
 	public void updateHex() {
-		System.out.println("HEX! updateHex");
+		//System.out.println("HEX! updateHex");
 		double rgo_mod = 0;
 		for (String s:buildings) {
 			String[] splitter = Utility.stringSplitter(s, "-");
@@ -87,7 +87,7 @@ public class Hex {
 	}
 	
 	public void loadHex(String[] s){//assumes you have erased the separator
-		System.out.println("HEX! loadHex");
+		//System.out.println("HEX! loadHex");
 		this.name = s[0];
 		this.owner = s[1];
 		this.habitability = Integer.parseInt(s[2]);

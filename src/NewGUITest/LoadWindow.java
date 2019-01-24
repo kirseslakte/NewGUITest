@@ -12,7 +12,7 @@ public class LoadWindow extends Frame {
 	static MainMenu main = new MainMenu();
 	
 	public LoadWindow() {
-		System.out.println("LOADWINDOW! LoadWindow");
+		//System.out.println("LOADWINDOW! LoadWindow");
 		ReadNWrite.updateSaves();
 		this.setTitle("Load Nation");
 	    this.setSize(600, (int) Math.floor(ReadNWrite.n_saves/3+1)*75);
@@ -46,7 +46,7 @@ public class LoadWindow extends Frame {
 	}
 	
 	public void start() {
-		System.out.println("LOADWINDOW! start");
+		//System.out.println("LOADWINDOW! start");
 		if (ReadNWrite.n_saves==0) {
 			main.start();
 			JOptionPane.showMessageDialog(null, "There are no available saves!","Load Error",JOptionPane.INFORMATION_MESSAGE);
@@ -56,13 +56,13 @@ public class LoadWindow extends Frame {
 	}
 	
 	public void stop() {
-		System.out.println("LOADWINDOW! stop");
+		//System.out.println("LOADWINDOW! stop");
 		this.setVisible(false);
 	}
 	
 	// new nation pop-up
 	public void startNation() {
-		System.out.println("LOADWINDOW! startNation");
+		//System.out.println("LOADWINDOW! startNation");
 		TextField name = new TextField("Type Nation Name Here");
 		Panel newNation = new Panel(new GridLayout(0,1));
 		newNation.add(name);

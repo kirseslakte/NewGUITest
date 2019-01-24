@@ -50,19 +50,19 @@ public class Buildings extends JFrame{
 	public int upkeep_cost;
 	
 	public Buildings() {
-		System.out.println("BUILDINGS! Buildings");
+		//System.out.println("BUILDINGS! Buildings");
 		this.c.fill = GridBagConstraints.HORIZONTAL;
 		this.c.weightx = 0.5;
 		this.c.ipady = 20;
 	}
 	
 	public void initialize() {
-		System.out.println("BUILDINGS! initialize");
+		//System.out.println("BUILDINGS! initialize");
 		this.setFrame();
 	}
 	
 	public void start(int hex_number) {
-		System.out.println("BUILDINGS! start");
+		//System.out.println("BUILDINGS! start");
 		this.getInputs(hex_number);
 		this.hex_number = hex_number;
 		this.setTitle(this.hex.name+": Buildings and Fortifications");
@@ -71,12 +71,12 @@ public class Buildings extends JFrame{
 	}
 	
 	public void stop() {
-		System.out.println("BUILDINGS! stop");
+		//System.out.println("BUILDINGS! stop");
 	    this.setVisible(false);
 	}
 	
 	public void getInputs(int hex_number) {
-		System.out.println("BUILDINGS! getInputs");
+		//System.out.println("BUILDINGS! getInputs");
 		this.hex = NationHandler.listofhexes.get(hex_number);
 		this.all_buildings = new String[this.hex.buildings.size()];
 		for (int i=0;i<this.hex.buildings.size();i++)
@@ -123,7 +123,7 @@ public class Buildings extends JFrame{
 	}
 
 	public void setCombos() {
-		System.out.println("BUILDINGS! setCombos");
+		//System.out.println("BUILDINGS! setCombos");
 		for (int i=0;i<this.buildings.size();i++) {
 			this.buildings.get(i).removeAllItems();
 			for (String s:this.active_buildings)
@@ -140,7 +140,7 @@ public class Buildings extends JFrame{
 	}
 	
 	public void setFrame() {
-		System.out.println("BUILDINGS! setFrame");
+		//System.out.println("BUILDINGS! setFrame");
 		JPanel mainbuild = new JPanel(new GridBagLayout());
 		this.setSize(600, 950);
 		this.setLocationRelativeTo(null);
@@ -285,7 +285,7 @@ public class Buildings extends JFrame{
 	}
 
 	public void getVisuals() {//gets info from the visual layer and updates code accordingly (as well as updating visual layer)
-		System.out.println("BUILDINGS! getVisuals");
+		//System.out.println("BUILDINGS! getVisuals");
 		this.built_buildings.clear();
 		for (int i=0;i<this.buildings.size();i++) {
 			String build = (String) this.buildings.get(i).getSelectedItem();
@@ -360,9 +360,9 @@ public class Buildings extends JFrame{
 	}
 	
 	public void update() {//calls getVisuals and updates outputs
-		System.out.println("BUILDINGS! update");
+		//System.out.println("BUILDINGS! update");
 		this.getVisuals();
-		System.out.println("Visuals got");
+		//System.out.println("Visuals got");
 		//fixing remaining outputs
 		this.upgrade_cost = 0;
 		if (this.hex.pop_size<10){
@@ -421,7 +421,7 @@ public class Buildings extends JFrame{
 	}
 	
 	public void loadBuildings() {//should be called whenever this window is opened (loads buildings from hex and sets it into visual and code layer)
-		System.out.println("BUILDINGS! loadBuildings");
+		//System.out.println("BUILDINGS! loadBuildings");
 		String[] splitter;
 		int b = 0;
 		int f = 0;
@@ -467,7 +467,7 @@ public class Buildings extends JFrame{
 	}
 
 	public int findFortificationCost(String s, int tier) {//find the cost of a fortification/wall
-		System.out.println("BUILDINGS! findFortificationCost");
+		//System.out.println("BUILDINGS! findFortificationCost");
 		int build_cost = 0;
 		for (int i=1;i<active_forts.length;i++){
 			if (s.equals(active_forts[i])) {
@@ -485,7 +485,7 @@ public class Buildings extends JFrame{
 	}
 	
 	public int findBuildingCost(String s, int tier) {//find the cost of a building at position pos in the list
-		System.out.println("BUILDINGS! findBuildingCost");
+		//System.out.println("BUILDINGS! findBuildingCost");
 		int build_cost = 0;
 		if (s.equals(buildinglist[1])){//RGO
 			if (tier>2||tier<1)

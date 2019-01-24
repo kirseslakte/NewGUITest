@@ -10,7 +10,7 @@ public class Utility {
 	}
 	
 	public static boolean isInteger(String s) {
-		System.out.println("UTILITY! isInteger");
+		//System.out.println("UTILITY! isInteger");
 		if (s.isEmpty()) return false;
 		try {
 			Integer.parseInt(s);
@@ -21,7 +21,7 @@ public class Utility {
 	}
 	
 	public static int findLord(String lord_name) {
-		System.out.println("UTILITY! findLord");
+		//System.out.println("UTILITY! findLord");
 		for (int i=0;i<NationHandler.listoflords.size();i++) {
 			if (NationHandler.listoflords.get(i).name.equals(lord_name))
 				return i;
@@ -30,7 +30,7 @@ public class Utility {
 	}
 	
 	public static String[] stringSplitter(String s,String delimiter) {
-		System.out.println("UTILITY! stringSplitter");
+		//System.out.println("UTILITY! stringSplitter");
 		if (s.isEmpty()||delimiter.isEmpty()) {
 			System.out.println("STRING SPLITTER INPUT INVALID");
 			System.out.println("String wished to split: "+s+"\nWith the delimiter: "+delimiter);
