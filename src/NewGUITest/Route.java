@@ -25,17 +25,13 @@ public class Route{//trade route object
 		this.lord_TAR = Integer.parseInt(s[3]);//the trade agreement roll of lord
 		this.partner_TAR = Integer.parseInt(s[4]);//the trade agreement roll of partner
 		this.partner_BP = Integer.parseInt(s[5]);//bp of partner
-		System.out.println(this.name);
 		double split = Math.max(Math.min(((this.lord_TAR-this.partner_TAR)*50/max_roll_diff)+50,100),0);
-		System.out.println(split);
 		double gain = 0;
 		if (this.active)
 			gain = (split-50)/50*(active_max-active_min)/2+(active_max+active_min)/2;
 		else 
 			gain = (split-50)/50*(passive_max-passive_min)/2+(passive_max+passive_min)/2;
-		System.out.println(gain);
 		this.trade_value = this.partner_BP*gain/100;
 		this.rounded_tv = (int) Math.round(this.trade_value);
-		System.out.println(this.trade_value);
 	}
 }

@@ -18,11 +18,6 @@ public class Lord {
 	public String religion;
 	public String ruler_name;
 	public int legitimacy;
-	public double population_value;
-	public int total_bpm;
-	public int tax_income;
-	public int total_trade_value;
-	public double overlord_tax_rate;
 	public String master_title;
 	public String title;
 	public boolean[] accessed_resources = new boolean[Hex.passive_resources.length];//darkwood->Drugs
@@ -39,23 +34,13 @@ public class Lord {
 	public static double[] gov_base_eff = {0.50,0.20,0.30,0.70,0.20,0.70};//tax,prod,trade,bank inc,bank dev,vassal inc
 	public int number_officials = 0;//purely used to determine the government upkeep of a lord
 	public int[] official_jobs = new int[5];//trade,bank,tax,welfare,interior
-	
-	//TradeWindow trade = new TradeWindow();
-	/*													MAYBE ROLL ALL THESE OFFICALS INTO SEPARATE CLASS
-	 * bank income roll								4	OFFICIAL
-	 * tax collect roll								5	OFFICIAL
-	 * muster/train troops roll						6	OFFICIAL
-	 * build guild/building/settlement roll			7	OFFICIAL
-	 * command army roll							8	OFFICIAL
-	 * trade negotiator skill						9	OFFICIAL
-	 * 													AT LEAST THESE ARE THE NESSESARY OFFICIAL ACTIONS
-	 *													THEY WILL BE ROLLED INTO THE OFFICIAL CLASS
-	 */
+	public int own_bp=0,total_bp=0,total_trade_value=0,overlord_tax=0,population=0,province_inc=0,province_upk=0,development=0,
+			guild_upk=0,government_upk=0,army_upk=0,total_inc=0,total_upk=0,vassal_inc=0;
+	public double[] govnm_upk_mod = new double[2];//static+scaling upk mod for gov
 	
 	//// THESE ARE THE variables FOR THE GUI ////
-	ReadNWrite write = new ReadNWrite();
 	public LordPanes panes = new LordPanes();
-	//public TradeWindow trade = new TradeWindow(this);//a trade window for each lord
+	public Panel mainPnl;
 	
 	//// START OF METHODS ////
 	
@@ -70,7 +55,7 @@ public class Lord {
 	
 	public Panel setPanel(boolean master) {
 		//System.out.println("LORD! setPanel");
-		Panel mainPnl = new Panel(new GridBagLayout());//set up panel
+		mainPnl = new Panel(new GridBagLayout());//set up panel
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 0.5;
@@ -152,11 +137,16 @@ public class Lord {
 	
 	public void updateLord() {
 		//System.out.println("LORD! updateLord");
+		if (this.title.equals("overlord"))
+			Culture.getCulture();
 		this.getOfficials();
 		this.institutes.updateInstitutions(this.official_jobs[3]==1,this.official_jobs[4]==1);
 		this.getGovernment();//resets the government modifiers so that new can be applied without click-stacking
 		this.government.importModifiers(this.institutes.outputs);//get institution bonuses to government modifiers
 		this.loadModifiers();
+		this.getRoutes();
+		this.getHexes();
+		this.total_inc = (int) Math.round(this.total_trade_value*this.government.trade_eff+this.province_inc+this.vassal_inc);
 		this.panes.updateNationPane(Utility.findLord(this.name));
 	}
 	
@@ -178,10 +168,60 @@ public class Lord {
 			else if (o.job.equals("Welfare"))
 				this.official_jobs[4] = 1;
 		}
+		this.govnm_upk_mod[0] = 10*Math.pow(1.5,(1-this.number_officials));
+		this.govnm_upk_mod[1] = 2*Math.pow(this.number_officials,1.5)/100;
+	}
+	
+	public void getHexes() {
+		this.total_bp = 0;
+		this.own_bp = 0;
+		this.development = 0;
+		this.population = 0;
+		this.government_upk = 0;
+		this.province_inc = 0;
+		this.province_upk = 0;
+		this.total_upk = 0;
+		this.vassal_inc = 0;
+		this.total_inc = 0;
+		int vassal_bp = 0;
+		double vassal_gov = 0;
+		double vassal_income = 0;
+		try {
+			for (Hex hex:NationHandler.listofhexes) {
+				if (hex.owner.equals(this.name)) {
+					this.own_bp += hex.base_production;
+					this.population += hex.population_value;
+					this.government_upk += hex.govnm_upkeep;
+					this.province_upk += hex.upkeep;
+				}
+			}
+			this.province_inc = (int) Math.round(this.government.eco[2]/100*this.own_bp*this.modifiers[0]);
+			this.development = (int) Math.round((1-this.government.eco[2]/100)*this.own_bp*this.modifiers[1]);
+			if (this.title.equals("overlord")) {
+				for (Lord lord:NationHandler.listoflords) {
+					vassal_bp += lord.total_bp;
+					vassal_gov += lord.government_upk*lord.government.eco[3];
+					vassal_income += lord.province_inc*this.modifiers[3];
+				}
+			}
+			this.vassal_inc = (int) Math.round(vassal_income);
+			this.government_upk += vassal_gov;
+			this.government_upk = (int) Math.round(this.government_upk*this.govnm_upk_mod[1]+this.govnm_upk_mod[0]);
+			this.total_bp = this.own_bp+vassal_bp;
+			this.total_upk = this.government_upk+this.province_upk+this.guild_upk+this.army_upk;
+			this.total_inc = (int) Math.round(this.total_trade_value*this.modifiers[2])+this.vassal_inc+this.province_inc;
+		} catch (NullPointerException e) {
+			//this is just initializing
+			System.out.println("IASDÄIASDISA");
+		}
 	}
 	
 	public void getRoutes() {
-		
+		this.total_trade_value = 0;
+		double holder = 0;
+		for (Route r:this.route.listofroutes)
+			holder += r.trade_value;
+		this.total_trade_value = (int) Math.round(holder);
 	}
 	public void loadModifiers() {//getting all modifiers from code layers
 		//System.out.println("LORD! loadModifiers");

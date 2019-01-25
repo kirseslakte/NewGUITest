@@ -57,7 +57,6 @@ public class NationHandler extends JFrame{
 				listoflords.get(listoflords.size()-1).setGovernment();
 			}
 			listoflords.get(listoflords.size()-1).loadModifiers();
-			listoflords.get(listoflords.size()-1).updateLord();
 		}
 		//all lords have been loaded!!
 		listofhexes = ReadNWrite.loadHexes();
@@ -72,7 +71,9 @@ public class NationHandler extends JFrame{
 		for (Lord lord:listoflords) {//load all officials into the lords
 			lord.official.loadOfficials();
 			lord.route.loadRoutes();
+			lord.updateLord();
 		}
+		listoflords.get(0).updateLord();//extra call in order to update the overlord
 			
 		//update the nationpanes of the lords
 		//load notes
@@ -92,30 +93,39 @@ public class NationHandler extends JFrame{
 		ReadNWrite.saveOfficial(listofofficials);
 	}//that was pretty straight forward, right?
 	
-	public void newLord(String new_lord,String master) {//create a new lordWindow
+	public static void removeLord(int lordindex) {
+		mainPane.remove(listoflords.get(lordindex).mainPnl);
+		listoflords.remove(lordindex);
+	}
+	
+	public static void newLord(String new_lord,String master) {//create a new lordWindow
 		//System.out.println("NATIONHANDLER! newLord");
 		if (master.equals("")){//this is a new nation
 			listoflords.add(new Lord(new_lord,master));//add lord
 			listoflords.get(0).title = "overlord";//set title to overlord
 			System.out.println("Created lord "+new_lord);
 		}else {//if creating a new vassal
+			boolean ok = true;
 			for (int i=0;i<listoflords.size();i++) {
 				String existing_lords = listoflords.get(i).name;
-				if (new_lord==existing_lords)//if lord with same name already exist
+				if (new_lord==existing_lords) {//if lord with same name already exist
 					JOptionPane.showMessageDialog(new Frame(),"That Lord already exist!","Vassal allocation error",JOptionPane.PLAIN_MESSAGE);
-				else {
+					ok = false;
+				}
+				
+			}
+			if (ok) {
 					listoflords.add(new Lord(new_lord,master));//add the new lord
-					int vassal_count = 0;
-					for (int j=0;j<listoflords.size();j++) {
+					addVassalTab(new_lord);
+					int vassal_count = 0;//set title of vassal
+					for (int i=0;i<listoflords.size();i++) {
 						if (listoflords.get(i).master_title.equals(master))
 							vassal_count++;//get the number of vassals with the same master
 					}
-					listoflords.get(listoflords.size()-1).master_title = master;//set the title of the master
 					if (master.equals("overlord"))
 						listoflords.get(listoflords.size()-1).title = "vassal"+vassal_count;//if master is overlord
 					else																	
 						listoflords.get(listoflords.size()-1).title = master+"_"+vassal_count;//if master is vassal
-				}
 			}
 		}
 	}
@@ -124,10 +134,6 @@ public class NationHandler extends JFrame{
 		//System.out.println("NATIONHANDLER! updateNation");
 		for (Lord lord:listoflords) {
 			lord.updateLord();
-			lord.getGovernment();
-			lord.loadModifiers();//this should not be in update
-			if (lord.title.equals("overlord"))
-				Culture.getCulture();
 		}
 		recalibrateLords();
 		recalibrateHexes();
@@ -150,9 +156,9 @@ public class NationHandler extends JFrame{
 		this.setVisible(true);
 	}
 	
-	public void addVassalTab(String s) {
+	public static void addVassalTab(String lord) {
 		//System.out.println("NATIONHANDLER! addVassalTab");
-		mainPane.addTab(s,listoflords.get(listoflords.size()-1).setPanel(false));
+		mainPane.addTab(lord,listoflords.get(Utility.findLord(lord)).setPanel(false));
 	}
 	
 	public static void recalibrateHexes() {

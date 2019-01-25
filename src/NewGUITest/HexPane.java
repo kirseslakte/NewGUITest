@@ -57,11 +57,6 @@ public class HexPane extends Hex{
 					}
 				}
 				if (correct) {
-					try {
-						TimeUnit.SECONDS.sleep(1);
-					} catch (Exception ge) {
-						System.out.println(ge);
-					}
 					System.out.println("***UPDATING HEX BUTTON***");
 					updateHexPane();
 				} else
@@ -159,6 +154,7 @@ public class HexPane extends Hex{
 			gov_upkeep_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).govnm_upkeep));
 			pv_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).population_value));
 			unit_cap_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).unit_cap));
+			owner_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).owner);
 		}
 		hex_panel.revalidate();//redraw the pane
 	}

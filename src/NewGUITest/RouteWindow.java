@@ -34,14 +34,14 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void initialize(Lord lord) {
-		System.out.println("ROUTEWINDOW! initialize");
+		//System.out.println("ROUTEWINDOW! initialize");
 		this.lord = lord;
 		//setJobsList();
 		this.setFrame();
 	}
 	
 	public void setFrame() {
-		System.out.println("ROUTEWINDOW! setFrame");
+		//System.out.println("ROUTEWINDOW! setFrame");
 		this.setSize(1000, 100);
 		this.setLocationRelativeTo(null);
 		this.setTitle("Trade routes of "+this.lord.name);
@@ -76,7 +76,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void setActiveRoutes() {//removes all routes from local memory
-		System.out.println("ROUTEWINDOW! setActiveRoutes");
+		//System.out.println("ROUTEWINDOW! setActiveRoutes");
 		this.activemain.removeAll();
 	    GridBagConstraints constraints = new GridBagConstraints();
 	    constraints.fill = GridBagConstraints.BOTH;
@@ -126,7 +126,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void passivePanel() {
-		System.out.println("ROUTEWINDOW! passivePanel");
+		//System.out.println("ROUTEWINDOW! passivePanel");
 		Button addRoute = new Button("Add Passive Trade Route");
 		addRoute.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
@@ -138,7 +138,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void addPassiveRoute() {
-		System.out.println("ROUTEWINDOW! addPassiveRoute");
+		//System.out.println("ROUTEWINDOW! addPassiveRoute");
 	    GridBagConstraints constraints = new GridBagConstraints();
 	    constraints.fill = GridBagConstraints.BOTH;
 	    constraints.weightx = 0.5;
@@ -178,7 +178,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void updateRoutes() {
-		System.out.println("ROUTEWINDOW! updateRoutes");
+		//System.out.println("ROUTEWINDOW! updateRoutes");
 		this.saveRoutes();
 		for (int i=0;i<this.pnames.size();i++) {
 			if (this.ppartner_bp.get(i).getText().equals("")||this.ppartner_bp.get(i).getText().equals("0")) {
@@ -207,7 +207,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void clearRoutes() {
-		System.out.println("ROUTEWINDOW! clearRoutes");
+		//System.out.println("ROUTEWINDOW! clearRoutes");
 		this.anames.clear();
 		this.atrade_value.clear();
 		this.alord_tar.clear();
@@ -226,7 +226,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void saveRoutes() {//reads routes from visual layer and puts into codelayer
-		System.out.println("ROUTEWINDOW! saveRoutes");
+		//System.out.println("ROUTEWINDOW! saveRoutes");
 		this.listofroutes.clear();
 		String[] route = new String[6];
 		for (int i=0;i<this.anames.size();i++) {
@@ -242,7 +242,6 @@ public class RouteWindow extends JFrame{
 		}
 		
 		for (int i=0;i<this.pnames.size();i++) {
-			System.out.println("*******Creating a passive route");
 			for (int j=0;j<route.length;j++)
 				route[j] = "";
 			route[0] = this.pnames.get(i).getText();
@@ -258,10 +257,8 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void loadRoutes() {//loads directly from saved layer and puts into code and visual layers
-		System.out.println("ROUTEWINDOW! loadRoutes");
+		//System.out.println("ROUTEWINDOW! loadRoutes");
 		this.listofroutes = ReadNWrite.loadRoutes(this.lord.name);
-		for (Route route:this.listofroutes)
-			System.out.println("***IMPORTED ROUTE: "+route.name);
 		this.clearRoutes();
 		NationHandler.listoflords.get(Utility.findLord(this.lord.name)).getOfficials();
 		this.setActiveRoutes();
@@ -284,17 +281,16 @@ public class RouteWindow extends JFrame{
 				p++;
 			}
 		}
-		this.updateRoutes();
 	}
 	
 	public void start() {
-		System.out.println("ROUTEWINDOW! start");
+		//System.out.println("ROUTEWINDOW! start");
 		this.setVisible(true);
 		this.loadRoutes();
 	}
 	
 	public void stop() {
-		System.out.println("ROUTEWINDOW! stop");
+		//System.out.println("ROUTEWINDOW! stop");
 		this.setVisible(false);
 	}
 }

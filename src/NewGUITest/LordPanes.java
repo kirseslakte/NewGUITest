@@ -42,7 +42,7 @@ public class LordPanes {
 	
 	public Panel buttonPane(String lord_name) {		
 		Panel pane = new Panel(new GridLayout(0,4));
-		Button saveBtn = new Button("Save Nation");
+		Button saveBtn = new Button("Save & Update Nation");
 		Button newVassalBtn = new Button("New Vassal");
 		Button routes = new Button("Trade Routes");
 		Button officials = new Button("Officials");
@@ -51,11 +51,21 @@ public class LordPanes {
 		pane.add(routes);
 		pane.add(officials);
 		int lordindex = Utility.findLord(lord_name);
-		newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
-			public void actionPerformed(ActionEvent e){
-				//getter.newLord(new_lord, master);
-			}
-		});
+		if (NationHandler.listoflords.get(lordindex).title.equals("overlord")) {
+			newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
+				public void actionPerformed(ActionEvent e){
+					String newlord = JOptionPane.showInputDialog(null,"Name the new vassal:","Vassal Creation",JOptionPane.QUESTION_MESSAGE);
+					NationHandler.newLord(newlord,"overlord");
+				}
+			});
+		} else {
+			newVassalBtn.setLabel("Remove Vassal");
+			newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
+				public void actionPerformed(ActionEvent e){
+					NationHandler.removeLord(lordindex);
+				}
+			});
+		}
 		saveBtn.addActionListener(new ActionListener() {//add action event to save button
 			public void actionPerformed(ActionEvent e){
 				NationHandler.saveNation();
@@ -115,27 +125,31 @@ public class LordPanes {
 	
 	public void updateNationPane(int lordindex) {
 		//System.out.println("LORDPANE! updateNationPane");
-		this.nationlabels[0].setText(Integer.toString((int) Math.round(NationHandler.listoflords.get(lordindex).modifiers[0]*100)));//tax
-		this.nationlabels[1].setText("");
-		this.nationlabels[2].setText(Integer.toString((int) Math.round(NationHandler.listoflords.get(lordindex).modifiers[1]*100)));//prod
-		this.nationlabels[3].setText("");
-		this.nationlabels[4].setText(Integer.toString((int) Math.round(NationHandler.listoflords.get(lordindex).modifiers[2]*100)));//trade
-		this.nationlabels[5].setText("");
-		this.nationlabels[6].setText(Integer.toString((int) Math.round(NationHandler.listoflords.get(lordindex).modifiers[3]*100)));//vassal
-		this.nationlabels[7].setText("");
-		this.nationlabels[8].setText(Integer.toString((int) Math.round(NationHandler.listoflords.get(lordindex).modifiers[5]*100)));//bank inc
-		this.nationlabels[9].setText("");
-		this.nationlabels[10].setText(Integer.toString((int) Math.round(NationHandler.listoflords.get(lordindex).modifiers[6]*100)));//bank dev
-		this.nationlabels[11].setText("");
-		this.nationlabels[12].setText(Integer.toString((int) Math.round(NationHandler.listoflords.get(lordindex).modifiers[4]*100)));//plunder
-		this.nationlabels[13].setText("");
-		this.nationlabels[14].setText("");
-		this.nationlabels[15].setText("");
-		this.nationlabels[16].setText("");
-		this.nationlabels[17].setText("");
-		this.nationlabels[18].setText("");
-		this.nationlabels[19].setText("");
-		this.nationlabels[20].setText("");
+		Lord lord = NationHandler.listoflords.get(lordindex);
+		int total_population = 0;
+		for (Lord l:NationHandler.listoflords)
+			total_population += l.population;
+		this.nationlabels[0].setText(Integer.toString((int) Math.round(lord.modifiers[0]*100)));//tax
+		this.nationlabels[1].setText(Integer.toString(lord.own_bp));//production of own hexes
+		this.nationlabels[2].setText(Integer.toString((int) Math.round(lord.modifiers[1]*100)));//prod
+		this.nationlabels[3].setText(Integer.toString(lord.province_inc));//province inc
+		this.nationlabels[4].setText(Integer.toString((int) Math.round(lord.modifiers[2]*100)));//trade
+		this.nationlabels[5].setText(Integer.toString(lord.province_upk));//province upk
+		this.nationlabels[6].setText(Integer.toString((int) Math.round(lord.modifiers[3]*100)));//vassal
+		this.nationlabels[7].setText(Integer.toString(lord.development));//development
+		this.nationlabels[8].setText(Integer.toString((int) Math.round(lord.modifiers[5]*100)));//bank inc
+		this.nationlabels[9].setText(Integer.toString((int) Math.round(lord.population/Math.max(total_population,1))));//population %
+		this.nationlabels[10].setText(Integer.toString((int) Math.round(lord.modifiers[6]*100)));//bank dev
+		this.nationlabels[11].setText(Integer.toString(lord.vassal_inc));//vassal tax income
+		this.nationlabels[12].setText(Integer.toString((int) Math.round(lord.modifiers[4]*100)));//plunder
+		this.nationlabels[13].setText(Integer.toString((int) Math.round(lord.total_trade_value*lord.modifiers[2])));//trade inc
+		this.nationlabels[14].setText(Integer.toString(lord.guild_upk));//guild upk
+		this.nationlabels[15].setText(Integer.toString(lord.army_upk));//army upk
+		this.nationlabels[16].setText(Integer.toString(lord.government_upk));//gov upk
+		this.nationlabels[17].setText(Integer.toString(lord.total_trade_value));//trade value
+		this.nationlabels[18].setText(Integer.toString(lord.total_inc));//total inc
+		this.nationlabels[19].setText(Integer.toString(lord.total_upk));//total upk
+		this.nationlabels[20].setText(Integer.toString(lord.total_bp));//total production
 		int k;
 		if (NationHandler.listoflords.get(lordindex).master_title.equals(""))
 			k = 3;

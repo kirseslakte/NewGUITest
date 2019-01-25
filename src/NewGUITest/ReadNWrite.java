@@ -45,6 +45,22 @@ public class ReadNWrite {
 		directory.mkdir();
 	}
 	
+	public static void clearOldLords() {//destroys and lord not in listoflords
+		for (String s:directory.list()) {
+			boolean destroy = false;
+			if (s.contains("vassal")) {
+				for (Lord lord:NationHandler.listoflords) {
+					if (!(lord.title.equals(s)))
+						destroy = true;
+				}
+			}
+			if (destroy) {
+				File file = new File(directory+"\\"+s);
+				file.delete();
+			}				
+		}
+	}
+	
 	public static void clean() {
 		//System.out.println("READNWRITE! clean");
 		File file = new File("Nations");
@@ -54,6 +70,7 @@ public class ReadNWrite {
 			if (nation.list().length<6)
 				nation.delete();
 		}
+		clearOldLords();
 	}
 	////LOAD METHODS////
 	
