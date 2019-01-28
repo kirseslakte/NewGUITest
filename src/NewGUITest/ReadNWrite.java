@@ -47,17 +47,26 @@ public class ReadNWrite {
 	
 	public static void clearOldLords() {//destroys and lord not in listoflords
 		for (String s:directory.list()) {
-			boolean destroy = false;
+			s = s.substring(0,s.indexOf("."));
+			List<Boolean> same = new ArrayList<Boolean>();
+			same.clear();
 			if (s.contains("vassal")) {
 				for (Lord lord:NationHandler.listoflords) {
-					if (!(lord.title.equals(s)))
-						destroy = true;
+					if (lord.title.equals(s))
+						same.add(true);
+					else
+						same.add(false);
 				}
-			}
-			if (destroy) {
-				File file = new File(directory+"\\"+s);
-				file.delete();
-			}				
+				boolean destroyed = true;
+				for (int i=0;i<same.size();i++) {
+					if (same.get(i))
+						destroyed = false;
+				}
+				if (destroyed) {
+					File file = new File(directory+"\\"+s+filetype);
+					file.delete();
+				}	
+			}			
 		}
 	}
 	
@@ -72,13 +81,50 @@ public class ReadNWrite {
 		}
 		clearOldLords();
 	}
+	
+	public static void createDummyNation(String nation_name) {
+		String[] files = {"\\culture","\\overlord","\\hexes","\\officials","\\routes","\\units"};
+		for (int i=0;i<files.length;i++) {
+			File file = new File(directory+files[i]+filetype);
+			try{
+				file.createNewFile();
+			}catch (Exception e) {
+				System.out.println(e);
+			}
+			if (i==0) {
+				int[] k = new int[29];
+				try {
+					FileWriter fw = new FileWriter(file);
+					for (int j=0;j<k.length;j++){
+						fw.write(k[i]+System.getProperty("line.separator"));
+					}
+					fw.close();
+				} catch (Exception e) {
+					
+				}
+			}else if (i==1) {
+				String[] overlord = {"Democracy","Classisist","Monarchy","Settled","Highly","LG","LG","10","","","","","","0","0","0","0","0","0","","0","","0","","0","","0"};
+				try {
+					FileWriter fw = new FileWriter(file);
+					fw.write(nation_name+System.getProperty("line.separator"));
+					for (String s:overlord){
+						fw.write(s+System.getProperty("line.separator"));
+					}
+					fw.close();
+				} catch (Exception e) {
+					
+				}
+			}
+		}
+	}
+	
 	////LOAD METHODS////
 	
 	//load lords
 	
 	public static String[] loadLord(String title) {//reading a save file with nation file directory as input
 		//System.out.println("READNWRITE! loadLord");
-		String[] lord = new String[26];
+		String[] lord = new String[28];
 		File file = new File(directory+"\\"+title+filetype);
 		try {
 			Scanner sc = new Scanner(file);
@@ -128,6 +174,7 @@ public class ReadNWrite {
 					String[] ready_input = new String[hex_length];
 					for (int i=0;i<hex_length;i++)
 						ready_input[i] = hex_input[i];
+					//System.out.println("loading hex number "+(listofhexes.size()+1));
 					listofhexes.add(new Hex(ready_input));
 					hex_length = 0;
 					hex_input = new String[max_hex_length];

@@ -31,7 +31,7 @@ public class Lord {
 			"Trade Rolls","Base Production","RGO/Road Cost","Building Cost","Settlement Upkeep Cost","Settlement Upgrade Cost","Unit Training Cost","Unit Equipment Cost",
 			"Fortification Cost","Palace Build Cost","Mage Guild Cost","Druid Guild Cost","Spy Guild Cost","Tinker Guild Cost","All Guilds Cost"};
 	public static double[] base_eff = {0.20,0.20,0.20,0.20,0.20,0.20};//tax,prod,trade,bank inc,bank dev,vassal inc
-	public static double[] gov_base_eff = {0.50,0.20,0.30,0.70,0.20,0.70};//tax,prod,trade,bank inc,bank dev,vassal inc
+	public static double[] gov_base_eff = {0.70,0.40,0.70,0.70,0.20,0.70};//tax,prod,trade,bank inc,bank dev,vassal inc
 	public int number_officials = 0;//purely used to determine the government upkeep of a lord
 	public int[] official_jobs = new int[5];//trade,bank,tax,welfare,interior
 	public int own_bp=0,total_bp=0,total_trade_value=0,overlord_tax=0,population=0,province_inc=0,province_upk=0,development=0,
@@ -45,6 +45,7 @@ public class Lord {
 	//// START OF METHODS ////
 	
 	public Lord(String s, String master) {
+		//System.out.println("creating lord "+s);
 		this.name = s;
 		this.master_title = master;
 		for (int i=0;i<this.accessed_resources.length;i++)
@@ -77,12 +78,18 @@ public class Lord {
 	
 	public void getGovernment() {//getting the government tab things
 		//System.out.println("LORD! getGovernment");
-		this.government.eco[0] = (int) Double.parseDouble(this.panes.inputs[0].getText());	
-		this.government.eco[1] = (int) Double.parseDouble(this.panes.inputs[1].getText());
-		this.government.eco[2] = (int) Double.parseDouble(this.panes.inputs[2].getText());
-		if (!(this.master_title.equals("")))
-			this.government.eco[3] = (int) Double.parseDouble(this.panes.inputs[3].getText());
+		//for (int i=0;i<this.panes.inputs.length;i++)
+			//this.government.eco[i] = (int) Integer.parseInt(this.panes.inputs[0].getText());
+		//this.army_upk = this.government.eco[0];
+		//this.guild_upk = this.government.eco[1];
+		//this.government.eco[0] = (int) Double.parseDouble(this.panes.inputs[0].getText());	
+		//this.government.eco[1] = (int) Double.parseDouble(this.panes.inputs[1].getText());
+		//this.government.eco[2] = (int) Double.parseDouble(this.panes.inputs[2].getText());
+		//if (!(this.master_title.equals("")))
+			//this.government.eco[3] = (int) Double.parseDouble(this.panes.inputs[3].getText());
 		String[] gov = new String[5];
+		//this.alignment = (String) this.panes.culture.getSelectedItem();
+		//this.religion = (String) this.panes.religion.getSelectedItem();
 		gov[0] = (String) this.panes.system.getSelectedItem();
 		gov[1] = (String) this.panes.soc_structure.getSelectedItem();
 		gov[2] = (String) this.panes.rule.getSelectedItem();
@@ -117,15 +124,12 @@ public class Lord {
 		for (int i=0;i<4;i++) {
 			this.institutes.setInstitution(s[10+i],i);
 		}
-		this.government.eco[0] = (int) Double.parseDouble(s[14]);
-		this.government.eco[1] = (int) Double.parseDouble(s[15]);
-		this.government.eco[2] = (int) Double.parseDouble(s[16]);
-		if (!(this.master_title.equals("")))
-			this.government.eco[3] = (int) Double.parseDouble(s[17]);
+		for (int i=0;i<this.government.eco.length;i++)
+			this.government.eco[i] = (int) Double.parseDouble(s[14+i]);
 		if (this.government.sys.equals("Histocratic")){
 			for (int i=0;i<4;i++) {
-				this.government.histocratic_choices[i] = s[18+2*i];
-				this.government.hist_val[i] = Integer.parseInt(s[19+2*i]);
+				this.government.histocratic_choices[i] = s[20+2*i];
+				this.government.hist_val[i] = Integer.parseInt(s[21+2*i]);
 			}
 		}
 	}
@@ -142,11 +146,15 @@ public class Lord {
 		this.getOfficials();
 		this.institutes.updateInstitutions(this.official_jobs[3]==1,this.official_jobs[4]==1);
 		this.getGovernment();//resets the government modifiers so that new can be applied without click-stacking
+		this.panes.updateNationPane(Utility.findLord(this.name));
+		this.army_upk = this.government.eco[0];
+		this.guild_upk = this.government.eco[1];
 		this.government.importModifiers(this.institutes.outputs);//get institution bonuses to government modifiers
 		this.loadModifiers();
 		this.getRoutes();
+		//this.army_upk = 
 		this.getHexes();
-		this.total_inc = (int) Math.round(this.total_trade_value*this.government.trade_eff+this.province_inc+this.vassal_inc);
+		this.total_inc = (int) Math.round(this.total_trade_value*this.modifiers[2]+this.province_inc+this.vassal_inc);
 		this.panes.updateNationPane(Utility.findLord(this.name));
 	}
 	
@@ -168,8 +176,8 @@ public class Lord {
 			else if (o.job.equals("Welfare"))
 				this.official_jobs[4] = 1;
 		}
-		this.govnm_upk_mod[0] = 10*Math.pow(1.5,(1-this.number_officials));
-		this.govnm_upk_mod[1] = 2*Math.pow(this.number_officials,1.5)/100;
+		this.govnm_upk_mod[0] = 10*Math.pow(1.5,(this.number_officials));
+		this.govnm_upk_mod[1] = 2*Math.pow((this.number_officials),1.5)*0.01;
 	}
 	
 	public void getHexes() {
@@ -195,13 +203,15 @@ public class Lord {
 					this.province_upk += hex.upkeep;
 				}
 			}
-			this.province_inc = (int) Math.round(this.government.eco[2]/100*this.own_bp*this.modifiers[0]);
-			this.development = (int) Math.round((1-this.government.eco[2]/100)*this.own_bp*this.modifiers[1]);
+			this.province_inc = (int) Math.round(this.government.eco[4]*0.01*this.own_bp*this.modifiers[0]);
+			this.development = (int) Math.round((1-this.government.eco[4]*0.01)*this.own_bp*this.modifiers[1]);
 			if (this.title.equals("overlord")) {
 				for (Lord lord:NationHandler.listoflords) {
-					vassal_bp += lord.total_bp;
-					vassal_gov += lord.government_upk*lord.government.eco[3];
-					vassal_income += lord.province_inc*this.modifiers[3];
+					if (!(lord.title.equals("overlord"))) {
+						vassal_bp += lord.total_bp;
+						vassal_gov += lord.government_upk*lord.government.eco[5]*0.01;
+						vassal_income += lord.province_inc*lord.government.eco[5]*0.01*this.modifiers[3];
+					}
 				}
 			}
 			this.vassal_inc = (int) Math.round(vassal_income);
@@ -212,7 +222,7 @@ public class Lord {
 			this.total_inc = (int) Math.round(this.total_trade_value*this.modifiers[2])+this.vassal_inc+this.province_inc;
 		} catch (NullPointerException e) {
 			//this is just initializing
-			System.out.println("IASDÄIASDISA");
+			System.out.println("Hex-fetching for lord "+this.name+" failed");
 		}
 	}
 	
@@ -248,12 +258,12 @@ public class Lord {
 					traderolls += 2;
 			}
 		}//NEED TO ADD A BUNCH OF THINGS FROM GOVERNMENT THAT ISN'T IN HERE!!
-		this.modifiers[0] = Culture.used_bonus[0]+base_eff[0]+(gov_base_eff[0]+this.government.tax_eff)*this.government.legitimacy*0.1;//taxeff
+		this.modifiers[0] = Culture.used_bonus[0]+base_eff[0]+(gov_base_eff[0]+this.government.tax_eff+this.official_jobs[2]*0.01)*this.government.legitimacy*0.1;//taxeff
 		this.modifiers[1] = Culture.used_bonus[1]+base_eff[1]+(gov_base_eff[1]+this.government.prod_eff)*this.government.legitimacy*0.1;//prodeff
 		this.modifiers[2] = Culture.used_bonus[2]+base_eff[2]+(gov_base_eff[2]+this.government.trade_eff)*this.government.legitimacy*0.1+metals;//tradeeff
 		this.modifiers[3] = Culture.used_bonus[3]+base_eff[5]+(gov_base_eff[5]+this.government.vassal_inc_eff)*this.government.legitimacy*0.1;//vassaleff
 		this.modifiers[4] = Culture.used_bonus[4]+this.government.plunder_eff*this.government.legitimacy*0.1;//plundereff
-		this.modifiers[5] = Culture.used_bonus[5]+base_eff[3]+(gov_base_eff[3]+this.government.bank_inc_eff)*this.government.legitimacy*0.1;//bank inc eff
+		this.modifiers[5] = Culture.used_bonus[5]+base_eff[3]+(gov_base_eff[3]+this.government.bank_inc_eff+this.official_jobs[1]*0.01)*this.government.legitimacy*0.1;//bank inc eff
 		this.modifiers[6] = Math.min(Culture.used_bonus[5]+base_eff[4]+(gov_base_eff[4]+this.government.bank_dev_eff)*this.government.legitimacy*0.1,
 				this.government.max_bank_dev_eff);//bank dev eff
 		this.modifiers[7] = 0;//material inc eff

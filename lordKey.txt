@@ -12,9 +12,11 @@ institution1					11
 institution2					12
 institution3					13
 institution4					14
-tax_rate					15
-banked_rp					16
-banked_development				17
-tax_rate_overlord				18
-histocracy_bonus_tags				19,21,23,25
-histocracy_bonus_mods				20,22,24,26
+army_upk					15
+guild_upk					16
+banked_rp					17
+banked_development				18
+tax_rate					19
+tax_rate_overlord				20
+histocracy_bonus_tags				21,23,25,27
+histocracy_bonus_mods				22,24,26,28

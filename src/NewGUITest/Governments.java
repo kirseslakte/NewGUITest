@@ -23,7 +23,6 @@ public class Governments {
 	int legitimacy = 0;
 	public String[] histocratic_choices = {"","","",""};
 	public int[] hist_val = {0,0,0,0};
-	boolean histocracy_fault;
 	int total_val = 40;
 	double settlement_cost_mod = 1;
 	double unit_training_cost_mod = 1;
@@ -41,22 +40,23 @@ public class Governments {
 	double max_bank_dev_eff = 10;
 	int min_unrest = 0;
 	double max_tax_rate = 0;
-	int[] eco = {0,0,0,0};
+	int[] eco = {0,0,0,0,0,0};//army,guild,rp,dev,tax,overlord tax
 	
 	public Governments() {
 		
 	}
 	
 	public void setGovernment(String[] s) {
-		setNull();
-		setSystem(s[0]);
-		setStruc(s[1]);
-		setRuler(s[2]);
-		setLifeStyle(s[3]);
-		setCentralisation(s[4]);
+		this.setNull();
+		this.setSystem(s[0]);
+		this.setStruc(s[1]);
+		this.setRuler(s[2]);
+		this.setLifeStyle(s[3]);
+		this.setCentralisation(s[4]);
 	}
 	
 	public void importModifiers(double[] d) {//should be reset before this is called
+		//institute modifiers
 		//input is trade/bank inc/plunder/hpm/settlement cost/road,rgo/building cost
 		this.trade_eff += d[0];
 		this.bank_inc_eff += d[1];
@@ -89,7 +89,6 @@ public class Governments {
 		this.max_bank_dev_eff = 10;
 		this.min_unrest = 0;
 		this.max_tax_rate = 0;
-		this.histocracy_fault = false;
 	}
 		//START SYSTEMS!!
 	public void setSystem(String s) {//a method which sets the system of governance
@@ -144,38 +143,29 @@ public class Governments {
 	}
 	public void setHistocratic(){//modifiers for the histocratic system
 		this.sys = systems[4];
-		double value_checker = 0;
 		for (int i=0;i<4;i++) {
 			if (this.histocratic_choices[i].equals(histocratic_options[0])) {
-				this.tax_eff = this.hist_val[i]/100;
-				value_checker += this.hist_val[i];
+				this.tax_eff = this.hist_val[i]*0.01;
 			}else if(this.histocratic_choices[i].equals(histocratic_options[1])) {
-				this.prod_eff = this.hist_val[i]/100;
-				value_checker += this.hist_val[i];
+				this.prod_eff = this.hist_val[i]*0.01;
 			}else if(this.histocratic_choices[i].equals(histocratic_options[2])) {
-				this.trade_eff = this.hist_val[i]/100;
-				value_checker += this.hist_val[i];
+				this.trade_eff = this.hist_val[i]*0.01;
 			}else if(this.histocratic_choices[i].equals(histocratic_options[3])) {
-				this.vassal_inc_eff = this.hist_val[i]/100;
-				value_checker += this.hist_val[i];
+				this.vassal_inc_eff = this.hist_val[i]*0.01;
 			}else if(this.histocratic_choices[i].equals(histocratic_options[4])) {
-				this.bank_inc_eff = this.hist_val[i]/100;
-				value_checker += this.hist_val[i]/2;
+				this.plunder_eff = this.hist_val[i]*0.01;
 			}else if(this.histocratic_choices[i].equals(histocratic_options[5])) {
-				this.bank_dev_eff = this.hist_val[i]/100;
-				value_checker += this.hist_val[i]/2;
+				this.bank_inc_eff = this.hist_val[i]*0.01;
+			}else if(this.histocratic_choices[i].equals(histocratic_options[6])) {
+				this.bank_dev_eff = this.hist_val[i]*0.01;
 			}
 		}
-		if (value_checker==total_val)
-			this.histocracy_fault = false;
-		else
-			this.histocracy_fault = true;
 	}
 	public void setPlutocratic() {//modifiers for the plutocratic system
 		this.sys = systems[5];
 		this.tax_eff = 0.1;
 		this.prod_eff = 0.1;
-		this.bank_dev_eff = 0.2;
+		this.bank_inc_eff = 0.2;
 		this.trade_eff = 0.4;
 	}
 	public void setHive() {//modifiers for the hive system
@@ -215,7 +205,7 @@ public class Governments {
 		this.bank_dev_eff += 0.1;
 		this.max_pop_size = 10;
 		this.move_pop_mod = 16;
-		this.plunder_eff = 0.25;
+		this.plunder_eff += 0.25;
 	}
 	public void setTribalistic() {
 		this.style = life[1];

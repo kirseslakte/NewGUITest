@@ -8,7 +8,6 @@ import java.awt.event.*;
 
 public class LoadWindow extends Frame {
 	public static String nation_name = "";
-	NationHandler handler = new NationHandler();
 	static MainMenu main = new MainMenu();
 	
 	public LoadWindow() {
@@ -31,7 +30,7 @@ public class LoadWindow extends Frame {
 				if (e.getSource() instanceof Button){
 					nation_name = ((Button) e.getSource()).getName();
 					stop();
-					handler.loadNation(nation_name);
+					NationHandler.loadNation(nation_name);
 				}
 			}
 		};
@@ -81,7 +80,7 @@ public class LoadWindow extends Frame {
 				}
 			}
 			if (new_nation_creation) {
-				handler.createNation(nation_name);
+				NationHandler.createNation(nation_name);
 			}
 		} else {
 			main.start();

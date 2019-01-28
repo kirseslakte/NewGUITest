@@ -140,10 +140,12 @@ public class HexPane extends Hex{
 			lordnames.add(NationHandler.listoflords.get(i).name);
 		}
 		for (int i=0;i<owner_list.size();i++) {//update ownerlist
+			//String own = (String) owner_list.get(i).getSelectedItem();
 			owner_list.get(i).removeAllItems();
 			for (String s:lordnames) {
 				owner_list.get(i).addItem(s);
 			}
+			//owner_list.get(i).setSelectedItem(own);
 		}
 		//need to update the values
 		for (int i=0;i<NationHandler.listofhexes.size();i++) {//need to fetch all the values from hex
@@ -180,6 +182,7 @@ public class HexPane extends Hex{
 			pv_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).population_value));
 			unit_cap_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).unit_cap));
 		}
+		addHex();
 	}
 	public void addHex() {//simply adds another row along with the structure
 		//System.out.println("HEXPANE! addHex");
@@ -192,6 +195,8 @@ public class HexPane extends Hex{
 		c.gridx = 1;
 		c.ipadx = paddyx[1];
 		owner_list.add(new JComboBox<>());
+		for (String s:lordnames)
+			owner_list.get(owner_list.size()-1).addItem(s);
 		hex_panel.add(owner_list.get(i),c);//added owner of hex
 		c.gridx = 2;
 		c.ipadx = paddyx[2];

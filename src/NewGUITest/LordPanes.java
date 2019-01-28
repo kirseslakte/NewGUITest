@@ -9,14 +9,14 @@ import java.util.List;
 
 public class LordPanes {
 	//nationPanel variables
-	public JLabel[] nationlabels = new JLabel[21];
+	public JLabel[] nationlabels = new JLabel[19];
 	public String[] nationinfo = {"Tax Efficiency","Production of Own Hexes","Production Efficiency","Province Income","Trade Efficiency",
 			"Province Upkeep","Vassal Income Efficiency","Development","Bank Income Efficiency","Population (%)","Bank Development Efficiency",
-			"Vassal Tax Income","Plunder Efficiency","Trade Income","Guild Upkeep","Army Upkeep","Government Upkeep","Trade Value",
-			"Total Income","Total Upkeep","Total Production","Banked Development","Banked RP","Taxation Level","Lord Tax Rate"};//25 long
+			"Vassal Tax Income","Plunder Efficiency","Trade Income","Government Upkeep","Trade Value",
+			"Total Income","Total Upkeep","Total Production","Guild Upkeep","Army Upkeep","Banked Development","Banked RP","Taxation Level","Lord Tax Rate"};//25 long
 	/*tax_eff,hex_prod,prod_eff,prov_inc,trade_eff,vassal_inc_eff,plunder_eff,dev,bank_inc_eff,bank_dev_eff,
 	trade_value,prov_upk,ppop,vassal_tax_inc,guild_upk,trade_inc,army_upk,gov_upk,tot_inc,tot_upk,tot_prod;*/
-	public JTextField[] inputs = new JTextField[4];//bank_dev,bank_rp,tax_rate,lord_tax_rate;
+	public JTextField[] inputs = new JTextField[6];//army_upk,guild_upk,bank_dev,bank_rp,tax_rate,lord_tax_rate;
 	//governmentPanel variables
 	public Panel government_panel = new Panel(new GridLayout(0,4));
 	public Panel nation_panel = new Panel(new GridBagLayout());
@@ -51,6 +51,7 @@ public class LordPanes {
 		pane.add(routes);
 		pane.add(officials);
 		int lordindex = Utility.findLord(lord_name);
+		System.out.println(lordindex);
 		if (NationHandler.listoflords.get(lordindex).title.equals("overlord")) {
 			newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
 				public void actionPerformed(ActionEvent e){
@@ -104,8 +105,8 @@ public class LordPanes {
 			}
 		}
 		for (int i=0;i<inputs.length;i++){
-			if (b||i<3) {
-				inputs[i] = new JTextField("0");
+			inputs[i] = new JTextField("0");
+			if (b||i<5) {
 				if (i%2==0) {
 					c.gridy++;
 					c.gridx = 0;
@@ -126,7 +127,7 @@ public class LordPanes {
 	public void updateNationPane(int lordindex) {
 		//System.out.println("LORDPANE! updateNationPane");
 		Lord lord = NationHandler.listoflords.get(lordindex);
-		int total_population = 0;
+		double total_population = 0;
 		for (Lord l:NationHandler.listoflords)
 			total_population += l.population;
 		this.nationlabels[0].setText(Integer.toString((int) Math.round(lord.modifiers[0]*100)));//tax
@@ -138,27 +139,23 @@ public class LordPanes {
 		this.nationlabels[6].setText(Integer.toString((int) Math.round(lord.modifiers[3]*100)));//vassal
 		this.nationlabels[7].setText(Integer.toString(lord.development));//development
 		this.nationlabels[8].setText(Integer.toString((int) Math.round(lord.modifiers[5]*100)));//bank inc
-		this.nationlabels[9].setText(Integer.toString((int) Math.round(lord.population/Math.max(total_population,1))));//population %
+		this.nationlabels[9].setText(Double.toString((double) Math.round(lord.population/Math.max(total_population,1)*1000d) /1000d));//population %
 		this.nationlabels[10].setText(Integer.toString((int) Math.round(lord.modifiers[6]*100)));//bank dev
 		this.nationlabels[11].setText(Integer.toString(lord.vassal_inc));//vassal tax income
 		this.nationlabels[12].setText(Integer.toString((int) Math.round(lord.modifiers[4]*100)));//plunder
 		this.nationlabels[13].setText(Integer.toString((int) Math.round(lord.total_trade_value*lord.modifiers[2])));//trade inc
-		this.nationlabels[14].setText(Integer.toString(lord.guild_upk));//guild upk
-		this.nationlabels[15].setText(Integer.toString(lord.army_upk));//army upk
-		this.nationlabels[16].setText(Integer.toString(lord.government_upk));//gov upk
-		this.nationlabels[17].setText(Integer.toString(lord.total_trade_value));//trade value
-		this.nationlabels[18].setText(Integer.toString(lord.total_inc));//total inc
-		this.nationlabels[19].setText(Integer.toString(lord.total_upk));//total upk
-		this.nationlabels[20].setText(Integer.toString(lord.total_bp));//total production
-		int k;
-		if (NationHandler.listoflords.get(lordindex).master_title.equals(""))
-			k = 3;
-		else
-			k = 4;
-		for (int i=0;i<k;i++) {
+		//this.nationlabels[14].setText(Integer.toString(lord.guild_upk));//guild upk
+		//this.nationlabels[15].setText(Integer.toString(lord.army_upk));//army upk
+		this.nationlabels[14].setText(Integer.toString(lord.government_upk));//gov upk
+		this.nationlabels[15].setText(Integer.toString(lord.total_trade_value));//trade value
+		this.nationlabels[16].setText(Integer.toString(lord.total_inc));//total inc
+		this.nationlabels[17].setText(Integer.toString(lord.total_upk));//total upk
+		this.nationlabels[18].setText(Integer.toString(lord.total_bp));//total production
+		for (int i=0;i<this.inputs.length;i++) {
 			if (this.inputs[i].getText().equals("0"))
 				this.inputs[i].setText(Integer.toString(NationHandler.listoflords.get(lordindex).government.eco[i]));
-			NationHandler.listoflords.get(lordindex).government.eco[i] = Integer.parseInt(this.inputs[i].getText());
+			else
+				NationHandler.listoflords.get(lordindex).government.eco[i] = Integer.parseInt(this.inputs[i].getText());
 		}
 	}
 	

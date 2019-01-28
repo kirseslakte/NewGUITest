@@ -30,15 +30,15 @@ public class OfficialWindow extends JFrame{
 	}
 	
 	public void initialize(Lord lord) {
-		//System.out.println("OFFICIALWINDOW! initialize");
+		//System.out.println("OFFICIALWINDOW! initialize "+lord.name);
 		this.lord = lord;
-		setJobsList();
-		setFrame();
+		this.setJobsList();
+		this.setFrame();
 	}
 	
 	public void setJobsList() {
 		//System.out.println("OFFICIALWINDOW! setJobsList");
-		try { 		this.lord = NationHandler.listoflords.get(Utility.findLord(this.lord.name));
+		try { 		this.lord = NationHandler.listoflords.get(Utility.findLord(this.lord.name));//update lord
 		} catch (IndexOutOfBoundsException e) {
 			//System.out.println(e);
 		}
@@ -50,7 +50,7 @@ public class OfficialWindow extends JFrame{
 			if (this.lord.institutes.active_institutions[i].equals("Welfare"))
 				temp.add(jobslist[jobslist.length-2]);
 			if (this.lord.institutes.active_institutions[i].equals("Interior"))
-				System.out.println("INTERIOR ADDED");
+				temp.add(jobslist[jobslist.length-1]);
 		}
 		this.available_jobs = new String[temp.size()];
 		for (int i=0;i<temp.size();i++)
@@ -129,7 +129,7 @@ public class OfficialWindow extends JFrame{
 				}
 			}
 			this.main.revalidate();
-		} catch (IndexOutOfBoundsException e) {
+		} catch (IndexOutOfBoundsException e) {//first time, called from initialize
 			//System.out.println("OUT OF BOUNDS");
 			this.remove(add_button);
 			this.names.add(new JTextField(""));
@@ -152,7 +152,7 @@ public class OfficialWindow extends JFrame{
 			else
 				this.effects.get(i).setText(this.listofofficials.get(i).texteffect);
 		}
-		this.setSize(this.getWidth(), 70+30*this.names.size());
+		this.setSize(this.getWidth(), Math.max(70+30*this.names.size(),this.getHeight()));
 		this.revalidate();
 	}
 	
@@ -173,8 +173,11 @@ public class OfficialWindow extends JFrame{
 	public void loadOfficials() {
 		//System.out.println("OFFICIALWINDOW! loadOfficials");
 		int i = 0;
+		//System.out.println("loading officials for lord "+this.lord.name);
 		for (Official official:NationHandler.listofofficials) {
+			//System.out.println("lord of this official is "+official.lord);
 			if (official.lord.equals(this.lord.name)){
+				//System.out.println("adding this official to lord "+this.lord.name);
 				this.names.get(i).setText(official.name);
 				this.jobs.get(i).setSelectedItem(official.job);
 				this.rolls.get(i).setText(Integer.toString(official.roll));

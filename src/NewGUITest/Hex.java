@@ -66,6 +66,15 @@ public class Hex {
 	public void updateHex() {
 		//System.out.println("HEX! updateHex");
 		double rgo_mod = 0;
+		double culturemod = this.findMod(1);
+		double religionmod = this.findMod(0);
+		double unrestmod = -1*this.unrest*0.05;
+		double trademod = 0;
+		try {
+			trademod = findCenterOfTradeContribution();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			//System.out.println("Hex not found");
+		}
 		for (String s:buildings) {
 			String[] splitter = Utility.stringSplitter(s, "-");
 			if (splitter[1].equals("RGO"))
@@ -76,14 +85,14 @@ public class Hex {
 		if (this.pop_size>9)
 			this.upgrade_cost = 0;
 		else
-			this.upgrade_cost = (int) Math.round(list_upgrade_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[23]);
+			this.upgrade_cost = (int) Math.round(list_upgrade_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(this.owner)).modifiers[23]);
 		this.base_bp = (int) Math.round(base_pm*habitability*list_pm[this.pop_size-1]);
 		this.upkeep = (int) Math.round(list_upkeep_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[22])+
 				this.building_upkeep;
-		this.govnm_upkeep = (int) Math.round(base_pm*10*list_pm[this.pop_size-1]);
+		this.govnm_upkeep = (int) Math.round(base_pm*5*list_pm[this.pop_size-1]);
 		this.population_value = list_pv[this.pop_size-1];
 		this.unit_cap = (int) Math.round(list_unit_cap[this.pop_size-1]*(1+NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[9]));
-		this.base_production = (int) Math.round(this.base_bp*(1+rgo_mod+NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[8]));
+		this.base_production = (int) Math.round(this.base_bp*(1+rgo_mod+NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[8]+culturemod+religionmod+unrestmod)+trademod);
 		//^affected by culture boni,culture/religion,unrest,government,resources,buildings
 	}
 	
@@ -107,5 +116,118 @@ public class Hex {
 				buildings.add(built_buildings[i]);
 		}
 		this.updateHex();
+	}
+	
+	public double findMod(int i) {
+		double mod = 0;
+		Lord lord = NationHandler.listoflords.get(Utility.findLord(this.owner));
+		String lord_align = "";
+		String hex_align = "";
+		if (i==0) {
+			hex_align = this.religion;
+			lord_align = lord.government.religion;
+		}else if (i==1) {
+			hex_align = this.alignment;
+			lord_align = lord.government.culture;
+		}
+		if (lord_align.equals("LG")) {//done
+			if (hex_align.equals("LG")) {
+				mod = 0.1;
+			} else if (hex_align.equals("NG")||hex_align.equals("LN")) {
+				mod = 0.05;
+			} else if (hex_align.equals("CN")||hex_align.equals("NE")) {
+				mod = -0.05;
+			}else if (hex_align.equals("CE")) {
+				mod = -0.1;
+			}
+		}else if (lord_align.equals("NG")) {//done
+			if (hex_align.equals("NG")) {
+				mod = 0.1;
+			} else if (hex_align.equals("CG")||hex_align.equals("LG")) {
+				mod = 0.05;
+			} else if (hex_align.equals("LE")||hex_align.equals("CE")) {
+				mod = -0.05;
+			}else if (hex_align.equals("NE")) {
+				mod = -0.1;
+			}
+		}else if (lord_align.equals("CG")) {//done
+			if (hex_align.equals("CG")) {
+				mod = 0.1;
+			} else if (hex_align.equals("NG")||hex_align.equals("CN")) {
+				mod = 0.05;
+			} else if (hex_align.equals("LN")||hex_align.equals("NE")) {
+				mod = -0.05;
+			}else if (hex_align.equals("LE")) {
+				mod = -0.1;
+			}
+		}else if(lord_align.equals("LN")) {//done
+			if (hex_align.equals("LN")) {
+				mod = 0.1;
+			} else if (hex_align.equals("LG")||hex_align.equals("LE")) {
+				mod = 0.05;
+			} else if (hex_align.equals("CG")||hex_align.equals("CE")) {
+				mod = -0.05;
+			}else if (hex_align.equals("CN")) {
+				mod = -0.1;
+			}
+		}else if (lord_align.equals("NN")) {//done
+			if (hex_align.equals("NN")) 
+				mod = 0.05;
+		}else if (lord_align.equals("CN")) {//done
+			if (hex_align.equals("CN")) {
+				mod = 0.1;
+			} else if (hex_align.equals("LG")||hex_align.equals("LE")) {
+				mod = 0.05;
+			} else if (hex_align.equals("CG")||hex_align.equals("CE")) {
+				mod = -0.05;
+			}else if (hex_align.equals("LE")) {
+				mod = -0.1;
+			}
+		}else if(lord_align.equals("LE")) {//done
+			if (hex_align.equals("LE")) {
+				mod = 0.1;
+			} else if (hex_align.equals("LN")||hex_align.equals("EN")) {
+				mod = 0.05;
+			} else if (hex_align.equals("CN")||hex_align.equals("NG")) {
+				mod = -0.05;
+			}else if (hex_align.equals("CG")) {
+				mod = -0.1;
+			}
+		}else if (lord_align.equals("NE")) {//done
+			if (hex_align.equals("NE")) {
+				mod = 0.1;
+			} else if (hex_align.equals("LE")||hex_align.equals("CE")) {
+				mod = 0.05;
+			} else if (hex_align.equals("LG")||hex_align.equals("CG")) {
+				mod = -0.05;
+			}else if (hex_align.equals("NG")) {
+				mod = -0.1;
+			}
+		}else if (lord_align.equals("CE")) {//done
+			if (hex_align.equals("CE")) {
+				mod = 0.1;
+			} else if (hex_align.equals("NE")||hex_align.equals("CN")) {
+				mod = 0.05;
+			} else if (hex_align.equals("NG")||hex_align.equals("LN")) {
+				mod = -0.05;
+			}else if (hex_align.equals("LG")) {
+				mod = -0.1;
+			}
+		}
+		return mod;
+	}
+	
+	public double findCenterOfTradeContribution() {
+		Lord lord = NationHandler.listoflords.get(Utility.findLord(this.owner));
+		Lord overlord = NationHandler.listoflords.get(0);
+		int k = Utility.findHex(this.name);
+		boolean exists = false;
+		for (String s:NationHandler.listofhexes.get(k).built_buildings) {
+			if (s.contains("Center of Trade"))
+				exists = true;
+		}
+		if (exists)
+			return Math.max(lord.total_trade_value,overlord.total_trade_value)*0.2*lord.modifiers[2];
+		return 0;
 	}
 }

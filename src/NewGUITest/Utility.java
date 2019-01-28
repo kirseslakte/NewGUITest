@@ -26,7 +26,15 @@ public class Utility {
 			if (NationHandler.listoflords.get(i).name.equals(lord_name))
 				return i;
 		}
-		return 0;
+		return -1;
+	}
+	
+	public static int findHex(String hex_name) {
+		for (int i=0;i<NationHandler.listofhexes.size();i++) {
+			if (NationHandler.listofhexes.get(i).name.equals(hex_name))
+				return i;
+		}
+		return -1;
 	}
 	
 	public static String[] stringSplitter(String s,String delimiter) {
