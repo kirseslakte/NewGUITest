@@ -36,11 +36,11 @@ public class Hex {
 	public static int[] list_upkeep_cost = {100,150,225,1000,1500,2500,3600,4800,6000,8000};
 	public static int[] list_unit_cap = {5,8,12,17,24,34,46,60,100,175};
 	public static String[] alignments = {"LG","NG","CG","LN","NN","CN","LE","NE","CE"};
-	public static String[] active_resources = {"Mithril","Adamantine","Baatorian Green Steel","Cold Iron","Astral Driftmetanl"};
+	public static String[] active_resources = {"Mithril","Adamantine","Baatorian Green Steel","Cold Iron","Astral Driftmetal"};
 	public static int[] active_resources_income = {300,200,200,300,400,400};
 	public static String[] passive_resources = {"Darkwood","Precious Metals","Spices","Silk","Incense","Cotton","Herbs","Marble","Sugar","Gemstones/Diamonds",
 			"Ivory","High Quality Iron","High Quality Stone","High Quality Paper","High Quality Glass","Furs","Drugs"};
-	public static String[] resources = {"","Mithril","Adamantine","Baatorian Green Steel","Cold Iron","Astral Driftmetanl","Darkwood","Precious Metals",
+	public static String[] resources = {"","Mithril","Adamantine","Baatorian Green Steel","Cold Iron","Astral Driftmetal","Darkwood","Precious Metals",
 			"Spices","Silk","Incense","Cotton","Herbs","Marble","Sugar","Gemstones/Diamonds","Ivory","High Quality Iron","High Quality Stone",
 			"High Quality Paper","High Quality Glass","Furs","Drugs"};
 	public static double base_pm = 250;
