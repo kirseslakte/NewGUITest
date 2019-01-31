@@ -276,6 +276,7 @@ public class HexPane extends Hex{
 			//buildings.get(i).getBuilding();
 		int k = buildings.get(hex_number).all_buildings.length;
 		NationHandler.listofhexes.get(hex_number).built_buildings = new String[k];
+		NationHandler.listofhexes.get(hex_number).building_upgrade = buildings.get(hex_number).upgrade_cost;
 		for (int i=0;i<k;i++){
 			String string = buildings.get(hex_number).all_buildings[i];
 			NationHandler.listofhexes.get(hex_number).built_buildings[i] = string;

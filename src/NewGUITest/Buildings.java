@@ -343,6 +343,8 @@ public class Buildings extends JFrame{
 				this.built_walls = built;
 			else
 				this.built_walls = built+addons;
+		else
+			this.built_walls = "";
 		tier = findFortificationCost(built,0);
 		tier += this.wallframe.cost;
 		this.walls_cost.setText(Integer.toString(tier));
@@ -522,6 +524,7 @@ public class Buildings extends JFrame{
 		}else if (s.equals(buildinglist[12])){//Port
 			build_cost = (int) Math.round(500*Hex.list_pm[this.hex.pop_size-1]*Hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
 		}
+		System.out.println("Found cost of "+s+" to be "+build_cost+" with build cost mod "+this.modifiers[0]+" and rgo cost mod "+this.modifiers[1]);
 		return build_cost;
 	}
 

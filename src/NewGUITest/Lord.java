@@ -154,8 +154,10 @@ public class Lord {
 		this.getRoutes();
 		//this.army_upk = 
 		this.getHexes();
-		this.total_inc = (int) Math.round(this.total_trade_value*this.modifiers[2]+this.province_inc+this.vassal_inc);
+		this.total_inc = (int) Math.round(this.total_trade_value*this.modifiers[2]+this.province_inc*(1-this.government.eco[5]*0.01)+this.vassal_inc);
 		this.panes.updateNationPane(Utility.findLord(this.name));
+		System.out.println("updateLord - "+this.name+" this province income "+this.province_inc+
+				" and the tax rate is "+this.government.eco[5]*0.01);
 	}
 	
 	public void getOfficials() {
@@ -219,7 +221,8 @@ public class Lord {
 			this.government_upk = (int) Math.round(this.government_upk*this.govnm_upk_mod[1]+this.govnm_upk_mod[0]);
 			this.total_bp = this.own_bp+vassal_bp;
 			this.total_upk = this.government_upk+this.province_upk+this.guild_upk+this.army_upk;
-			this.total_inc = (int) Math.round(this.total_trade_value*this.modifiers[2])+this.vassal_inc+this.province_inc;
+			this.total_inc = (int) Math.round(this.total_trade_value*this.modifiers[2]+
+					this.vassal_inc+this.province_inc*(1-this.government.eco[5]*0.01));
 		} catch (NullPointerException e) {
 			//this is just initializing
 			System.out.println("Hex-fetching for lord "+this.name+" failed");
@@ -279,7 +282,7 @@ public class Lord {
 		this.modifiers[17] = Culture.used_bonus[15];//legitimacy
 		this.modifiers[18] = Culture.used_bonus[16];//unrest
 		this.modifiers[19] = traderolls;//trade rolls
-		this.modifiers[20] = Culture.used_bonus[17]+this.institutes.outputs[5]*this.government.legitimacy*0.1;//rgo/road
+		this.modifiers[20] = Culture.used_bonus[17]*this.institutes.outputs[5]*this.government.legitimacy*0.1;//rgo/road
 		this.modifiers[21] = Culture.used_bonus[18]*darkwood;//building
 		this.modifiers[22] = Culture.used_bonus[19];//settlement upkeep
 		this.modifiers[23] = Culture.used_bonus[20];//settlement cost

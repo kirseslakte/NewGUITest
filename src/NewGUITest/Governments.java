@@ -241,7 +241,7 @@ public class Governments {
 	}
 	public void setModerately() {
 		this.cent = centralisation[1];
-		this.prod_eff += -0.5;
+		this.prod_eff += -0.05;
 		this.max_tax_rate = Math.max(this.max_tax_rate,0.5);
 	}
 	public void setDecentralised() {

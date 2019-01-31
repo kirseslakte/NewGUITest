@@ -182,24 +182,33 @@ public class NationHandler extends JFrame{
 	}
 	public static void recalibrateLords() {
 		//System.out.println("NATIONHANDLER! recalibrateLords");
+		for (Lord lord:listoflords) {
+			for (int i=0;i<Hex.passive_resources.length;i++)
+				lord.accessed_resources[i] = false;
+		}
 		for (int i=0;i<listofhexes.size();i++) {//updating resources for lords
 			int r = 0;
 			String resource = (String) HexPane.resource_list.get(i).getSelectedItem();
-			for (int j=0;j<Hex.resources.length;j++) {
-				if (resource.equals(Hex.resources[j]))
+			boolean any_resource = false;
+			for (int j=0;j<Hex.passive_resources.length;j++) {
+				if (resource.equals(Hex.passive_resources[j])) {
 					r = j;
+					any_resource = true;
+				}
 			}
-			for (int j=0;j<listoflords.size();j++) {
-				if (listoflords.get(j).name.equals(HexPane.owner_list.get(i).getSelectedItem()))
-					if (HexPane.resource_check_list.get(i).isSelected()) {
-						resource = listoflords.get(j).master_title;
-						for (int k=0;k<listoflords.size();k++) {
-							if (listoflords.get(k).title.equals(resource))
-								listoflords.get(k).accessed_resources[r] = true;
-						}
-					} else
-						listoflords.get(j).accessed_resources[r] = true;
-				listoflords.get(j).loadModifiers();
+			if (any_resource) {
+				for (int j=0;j<listoflords.size();j++) {
+					if (listoflords.get(j).name.equals(HexPane.owner_list.get(i).getSelectedItem()))
+						if (HexPane.resource_check_list.get(i).isSelected()) {
+							resource = listoflords.get(j).master_title;
+							for (int k=0;k<listoflords.size();k++) {
+								if (listoflords.get(k).title.equals(resource))
+									listoflords.get(k).accessed_resources[r] = true;
+							}
+						} else
+							listoflords.get(j).accessed_resources[r] = true;
+					listoflords.get(j).loadModifiers();
+				}
 			}
 		}
 	}

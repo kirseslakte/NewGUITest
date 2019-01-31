@@ -85,7 +85,7 @@ public class Hex {
 		if (this.pop_size>9)
 			this.upgrade_cost = 0;
 		else
-			this.upgrade_cost = (int) Math.round(list_upgrade_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(this.owner)).modifiers[23]);
+			this.upgrade_cost = (int) Math.round(this.building_upgrade+list_upgrade_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(this.owner)).modifiers[23]);
 		this.base_bp = (int) Math.round(base_pm*habitability*list_pm[this.pop_size-1]);
 		this.upkeep = (int) Math.round(list_upkeep_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[22])+
 				this.building_upkeep;

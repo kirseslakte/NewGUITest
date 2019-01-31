@@ -1,5 +1,8 @@
-bureau not doing anything (reduce upk, increase upgrade cost)
-moderately centralised sets prod eff to 20
-reduce vassal income with the amount that goes to overlord
-rgo is twice as expensive as it should be
-once you add walls they will never be removed
+-bureau not doing anything (reduce upk, increase upgrade cost)
+-moderately centralised sets prod eff to 20 !!!DONE!!!
+-reduce vassal income with the amount that goes to overlord !!!DONE!!!
+-rgo is twice as expensive as it should be !!!DONE!!!
+-once you add walls they will never be removed !!!DONE!!!
+-fortifications should have all the gates as well
+-underground settlements can have gates as well
+-trade is not loaded properly when you open the pop-up
