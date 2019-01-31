@@ -156,8 +156,6 @@ public class Lord {
 		this.getHexes();
 		this.total_inc = (int) Math.round(this.total_trade_value*this.modifiers[2]+this.province_inc*(1-this.government.eco[5]*0.01)+this.vassal_inc);
 		this.panes.updateNationPane(Utility.findLord(this.name));
-		System.out.println("updateLord - "+this.name+" this province income "+this.province_inc+
-				" and the tax rate is "+this.government.eco[5]*0.01);
 	}
 	
 	public void getOfficials() {
