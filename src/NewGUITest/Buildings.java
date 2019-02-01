@@ -281,6 +281,18 @@ public class Buildings extends JFrame{
 	    this.c.gridx = 4;
 	    mainbuild.add(walls_upkeep,c);
 	    //ADDED VISUAL LAYER FOR WALLS
+	    
+	    /*ADDED CODE LAYER FOR GATES
+	    this.c.gridy = 21;
+	    this.c.gridx = 0;
+	    mainbuild.add(new JLabel("Gates (UNDERGROUND HEX)"),c);
+	    this.c.gridx = 1;
+	    mainbuild.add(new JLabel("Amount"),c);
+	    this.c.gridx = 2;
+	    mainbuild.add(new JLabel("Cost"),c);
+	    this.c.gridx = 3;
+	    mainbuild.add(new JLabel("Upkeep"),c);*/
+	    //ADDED VISUAL LAYER FOR GATES
 	    this.add(new JScrollPane(mainbuild));
 	}
 
@@ -324,7 +336,10 @@ public class Buildings extends JFrame{
 				}
 					this.built_fortifications.add(built+"-"+tier+addons);
 					tier = findFortificationCost(built,tier);
-					this.fortifications_upkeep.get(i).setText(Integer.toString((int) Math.round(tier*0.2)));
+					double add_upk = 0;
+					for (int j=0;j<this.addonframes.get(i).add_on_upkeep.size();j++)
+						add_upk += Integer.parseInt(this.addonframes.get(i).add_on_upkeep.get(j).getText());
+					this.fortifications_upkeep.get(i).setText(Integer.toString((int) Math.round(tier*0.2+add_upk)));
 					tier += this.addonframes.get(i).cost;
 					this.fortifications_cost.get(i).setText(Integer.toString(tier));
 			}else {
@@ -445,7 +460,7 @@ public class Buildings extends JFrame{
 				int costy = findFortificationCost(splitter[1],Integer.parseInt(splitter[2]));
 				if (splitter.length>3) {
 					String[] splittar = Utility.stringSplitter(splitter[3],",");
-					this.addonframes.get(f).setAddOn(splittar,costy);
+					this.addonframes.get(f).setAddOn(splittar,costy,this.modifiers[3]);
 					this.built_fortifications.add(splitter[1]+"-"+splitter[2]+"-"+splitter[3]);
 				} else
 					this.built_fortifications.add(splitter[1]+"-"+splitter[2]);
@@ -509,22 +524,21 @@ public class Buildings extends JFrame{
 			build_cost = (int) Math.round(200*tier*Hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
 		}else if (s.equals(buildinglist[8])){//Bureau
 			build_cost = (int) Math.round(100*Hex.list_pm[this.hex.pop_size-1]*Hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
-		}else if (s.equals(buildinglist[9])){//Center of Trade
+		}else if (s.equals(buildinglist[12])){//Center of Trade
 			build_cost = (int) Math.round(400*Hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
-		}else if (s.equals(buildinglist[10])){//Palace
+		}else if (s.equals(buildinglist[9])){//Palace
 			if (tier>3||tier<1)
 				JOptionPane.showMessageDialog(null,"The maximum legitimacy enforcement is 3 and the minimum is 1."
 						+ "\nMore or less is not allowed.","Palace Error",JOptionPane.INFORMATION_MESSAGE);
 			build_cost = (int) Math.round((2500+2500*tier)*this.modifiers[1]*this.modifiers[4]);
-		}else if (s.equals(buildinglist[11])){//Public Order
+		}else if (s.equals(buildinglist[10])){//Public Order
 			if (tier>2||tier<1)
 				JOptionPane.showMessageDialog(null,"The maximum unrest enforcement is 2 and the minimum is 1."
 						+ "\nMore or less is not allowed.","Public Order Error",JOptionPane.INFORMATION_MESSAGE);
 			build_cost = (int) Math.round(100*2*tier*Hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
-		}else if (s.equals(buildinglist[12])){//Port
+		}else if (s.equals(buildinglist[11])){//Port
 			build_cost = (int) Math.round(500*Hex.list_pm[this.hex.pop_size-1]*Hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
 		}
-		System.out.println("Found cost of "+s+" to be "+build_cost+" with build cost mod "+this.modifiers[0]+" and rgo cost mod "+this.modifiers[1]);
 		return build_cost;
 	}
 

@@ -13,6 +13,11 @@ public class Institutions {
 		this.initialize();
 	}
 	
+	public void resetInstitutions() {
+		for (int i=0;i<this.active_institutions.length;i++)
+			this.active_institutions[i] = "";
+	}
+	
 	public void updateInstitutions(boolean a, boolean b) {//interior,welfare booleans as input
 		for (int i=0;i<this.outputs.length;i++) {	//this function should be called whenever a call for a lord 
 			if (i<4)							//to be updated is received

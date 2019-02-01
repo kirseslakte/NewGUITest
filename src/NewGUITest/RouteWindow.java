@@ -76,7 +76,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void setActiveRoutes() {//removes all routes from local memory
-		System.out.println("ROUTEWINDOW! setActiveRoutes");
+		//System.out.println("ROUTEWINDOW! setActiveRoutes");
 		this.activemain.removeAll();
 	    GridBagConstraints constraints = new GridBagConstraints();
 	    constraints.fill = GridBagConstraints.BOTH;
@@ -178,7 +178,7 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void updateRoutes() {
-		System.out.println("ROUTEWINDOW! updateRoutes");
+		//System.out.println("ROUTEWINDOW! updateRoutes");
 		this.saveRoutes();
 		for (int i=0;i<this.pnames.size();i++) {
 			if (this.ppartner_bp.get(i).getText().equals("")||this.ppartner_bp.get(i).getText().equals("0")) {
@@ -204,7 +204,7 @@ public class RouteWindow extends JFrame{
 			}
 		}
 		this.revalidate();
-		System.out.println("Done updating routes");
+		//System.out.println("Done updating routes");
 	}
 	
 	public void clearRoutes() {
@@ -223,7 +223,7 @@ public class RouteWindow extends JFrame{
 			this.passivemain.remove(this.passiveroute.get(i));
 		}
 		this.passiveroute.clear();
-		System.out.println("Cleared routes");
+		//System.out.println("Cleared routes");
 	}
 	
 	public void saveRoutes() {//reads routes from visual layer and puts into codelayer
@@ -255,11 +255,12 @@ public class RouteWindow extends JFrame{
 		}
 		NationHandler.getRoutes(this.lord.name);
 		NationHandler.saveNation();
-		System.out.println("Saved routes");
+		//System.out.println("Saved routes");
 	}
 	
 	public void loadRoutes() {//loads directly from saved layer and puts into code and visual layers
 		//System.out.println("ROUTEWINDOW! loadRoutes");
+		this.listofroutes.clear();
 		this.listofroutes = ReadNWrite.loadRoutes(this.lord.name);
 		this.clearRoutes();
 		NationHandler.listoflords.get(Utility.findLord(this.lord.name)).getOfficials();
@@ -283,7 +284,6 @@ public class RouteWindow extends JFrame{
 				p++;
 			}
 		}
-		System.out.println("Loaded routes");
 	}
 	
 	public void start() {

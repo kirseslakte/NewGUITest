@@ -35,7 +35,7 @@ public class Lord {
 	public int number_officials = 0;//purely used to determine the government upkeep of a lord
 	public int[] official_jobs = new int[5];//trade,bank,tax,welfare,interior
 	public int own_bp=0,total_bp=0,total_trade_value=0,overlord_tax=0,population=0,province_inc=0,province_upk=0,development=0,
-			guild_upk=0,government_upk=0,army_upk=0,total_inc=0,total_upk=0,vassal_inc=0;
+			guild_upk=0,government_upk=0,army_upk=0,total_inc=0,total_upk=0,vassal_inc=0,total_trade_inc=0;
 	public double[] govnm_upk_mod = new double[2];//static+scaling upk mod for gov
 	
 	//// THESE ARE THE variables FOR THE GUI ////
@@ -99,6 +99,7 @@ public class Lord {
 		this.government.culture = ((String) this.panes.culture.getSelectedItem());
 		this.government.religion = ((String) this.panes.religion.getSelectedItem());
 		this.government.legitimacy = (int) Double.parseDouble(this.panes.legitimacy.getText());
+		this.institutes.resetInstitutions();
 		for (int i=0;i<4;i++) {
 			this.institutes.setInstitution((String) this.panes.institutions[i].getSelectedItem(),i);
 		}
@@ -154,7 +155,7 @@ public class Lord {
 		this.getRoutes();
 		//this.army_upk = 
 		this.getHexes();
-		this.total_inc = (int) Math.round(this.total_trade_value*this.modifiers[2]+this.province_inc*(1-this.government.eco[5]*0.01)+this.vassal_inc);
+		this.total_inc = (int) Math.round(this.total_trade_inc+this.province_inc*(1-this.government.eco[5]*0.01)+this.vassal_inc);
 		this.panes.updateNationPane(Utility.findLord(this.name));
 	}
 	
@@ -219,7 +220,7 @@ public class Lord {
 			this.government_upk = (int) Math.round(this.government_upk*this.govnm_upk_mod[1]+this.govnm_upk_mod[0]);
 			this.total_bp = this.own_bp+vassal_bp;
 			this.total_upk = this.government_upk+this.province_upk+this.guild_upk+this.army_upk;
-			this.total_inc = (int) Math.round(this.total_trade_value*this.modifiers[2]+
+			this.total_inc = (int) Math.round(this.total_trade_inc+
 					this.vassal_inc+this.province_inc*(1-this.government.eco[5]*0.01));
 		} catch (NullPointerException e) {
 			//this is just initializing
@@ -229,10 +230,16 @@ public class Lord {
 	
 	public void getRoutes() {
 		this.total_trade_value = 0;
-		double holder = 0;
-		for (Route r:this.route.listofroutes)
-			holder += r.trade_value;
-		this.total_trade_value = (int) Math.round(holder);
+		double value = 0,income = 0;
+		for (Route r:this.route.listofroutes) {
+			value += r.trade_value;
+			if(r.trade_value>0)
+				income += r.trade_value*this.modifiers[2];
+			else 
+				income += r.trade_value/this.modifiers[2];
+		}
+		this.total_trade_value = (int) Math.round(value);
+		this.total_trade_inc = (int) Math.round(income);
 	}
 	public void loadModifiers() {//getting all modifiers from code layers
 		//System.out.println("LORD! loadModifiers");

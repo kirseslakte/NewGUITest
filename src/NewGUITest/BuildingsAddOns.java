@@ -9,9 +9,10 @@ import javax.swing.*;
 
 public class BuildingsAddOns extends JFrame{
 
-	public static String[] addonlist = {"","Moat","Motte","Glacis","Curtain Wall","Keep"};
-	public static int[] add_on_costs = {10,10,10,20,20};//(%) moat,motte,glacis,curtain,keep
-	public List<JLabel> add_on_upkeep = new ArrayList<JLabel>();
+	public static String[] addonlist = {"","Moat","Motte","Glacis","Curtain Wall","Keep","Standard Wood Gate","Heavy Wood Gate",
+			"Reinforced Wood Gate","Standard Iron Gate","Heavy Iron Gate","Reinforced Iron Gate"};
+	public static int[] add_on_costs = {10,10,10,20,20,100,200,300,400,500,600};//(%) moat,motte,glacis,curtain,keep(0-4)
+	public List<JLabel> add_on_upkeep = new ArrayList<JLabel>();				//5-10
 
 	public List<String> built_add_on = new ArrayList<String>();		//ADD-ONS
 	public List<JComboBox> add_on = new ArrayList<JComboBox>();			//input add-ons
@@ -19,6 +20,7 @@ public class BuildingsAddOns extends JFrame{
 	
 	GridBagConstraints c = new GridBagConstraints();
 	
+	public double mod = 1;
 	public int hex_index = 0;
 	public int base_cost = 0;
 	
@@ -103,9 +105,10 @@ public class BuildingsAddOns extends JFrame{
 	    this.add(new JScrollPane(panel));
 	}
 
-	public void setAddOn(String[] s, int fort_cost) {//set takes input into code and visual layers (should only be called when loading/opening pop-up!)
+	public void setAddOn(String[] s, int fort_cost, double mod) {//set takes input into code and visual layers (should only be called when loading/opening pop-up!)
 		//System.out.println("BUILDINGADDON! setAddOn");
 		this.base_cost = fort_cost;
+		this.mod = mod;
 		//System.out.println("ADDON BASE COST IS "+fort_cost);
 		this.built_add_on.clear();
 		for (int i=0;i<s.length;i++) {
@@ -113,7 +116,7 @@ public class BuildingsAddOns extends JFrame{
 			this.built_add_on.add(s[i]);
 			this.add_on.get(i).setSelectedItem(addon);
 			//System.out.println("SETTING COST OF "+addon+" TO "+findCost(addon));
-			this.add_on_cost.get(i).setText(Integer.toString(findCost(addon)));
+			this.add_on_cost.get(i).setText(Integer.toString(findCost(addon,i)));
 		}
 	}
 	
@@ -125,20 +128,27 @@ public class BuildingsAddOns extends JFrame{
 			String addon = (String) this.add_on.get(i).getSelectedItem();
 			if (!(addon.equals(""))) {
 				this.built_add_on.add(addon);
-				this.cost += findCost(addon);
-				this.add_on_cost.get(i).setText(Integer.toString(findCost(addon)));
+				this.cost += findCost(addon,i);
+				this.add_on_cost.get(i).setText(Integer.toString(findCost(addon,i)));
 			}else {
 				this.add_on_cost.get(i).setText("0");
+				this.add_on_upkeep.get(i).setText("0");
 			}
 		}
 	}
 	
-	public int findCost(String s) {// helper function
+	public int findCost(String s, int index) {// helper function
 		//System.out.println("BUILDINGADDON! findCost");
 		int build_cost = 0;
 		for (int i=0;i<add_on_costs.length;i++){
-			if (s.equals(addonlist[i+1]))
-				build_cost = (int) Math.round(add_on_costs[i]*this.base_cost*0.01);
+			if (s.equals(addonlist[i+1])){
+				if (i<5)
+					build_cost = (int) Math.round(add_on_costs[i]*this.base_cost*0.01);
+				else {
+					build_cost = (int) Math.round(add_on_costs[i]*this.mod);
+					this.add_on_upkeep.get(index).setText(Integer.toString((int) Math.round(build_cost*0.2)));
+				}
+			}
 		}
 		return build_cost;
 	}

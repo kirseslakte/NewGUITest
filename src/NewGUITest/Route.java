@@ -12,10 +12,10 @@ public class Route{//trade route object
 	public double trade_value;//output variables
 	public int rounded_tv;
 	public static int max_roll_diff = 40,
-			passive_min = 0,
-			passive_max = 12,
-			active_min = 8,
-			active_max = 22;
+			passive_min = -10,
+			passive_max = 5,
+			active_min = 5,
+			active_max = 15;
 	
 	public Route(String[] s) {
 		//System.out.println("ROUTE! Route");

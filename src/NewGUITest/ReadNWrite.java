@@ -227,7 +227,8 @@ public class ReadNWrite {
 					if (route[1].equals(lord_name)){//only add the routes of the specified lord
 						listofroutes.add(new Route(route));
 						i = 0;
-					}
+					} else
+						i = 0;
 				} else {
 					route[i] = s;
 					i++;

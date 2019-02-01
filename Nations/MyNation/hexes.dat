@@ -5,13 +5,15 @@ CG
 CG
 4
 0
-Darkwood
+
 false
-0
-0
-B-Bureau-0
+740
+1600
+B-Center of Trade-0
 B-RGO-1
-F-Pallisade-1
+B-Bureau-0
+F-Pallisade-1-Reinforced Iron Gate
+W-Advanced-Heavy Wood Gate,2
 xxxxxx
 Dårlandet
 MyVassal
@@ -25,4 +27,5 @@ false
 0
 0
 B-RGO-1
+B-Bureau-0
 xxxxxx

@@ -87,8 +87,8 @@ public class Hex {
 		else
 			this.upgrade_cost = (int) Math.round(this.building_upgrade+list_upgrade_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(this.owner)).modifiers[23]);
 		this.base_bp = (int) Math.round(base_pm*habitability*list_pm[this.pop_size-1]);
-		this.upkeep = (int) Math.round(list_upkeep_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[22])+
-				this.building_upkeep;
+		this.upkeep = (int) Math.round((list_upkeep_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[22]+
+				this.building_upkeep)*this.bureau());
 		this.govnm_upkeep = (int) Math.round(base_pm*5*list_pm[this.pop_size-1]);
 		this.population_value = list_pv[this.pop_size-1];
 		this.unit_cap = (int) Math.round(list_unit_cap[this.pop_size-1]*(1+NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[9]));
@@ -220,14 +220,22 @@ public class Hex {
 	public double findCenterOfTradeContribution() {
 		Lord lord = NationHandler.listoflords.get(Utility.findLord(this.owner));
 		Lord overlord = NationHandler.listoflords.get(0);
-		int k = Utility.findHex(this.name);
 		boolean exists = false;
-		for (String s:NationHandler.listofhexes.get(k).built_buildings) {
+		for (String s:this.built_buildings) {
 			if (s.contains("Center of Trade"))
 				exists = true;
 		}
 		if (exists)
-			return Math.max(lord.total_trade_value,overlord.total_trade_value)*0.2*lord.modifiers[2];
+			return Math.max(lord.total_trade_value*lord.modifiers[2],overlord.total_trade_value*overlord.modifiers[2])*0.2;
 		return 0;
+	}
+	
+	public double bureau() {
+		double mod = 1;
+		for (String s:this.built_buildings) {
+			if (s.contains("Bureau"))
+				mod = 0.9;
+		}
+		return mod;
 	}
 }

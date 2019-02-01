@@ -139,11 +139,11 @@ public class LordPanes {
 		this.nationlabels[6].setText(Integer.toString((int) Math.round(lord.modifiers[3]*100)));//vassal
 		this.nationlabels[7].setText(Integer.toString(lord.development));//development
 		this.nationlabels[8].setText(Integer.toString((int) Math.round(lord.modifiers[5]*100)));//bank inc
-		this.nationlabels[9].setText(Double.toString((double) Math.round(lord.population/Math.max(total_population,1)*1000d) /1000d));//population %
+		this.nationlabels[9].setText(Integer.toString((int) Math.round(lord.population/Math.max(total_population,1)*100)));//population %
 		this.nationlabels[10].setText(Integer.toString((int) Math.round(lord.modifiers[6]*100)));//bank dev
 		this.nationlabels[11].setText(Integer.toString(lord.vassal_inc));//vassal tax income
 		this.nationlabels[12].setText(Integer.toString((int) Math.round(lord.modifiers[4]*100)));//plunder
-		this.nationlabels[13].setText(Integer.toString((int) Math.round(lord.total_trade_value*lord.modifiers[2])));//trade inc
+		this.nationlabels[13].setText(Integer.toString((int) Math.round(lord.total_trade_inc)));//trade inc
 		//this.nationlabels[14].setText(Integer.toString(lord.guild_upk));//guild upk
 		//this.nationlabels[15].setText(Integer.toString(lord.army_upk));//army upk
 		this.nationlabels[14].setText(Integer.toString(lord.government_upk));//gov upk
