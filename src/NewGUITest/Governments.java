@@ -41,12 +41,14 @@ public class Governments {
 	int min_unrest = 0;
 	double max_tax_rate = 0;
 	int[] eco = {0,0,0,0,0,0};//army,guild,rp,dev,tax,overlord tax
+	Lord lord;
 	
-	public Governments() {
-		
+	public Governments(Lord lord) {
+		this.lord = lord;
 	}
 	
-	public void setGovernment(String[] s) {
+	public void setGovernment(String[] s, Lord lord) {
+		this.lord = lord;
 		this.setNull();
 		this.setSystem(s[0]);
 		this.setStruc(s[1]);
@@ -125,7 +127,10 @@ public class Governments {
 		this.unit_training_cost_mod = 0.95;
 		this.tax_eff = 0.1;
 		this.bank_inc_eff = 0.2;
-		this.vassal_inc_eff = 0.2;
+		if (this.lord.master_title.equals(""))
+			this.vassal_inc_eff = 0.2;
+		else
+			this.tax_eff += 0.1;
 		this.trade_eff = 0.2;
 	}
 	public void setMeritocratic() {//modifiers for the meritocratic system
@@ -139,7 +144,10 @@ public class Governments {
 		this.tax_eff = 0.2;
 		this.prod_eff = 0.1;
 		this.bank_inc_eff = 0.2;
-		this.vassal_inc_eff = 0.1;
+		if (this.lord.master_title.equals(""))
+			this.vassal_inc_eff = 0.1;
+		else
+			this.tax_eff += 0.05;
 	}
 	public void setHistocratic(){//modifiers for the histocratic system
 		this.sys = systems[4];
@@ -175,7 +183,10 @@ public class Governments {
 	public void setFederation() {//modifiers for the federation system
 		this.sys = systems[7];
 		this.bank_inc_eff = 0.2;
-		this.vassal_inc_eff = 0.3;
+		if (this.lord.master_title.equals(""))
+			this.vassal_inc_eff = 0.3;
+		else 
+			this.tax_eff = 0.15;
 		this.trade_eff = 0.2;
 	}
 	//STOP SYSTEMS!!

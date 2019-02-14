@@ -11,9 +11,9 @@ public class Buildings extends JFrame{
 	
 	public static String[] buildinglist = {"","RGO","Road","Highway","Armoury","Signal Towers","Hospital","Supply Cache","Bureau",
 			"Palace","Public Order","Port","Center of Trade"};
-	public static String[] fortificationlist = {"","Aerial Defenses","Pallisade","Hill Fort","Castle","Fortress","Citadel"};
+	public static String[] fortificationlist = {"","Aerial Defenses","Pallisade","Hill Fort","Castle","Fortress","Citadel","Bastion"};
 	public static String[] walllist = {"","Primitive","Basic","Advanced"};
-	public static int[] fortifications_costs = {50,125,100,200,400,800};//aeri def,hill,pall,cast,fort,cita
+	public static int[] fortifications_costs = {50,125,100,200,400,800,200};//aeri def,hill,pall,cast,fort,cita,bast
 	public static int[] wall_costs = {100,125,175};//prim,bas,adv
 	public String[] active_buildings;
 	public String[] active_forts;
@@ -85,20 +85,22 @@ public class Buildings extends JFrame{
 		double[] tempmod = NationHandler.listoflords.get(lord).modifiers;
 		String lifestyle = NationHandler.listoflords.get(lord).government.style;
 		if (lifestyle.equals("Nomadic")){
-			this.active_forts = new String[3];
+			this.active_forts = new String[4];
 			this.active_forts[0] = "";
 			this.active_forts[1] = "Aerial Defenses";
 			this.active_forts[2] = "Pallisade";
+			this.active_forts[3] = "Bastion";
 			this.active_walls = new String[2];
 			this.active_walls[0] = "";
 			this.active_walls[1] = "Primitive";
 		}else if (lifestyle.equals("Tribalistic")){
-			this.active_forts = new String[5];
+			this.active_forts = new String[6];
 			this.active_forts[0] = "";
 			this.active_forts[1] = "Aerial Defenses";
 			this.active_forts[2] = "Pallisade";
 			this.active_forts[3] = "Hill Fort";
 			this.active_forts[4] = "Castle";
+			this.active_forts[5] = "Bastion";
 			this.active_walls = new String[3];
 			this.active_walls[0] = "";
 			this.active_walls[1] = "Primitive";

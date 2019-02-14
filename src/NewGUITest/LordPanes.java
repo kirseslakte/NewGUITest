@@ -56,7 +56,11 @@ public class LordPanes {
 			newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
 				public void actionPerformed(ActionEvent e){
 					String newlord = JOptionPane.showInputDialog(null,"Name the new vassal:","Vassal Creation",JOptionPane.QUESTION_MESSAGE);
-					NationHandler.newLord(newlord,"overlord");
+					try {
+						NationHandler.newLord(newlord,"overlord");
+					} catch (NullPointerException ex) {
+						
+					}
 				}
 			});
 		} else {

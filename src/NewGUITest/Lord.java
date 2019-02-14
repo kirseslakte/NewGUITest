@@ -22,7 +22,7 @@ public class Lord {
 	public String title;
 	public boolean[] accessed_resources = new boolean[Hex.passive_resources.length];//darkwood->Drugs
 	public Institutions institutes = new Institutions();
-	public Governments government = new Governments();
+	public Governments government;
 	public OfficialWindow official = new OfficialWindow();
 	public RouteWindow route = new RouteWindow();
 	public double[] modifiers = new double[33];
@@ -52,6 +52,7 @@ public class Lord {
 			this.accessed_resources[i] = false;
 		this.official.initialize(this);
 		this.route.initialize(this);
+		this.government = new Governments(this);
 	}
 	
 	public Panel setPanel(boolean master) {
@@ -95,7 +96,7 @@ public class Lord {
 		gov[2] = (String) this.panes.rule.getSelectedItem();
 		gov[3] = (String) this.panes.life_style.getSelectedItem();
 		gov[4] = (String) this.panes.centralisation.getSelectedItem();
-		this.government.setGovernment(gov);
+		this.government.setGovernment(gov, this);
 		this.government.culture = ((String) this.panes.culture.getSelectedItem());
 		this.government.religion = ((String) this.panes.religion.getSelectedItem());
 		this.government.legitimacy = (int) Double.parseDouble(this.panes.legitimacy.getText());
@@ -118,7 +119,7 @@ public class Lord {
 		String[] gov = new String[5];
 		for (int i=0;i<gov.length;i++)
 			gov[i] = s[1+i];
-		this.government.setGovernment(gov);
+		this.government.setGovernment(gov, this);
 		this.government.culture = s[6];
 		this.government.religion = s[7];
 		this.government.legitimacy = (int) Double.parseDouble(s[8]);

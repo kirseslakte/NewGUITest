@@ -19,7 +19,7 @@ public class RouteWindow extends JFrame{
 	public List<JTextField> pnames = new ArrayList<JTextField>();
 	public List<JTextField> plord_tar = new ArrayList<JTextField>();
 	public List<JTextField> ppartner_tar = new ArrayList<JTextField>();
-	public List<JTextField> ppartner_bp = new ArrayList<JTextField>();
+	public List<JLabel> ppartner_bp = new ArrayList<JLabel>();
 	public List<JLabel> ptrade_value = new ArrayList<JLabel>();
 	public List<Panel> passiveroute = new ArrayList<Panel>();
 	public Lord lord;
@@ -168,7 +168,7 @@ public class RouteWindow extends JFrame{
 	    this.plord_tar.add(new JTextField("0"));
 	    this.passiveroute.get(this.passiveroute.size()-1).add(this.plord_tar.get(this.plord_tar.size()-1), constraints);
 	    constraints.gridx = 2;
-	    this.ppartner_bp.add(new JTextField("0"));
+	    this.ppartner_bp.add(new JLabel(Integer.toString(this.lord.total_bp)));
 	    this.passiveroute.get(this.passiveroute.size()-1).add(this.ppartner_bp.get(this.ppartner_bp.size()-1), constraints);
 	    constraints.gridx = 3;
 	    this.ppartner_tar.add(new JTextField("0"));
@@ -179,6 +179,7 @@ public class RouteWindow extends JFrame{
 	
 	public void updateRoutes() {
 		//System.out.println("ROUTEWINDOW! updateRoutes");
+		this.lord = NationHandler.listoflords.get(Utility.findLord(this.lord.name));
 		this.saveRoutes();
 		for (int i=0;i<this.pnames.size();i++) {
 			if (this.ppartner_bp.get(i).getText().equals("")||this.ppartner_bp.get(i).getText().equals("0")) {
@@ -199,6 +200,7 @@ public class RouteWindow extends JFrame{
 				this.atrade_value.get(a).setText(Integer.toString(route.rounded_tv));
 				a++;
 			} else {
+				this.ppartner_bp.get(p).setText(Integer.toString(this.lord.total_bp));
 				this.ptrade_value.get(p).setText(Integer.toString(route.rounded_tv));
 				p++;
 			}

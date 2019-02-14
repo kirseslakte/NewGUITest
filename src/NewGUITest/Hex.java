@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class Hex {
 	public String name;//all of these are in a sense input variables
-	public int habitability;
+	public double habitability;
 	public String alignment;
 	public String religion;
 	public int pop_size;
@@ -100,7 +100,7 @@ public class Hex {
 		//System.out.println("HEX! loadHex");
 		this.name = s[0];
 		this.owner = s[1];
-		this.habitability = Integer.parseInt(s[2]);
+		this.habitability = Double.parseDouble(s[2]);
 		this.alignment = s[3];
 		this.religion = s[4];
 		this.pop_size = Integer.parseInt(s[5]);

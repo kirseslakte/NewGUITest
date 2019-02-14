@@ -1,0 +1,4 @@
+Pre 14/2
+passive routes are now based on your own BP, not your partners
+hab is now a double
+half of vassal income efficiency from government form of vassals is instead added to tax eff

@@ -9,9 +9,9 @@ import javax.swing.*;
 
 public class BuildingsAddOns extends JFrame{
 
-	public static String[] addonlist = {"","Moat","Motte","Glacis","Curtain Wall","Keep","Standard Wood Gate","Heavy Wood Gate",
+	public static String[] addonlist = {"","Moat","Motte","Glacis","Curtain Wall","Keep","Bastion","Standard Wood Gate","Heavy Wood Gate",
 			"Reinforced Wood Gate","Standard Iron Gate","Heavy Iron Gate","Reinforced Iron Gate"};
-	public static int[] add_on_costs = {10,10,10,20,20,100,200,300,400,500,600};//(%) moat,motte,glacis,curtain,keep(0-4)
+	public static int[] add_on_costs = {10,10,10,20,20,200,100,200,300,400,500,600};//(%) moat,motte,glacis,curtain,keep,bastion(0-5)
 	public List<JLabel> add_on_upkeep = new ArrayList<JLabel>();				//5-10
 
 	public List<String> built_add_on = new ArrayList<String>();		//ADD-ONS

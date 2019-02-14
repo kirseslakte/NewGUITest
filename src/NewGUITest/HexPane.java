@@ -169,7 +169,7 @@ public class HexPane extends Hex{
 			buildings.get(i).getInputs(i);
 			hex_list.get(i).setText(NationHandler.listofhexes.get(i).name);
 			owner_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).owner);
-			hab_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).habitability));
+			hab_list.get(i).setText(Double.toString(NationHandler.listofhexes.get(i).habitability));
 			culture_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).alignment);
 			religion_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).religion);
 			pop_size_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).pop_size));
