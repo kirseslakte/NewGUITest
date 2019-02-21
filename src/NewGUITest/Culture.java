@@ -42,7 +42,7 @@ public class Culture {
 	public static void setCulturePane(double[] s) {//setting culture pane
 		//System.out.println("CULTURE! setCulturePane");
 		for (int i=0;i<culture_names.length;i++)//only ever called from lord.setCulture()
-			culturefields.get(i).setText(Integer.toString((int) (s[i]*100)));
+			culturefields.get(i).setText(Double.toString((s[i]*100)));
 	}
 	
 	public static void getCulture() {//extracting all the culture modifiers
@@ -74,7 +74,7 @@ public class Culture {
 				k = i;
 		}
 		for (int i=0;i<culture_names.length;i++)
-			culture_bonuses[i] = Integer.parseInt(boni[i])*0.01;
+			culture_bonuses[i] = Double.parseDouble(boni[i])*0.01;
 		culturePane();
 		setCulture();
 	}
