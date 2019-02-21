@@ -1,0 +1,13 @@
+name			0
+stat_mod		1,3,5,7,9,11
+stat_usd		2,4,6,8,10,12
+size			13
+bipedal			14
+natural_ac		15
+misc_ac			16
+dr/b,p,s		17
+dr/m,m			18
+natural_attack_dice	19
+number_of_nat_atk	20
+speed			21
+has_bonus_feat		22

@@ -3,7 +3,11 @@ package NewGUITest;
 import java.util.Arrays;
 
 public class Unit {
-	public String name;//input variables
+	//Inputs handled in tab
+	public String name;
+	public String unit_lord;
+	public int number_of_units;
+	//Input variables
 	public int[] stats = new int[6];
 	public int[] stats_racial_mods = new int[6];
 	public boolean[] stats_used = new boolean[6];
@@ -28,8 +32,8 @@ public class Unit {
 	public Armour armour = new Armour();
 	public Armour shield = new Armour();
 	public Mount mount = new Mount();
-	public String unit_lord;
-	public int number_of_units;
+	
+	//Output variables
 	
 	public Unit() {
 		
@@ -76,6 +80,12 @@ public class Unit {
 		}
 		this.unit_lord = s[94];
 		this.number_of_units = Integer.parseInt(s[95]);
+	}
+	
+	public String[] getUnit() {
+		String[] unitstring = new String[96];
+		
+		return unitstring;
 	}
 	
 	//weapon class

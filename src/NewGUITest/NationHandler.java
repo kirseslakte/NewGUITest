@@ -66,10 +66,12 @@ public class NationHandler extends JFrame{
 		listofhexes = ReadNWrite.loadHexes();
 		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPane()));//loaded after all the lords
 		mainPane.addTab("Culture & Portfolio", new JScrollPane(Culture.culturePane()));
+		unitTab();
 		recalibrateLords();
 		//System.out.println("first recalibration of hexes");
 		recalibrateHexes();
 		listofunits = ReadNWrite.loadUnits();
+		UnitTab.loadUnits();
 		//mainPane.addTab("Units", new JScrollPane(unitpanel.unitPane()));
 		listofofficials = ReadNWrite.loadOfficials();
 		listofroutes = ReadNWrite.loadRoutes();
@@ -163,6 +165,10 @@ public class NationHandler extends JFrame{
 	public static void addVassalTab(String lord) {
 		//System.out.println("NATIONHANDLER! addVassalTab");
 		mainPane.addTab(lord,listoflords.get(Utility.findLord(lord)).setPanel(false));
+	}
+	
+	public static void unitTab() {
+		mainPane.addTab("Units", new JScrollPane(UnitTab.unitTab()));
 	}
 	
 	public static void recalibrateHexes() {

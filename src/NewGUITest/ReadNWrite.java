@@ -83,7 +83,7 @@ public class ReadNWrite {
 	}
 	
 	public static void createDummyNation(String nation_name) {
-		String[] files = {"\\culture","\\overlord","\\hexes","\\officials","\\routes","\\units"};
+		String[] files = {"\\culture","\\overlord","\\hexes","\\officials","\\routes","\\units","\\races"};
 		for (int i=0;i<files.length;i++) {
 			File file = new File(directory+files[i]+filetype);
 			try{
@@ -291,6 +291,33 @@ public class ReadNWrite {
 			System.out.println(e);
 		}
 		return listofofficials;
+	}
+	
+	//load races
+	public static List<Race> loadRaces(){
+		//System.out.println("READNWRITE! loadRaces");
+		List<Race> listofraces = new ArrayList<Race>();
+		String s = directory+"\\races"+filetype;
+		File file = new File(s);
+		String[] race = new String[23];
+		int i = 0;
+		try {
+			Scanner sc = new Scanner(file);
+			while(sc.hasNextLine()){
+				s = sc.nextLine();
+				if (s.equals(separator)) {
+					listofraces.add(new Race(race));
+					i = 0;
+				} else {
+					race[i] = s;
+					i++;
+				}
+			}
+			sc.close();
+		} catch(Exception e){
+			System.out.println(e);
+		}
+		return listofraces;
 	}
 	
 	////SAVE METHODS////
@@ -530,6 +557,38 @@ public class ReadNWrite {
 			}						//might not be, but just remove it then
 			fw.close();
 		} catch (Exception e){
+			System.out.println(e);
+		}
+	}
+	
+	//saveraces
+	public static void saveRaces(List<Race> listofraces) {
+		String s = directory+"\\races"+filetype;
+		File file = new File(s);
+		file.delete();
+		try {
+			file.createNewFile();
+			FileWriter fw = new FileWriter(file);
+			for (Race race:listofraces) {
+				fw.write(race.name+System.getProperty("line.separator"));
+				for (int i=0;i<race.stats.length;i++) {
+					fw.write(race.stats[i]+System.getProperty("line.separator"));
+					fw.write(race.statsinuse[i]+System.getProperty("line.separator"));
+				}
+				fw.write(race.size+System.getProperty("line.separator"));
+				fw.write(race.bipedal+System.getProperty("line.separator"));
+				fw.write(race.natac+System.getProperty("line.separator"));
+				fw.write(race.miscac+System.getProperty("line.separator"));
+				fw.write(race.drbps+System.getProperty("line.separator"));
+				fw.write(race.drmm+System.getProperty("line.separator"));
+				fw.write(race.natattackdice+System.getProperty("line.separator"));
+				fw.write(race.natattacks+System.getProperty("line.separator"));
+				fw.write(race.basespeed+System.getProperty("line.separator"));
+				fw.write(race.feat+System.getProperty("line.separator"));
+				fw.write(separator+System.getProperty("line.separator"));
+			}
+			fw.close();
+		} catch (Exception e) {
 			System.out.println(e);
 		}
 	}

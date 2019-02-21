@@ -67,4 +67,13 @@ public class Utility {
 			return output;
 		}
 	}
+	
+	public static int findUnit(String s) {
+		for (int i=0;i<NationHandler.listofunits.size();i++) {
+			if (s.equals(NationHandler.listofunits.get(i).name))
+				return i;
+		}
+		
+		return -1;
+	}
 }
