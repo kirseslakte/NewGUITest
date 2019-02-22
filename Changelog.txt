@@ -7,3 +7,9 @@ culture input/output is now double
 21/2
 started with units properly.
 have added a unit tab, race infrastructure, race window and race load menu
+22/2 
+continued with work on races and units.
+visuals of the unit tab,unit window and race window/load race window are mostly done (have not yet started to consider the mount window - maybe it should be a part of the equipment part of the unit window) feelsgoodman
+this is mostly not connected to the code layer or save layer.
+listofunits is in the nationhandler. creating a new row for a unit in the unit tab creates a new entry in the list, and updating a unit will remove it from the list and add the new unit on top of the list as if creating a new one.
+listofraces is in the unittab. currently not possible to remove races (should be fairly easily implemented) but can add, modify and save races (though not able to load)

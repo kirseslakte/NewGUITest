@@ -98,6 +98,7 @@ public class NationHandler extends JFrame{
 		ReadNWrite.saveUnit(listofunits);
 		ReadNWrite.saveRoute(listofroutes);
 		ReadNWrite.saveOfficial(listofofficials);
+		UnitTab.save();
 	}//that was pretty straight forward, right?
 	
 	public static void removeLord(int lordindex) {
@@ -217,6 +218,11 @@ public class NationHandler extends JFrame{
 				}
 			}
 		}
+	}
+	
+	public static void getUnit(int i,Unit u) {
+		listofunits.remove(i);
+		listofunits.add(u);
 	}
 	
 	public void initializeHex() {

@@ -1,3 +1,12 @@
 Add units tab
 Add notes tab
 Add guilds to the buildings & guildstitutions
+
+::Races::
+-see what is wrong with load races
+-add possibility in the raceloader to remove a race
+(then done with races??)
+::Units::
+-Add code to everything, as in code in Unit(), and connections between everything
+-need to make sure loading/saving works
+-should also check that loading into visulas work as intended

@@ -16,10 +16,9 @@ public class UnitTab {
 	public static List<JTextField> names = new ArrayList<JTextField>();
 	public static List<JLabel> costs = new ArrayList<JLabel>();
 	public static List<JLabel> upkeeps = new ArrayList<JLabel>();
-	public static List<JComboBox> lords = new ArrayList<JComboBox>();
+	public static List<JComboBox<String>> lords = new ArrayList<JComboBox<String>>();
 	public static List<JTextField> amounts = new ArrayList<JTextField>();
 	public static List<Button> designbuttons = new ArrayList<Button>();
-	public static UnitWindow unitwindow = new UnitWindow();
 	public static List<Race> listofraces = new ArrayList<Race>();
 	static String[] listoflords;
 	static Button addrow;
@@ -52,6 +51,8 @@ public class UnitTab {
 		c.gridx += widths[4];
 		unitpanel.add(new JLabel("Unit Design Window"),c);
 		addRow();
+		UnitWindow.init();
+		RaceWindow.init();
 		return unitpanel;
 	}
 	
@@ -89,7 +90,7 @@ public class UnitTab {
 			c.gridwidth = widths[3];
 			c.gridx += widths[2];
 			unitpanel.add(lords.get(lords.size()-1),c);
-			amounts.add(new JTextField(""));
+			amounts.add(new JTextField("0"));
 			c.gridwidth = widths[4];
 			c.gridx += widths[3];
 			unitpanel.add(amounts.get(amounts.size()-1),c);
@@ -98,8 +99,8 @@ public class UnitTab {
 			designbuttons.get(k).addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
 					setUnits();
-					if (!unitwindow.isVisible())
-						unitwindow.start(k);
+					if (!UnitWindow.unitwindow.isVisible())
+						UnitWindow.start(k);
 				}
 			});
 			c.gridwidth = widths[5];
@@ -177,6 +178,15 @@ public class UnitTab {
 			NationHandler.listofunits.get(i).unit_lord = (String) lords.get(i).getSelectedItem();
 			NationHandler.listofunits.get(i).number_of_units = (int) Integer.parseInt(amounts.get(i).getText());
 		}
+	}
+	
+	public static void getRace(int i,Race r) {
+		listofraces.remove(i);
+		listofraces.add(r);
+	}
+	
+	public static void saveRaces() {
+		ReadNWrite.saveRaces(listofraces);
 	}
 	
 	public static void save() {

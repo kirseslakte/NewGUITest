@@ -5,8 +5,8 @@ public class Race {
 	public String name;
 	public int[] stats = new int[6];
 	public boolean[] statsinuse = new boolean[6];
-	public String size;
-	public boolean bipedal;
+	public String size = "Medium";
+	public boolean bipedal = true;
 	public int natac = 0;
 	public int miscac = 0;
 	public int drbps = 0;

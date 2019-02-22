@@ -8,24 +8,14 @@ public class Unit {
 	public String unit_lord;
 	public int number_of_units;
 	//Input variables
+	public Race race = new Race();
 	public int[] stats = new int[6];
-	public int[] stats_racial_mods = new int[6];
-	public boolean[] stats_used = new boolean[6];
 	public String type;
 	public String subtype;
 	public String training;
 	public String training_type;
-	public String size;
-	public String footing;
-	public int natural_armour;
-	public int misc_armour_bonus;
-	public int base_speed;
-	public int dr_bps;
-	public int dr_mm;
-	public int natural_weapons_dice;
-	public int number_of_attacks;
-	public String[] feats = new String[3];
-	public String[] unit_feats = new String[3];
+	public String[] feat = new String[3];
+	public String[] unit_feat = new String[3];
 	public Weapon weapon1 = new Weapon();
 	public Weapon weapon2 = new Weapon();
 	public Weapon weapon3 = new Weapon();
@@ -35,6 +25,23 @@ public class Unit {
 	
 	//Output variables
 	
+	
+	//static variables
+	static public String[] types = {"Infantry","Cavalry","Aerial Infantry","Aerial Cavalry"};
+	static public String[] subtypes = {"None","Archer","Combat Engineer","Crusading","Garrison","Mercenary","Penal","Personal","Scout",
+			"Slayer","Worker"};
+	static public String[] trainings = {"Irregular","Regular","Elite"};
+	static public String[] training_types = {"Light","Medium","Heavy"};
+	static public String[] feats = {"Crossbow Sniper","Dash","Deadly Aim","Dodge","Exotic Weapon Proficiency","Mounted Archery","Mounted Combat",
+			"Power Attack","Rapid Reload","Shield Focus","Toughness","Weapon Finesse","Weapon Focus (W1)","Weapon Focus (W2)","Weapon Focus (W3)"};
+	static public String[] unit_feats = {"Brave","Disciplined","Fast","Mage-Trained","Mount Attack","Precision Drill","Skilled Defenders",
+			"Terrain-Trained (Light Forest)","Terrain-Trained (Dense Forest)","Terrain-Trained (Marsh)","Terrain-Trained (Rocky)"
+			,"Terrain-Trained (Glacier)","Unbreakable"};
+	
+	//unit-specific variables
+	public String[] available_feats = {};
+	public String[] available_unit_feats= {};
+	
 	public Unit() {
 		
 	}
@@ -42,48 +49,38 @@ public class Unit {
 	public void setUnit(String[] s) {
 		System.out.println("UNIT! setUnit");
 		this.name = s[0];
+		this.race = UnitTab.listofraces.get(Utility.findRace(s[1]));
 		for (int i=0;i<stats.length;i++) {
-			this.stats[i] = Integer.parseInt(s[i+1]);
-			this.stats_racial_mods[i] = Integer.parseInt(s[i+7]);
-			this.stats_used[i] = Boolean.parseBoolean(s[i+13]);
+			this.stats[i] = Integer.parseInt(s[2+i]);
 		}
-		this.type = s[19];
-		this.subtype = s[20];
-		this.training = s[21];
-		this.training_type = s[22];
-		this.size = s[23];
-		this.footing = s[24];
-		this.natural_armour = Integer.parseInt(s[25]);
-		this.misc_armour_bonus = Integer.parseInt(s[26]);
-		this.base_speed = Integer.parseInt(s[27]);
-		this.dr_bps = Integer.parseInt(s[28]);
-		this.dr_mm = Integer.parseInt(s[29]);
-		this.natural_weapons_dice = Integer.parseInt(s[30]);
-		this.number_of_attacks = Integer.parseInt(s[31]);
+		this.type = s[8];
+		this.subtype = s[9];
+		this.training = s[10];
+		this.training_type = s[11];
 		for (int i=0;i<feats.length;i++) {
-			this.feats[i] = s[32+i];
-			this.unit_feats[i] = s[35+i];
+			this.feats[i] = s[12+i];
+			this.unit_feats[i] = s[15+i];
 		}
-		String[] weaponstring = Arrays.copyOfRange(s,38,42);
+		String[] weaponstring = Arrays.copyOfRange(s,18,22);
 		this.weapon1.setWeapon(weaponstring);
-		weaponstring = Arrays.copyOfRange(s,43,47);
+		weaponstring = Arrays.copyOfRange(s,23,27);
 		this.weapon2.setWeapon(weaponstring);
-		weaponstring = Arrays.copyOfRange(s,48,52);
+		weaponstring = Arrays.copyOfRange(s,28,32);
 		this.weapon3.setWeapon(weaponstring);
-		String[] armourstring = Arrays.copyOfRange(s,53,58);
+		String[] armourstring = Arrays.copyOfRange(s,33,38);
 		this.armour.setArmour(armourstring);
-		armourstring = Arrays.copyOfRange(s,59,64);
+		armourstring = Arrays.copyOfRange(s,39,44);
 		this.shield.setArmour(armourstring);
 		if (!s[65].equals("no_mount")) {
-			String[] mountstring = Arrays.copyOfRange(s,65,93);
+			String[] mountstring = Arrays.copyOfRange(s,45,73);
 			mount.setMount(mountstring);
 		}
-		this.unit_lord = s[94];
-		this.number_of_units = Integer.parseInt(s[95]);
+		this.unit_lord = s[74];
+		this.number_of_units = Integer.parseInt(s[75]);
 	}
 	
 	public String[] getUnit() {
-		String[] unitstring = new String[96];
+		String[] unitstring = new String[76];
 		
 		return unitstring;
 	}
@@ -97,6 +94,8 @@ public class Unit {
 		public int damage_dice;
 		public String type;
 		public int weight;
+		
+		public String[] types = {"Ranged","One-Handed","Two-Handed","Light"};
 		
 		public Weapon() {
 			
@@ -122,6 +121,9 @@ public class Unit {
 		public int ac;
 		public String type;
 		public int weight;
+		
+		public String[] armourtypes = {"Light","Medium","Heavy"};
+		public String[] shieldtypes = {"Light","Heavy","Tower Shield"};
 		
 		public Armour() {
 			

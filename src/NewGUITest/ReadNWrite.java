@@ -425,27 +425,14 @@ public class ReadNWrite {
 			FileWriter fw = new FileWriter(file);
 			for (Unit unit:listofunits){
 				fw.write(unit.name+System.getProperty("line.separator"));
+				fw.write(unit.race.name+System.getProperty("line.separator"));
 				for (int i=0;i<unit.stats.length;i++) {//stats
 					fw.write(Integer.toString(unit.stats[i])+System.getProperty("line.separator"));
-				}
-				for (int i=0;i<unit.stats.length;i++) {
-					fw.write(Integer.toString(unit.stats_racial_mods[i])+System.getProperty("line.separator"));
-				}
-				for (int i=0;i<unit.stats.length;i++) {
-					fw.write(Boolean.toString(unit.stats_used[i])+System.getProperty("line.separator"));
 				}
 				fw.write(unit.type+System.getProperty("line.separator"));
 				fw.write(unit.subtype+System.getProperty("line.separator"));
 				fw.write(unit.training+System.getProperty("line.separator"));
 				fw.write(unit.training_type+System.getProperty("line.separator"));
-				fw.write(unit.size+System.getProperty("line.separator"));
-				fw.write(unit.footing+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.natural_armour)+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.misc_armour_bonus)+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.dr_bps)+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.dr_mm)+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.natural_weapons_dice)+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.number_of_attacks)+System.getProperty("line.separator"));
 				for (int i=0;i<unit.feats.length;i++) {
 					fw.write(unit.feats[i]+System.getProperty("line.separator"));
 				}

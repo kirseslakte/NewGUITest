@@ -76,4 +76,13 @@ public class Utility {
 		
 		return -1;
 	}
+	
+	public static int findRace(String s) {
+		for (int i=0;i<UnitTab.listofraces.size();i++) {
+			if (s.equals(UnitTab.listofraces.get(i).name))
+				return i;
+		}
+		
+		return -1;
+	}
 }
