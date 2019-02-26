@@ -20,7 +20,8 @@ public class Race {
 	static String[] sizes = {"Fine","Diminutive","Tiny","Small","Medium","Large","Huge","Gargantuan","Colossal"};
 	
 	public Race() {
-		
+		for (int i=0;i<this.statsinuse.length;i++)
+			this.statsinuse[i] = true;
 	}
 	
 	public Race(String[] s) {

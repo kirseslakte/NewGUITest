@@ -6,3 +6,4 @@
 -fortifications should have all the gates as well !!!DONE!!!
 -underground settlements can have gates as well <- ben will have to keep track of those himself
 -trade is not loaded properly when you open the pop-up !!!DONE!!!
+-settlement upk is not loaded properly. neighter is buildings

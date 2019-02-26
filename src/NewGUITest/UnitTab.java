@@ -164,6 +164,7 @@ public class UnitTab {
 	}
 	
 	public static void loadUnits() {//loads units from the listofunits in the nationhandler and makes neat rows for all of them
+		loadRaces();
 		for (int i=0;i<NationHandler.listofunits.size();i++) {
 			names.get(i).setText(NationHandler.listofunits.get(i).name);
 			lords.get(i).setSelectedItem(NationHandler.listofunits.get(i).unit_lord);
@@ -181,12 +182,26 @@ public class UnitTab {
 	}
 	
 	public static void getRace(int i,Race r) {
+		//System.out.println("Removing race "+listofraces.get(i).name+" with index "+i+" and placing it last ("+(listofraces.size()-1)+")");
 		listofraces.remove(i);
 		listofraces.add(r);
 	}
 	
+	public static void clearRaces() {
+		for (int i=0;i<listofraces.size();i++) {
+			if (listofraces.get(i).name == null) {
+				listofraces.remove(i);
+				i--;
+			}
+		}
+	}
+	
 	public static void saveRaces() {
 		ReadNWrite.saveRaces(listofraces);
+	}
+	
+	public static void loadRaces() {
+		listofraces = ReadNWrite.loadRaces();
 	}
 	
 	public static void save() {

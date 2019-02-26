@@ -40,7 +40,7 @@ public class NationHandler extends JFrame{
 			listofloads.add(loadstr);//load all files in directory to list
 		}
 		listofloads.remove("hexes");listofloads.remove("units");listofloads.remove("officials");
-		listofloads.remove("culture");listofloads.remove("routes");//remove all non-lords
+		listofloads.remove("culture");listofloads.remove("routes");listofloads.remove("races");//remove all non-lords
 		int i = 0;
 		for (String lord:listofloads){//lords SHOULD be sorted alphabetically meaning overlord is first,
 			String[] loaded_lord = ReadNWrite.loadLord(lord);//then vassal1, then vassals of 1, then vassal2, then vassals of 2, aso

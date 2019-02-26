@@ -10,8 +10,9 @@ import java.util.ArrayList;
 public class RaceWindow{
 	
 	static JFrame raceswindow = new JFrame();
-	static Panel racespanel = new Panel(new GridLayout(0,2));
+	static Panel racespanel = new Panel(new GridLayout(0,3));
 	static List<Button> racebuttons = new ArrayList<Button>();
+	static List<Button> rmvracebuttons = new ArrayList<Button>();
 	
 	static JFrame racewindow = new JFrame();
 	static int active_race_number;
@@ -177,6 +178,7 @@ public class RaceWindow{
 		}
 		UnitTab.getRace(active_race_number, active_race);
 		UnitTab.saveRaces();
+		active_race_number = UnitTab.listofraces.size()-1;
 	}
 	
 	public static void start(int race) {
@@ -190,6 +192,8 @@ public class RaceWindow{
 	public static void start() {
 		active_race = new Race();
 		UnitTab.listofraces.add(active_race);
+		active_race_number = UnitTab.listofraces.size()-1;
+		//System.out.println("Added race "+active_race.name);
 		loadActiveRace();
 		racewindow.setTitle("New Race");
 		racewindow.setVisible(true);
@@ -197,17 +201,18 @@ public class RaceWindow{
 	
 	public static void stop() {
 		saveActiveRace();
+		UnitTab.clearRaces();
 		racewindow.setVisible(false);
 	}
 	
 	public static void loadSetup() {
 		racespanel.removeAll();
-		racespanel.add(new JLabel("Race"));//the loadmenu
-		racespanel.add(new JLabel("Modify"));
 		racebuttons.clear();
+		rmvracebuttons.clear();
 		for (int i=0;i<UnitTab.listofraces.size();i++) {
 			racespanel.add(new JLabel(UnitTab.listofraces.get(i).name));
 			racebuttons.add(new Button("Modify "+UnitTab.listofraces.get(i).name));
+			rmvracebuttons.add(new Button("Remove "+UnitTab.listofraces.get(i).name));
 			int k = i;
 			racebuttons.get(i).addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -215,13 +220,23 @@ public class RaceWindow{
 					loadStop();
 				}
 			});
+			rmvracebuttons.get(i).addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					UnitTab.listofraces.remove(k);
+					loadStop();
+					loadStart();
+					UnitTab.saveRaces();
+				}
+			});
 			racespanel.add(racebuttons.get(i));
+			racespanel.add(rmvracebuttons.get(i));
 		}
 		racespanel.revalidate();
 		racewindow.revalidate();
 	}
 	
 	public static void loadStart() {
+		UnitTab.clearRaces();
 		loadSetup();
 		raceswindow.setVisible(true);
 	}
