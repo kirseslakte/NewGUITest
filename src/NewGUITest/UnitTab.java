@@ -99,6 +99,7 @@ public class UnitTab {
 			designbuttons.get(k).addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
 					setUnits();
+					System.out.println("Size of unitlist: "+NationHandler.listofunits.size());
 					if (!UnitWindow.unitwindow.isVisible())
 						UnitWindow.start(k);
 				}
@@ -146,7 +147,7 @@ public class UnitTab {
 				}
 			}
 		}
-		
+		System.out.println("Size of unitlist: "+NationHandler.listofunits.size());
 	}
 	
 	public static void copyRow() {
@@ -160,6 +161,39 @@ public class UnitTab {
 			names.get(names.size()-1).setText(s);
 			NationHandler.listofunits.get(NationHandler.listofunits.size()-1).setUnit(
 					NationHandler.listofunits.get(Utility.findUnit(s)).getUnit());
+		}
+		addRow();
+	}
+	
+	public static void synchUnitList() {
+		int diff = NationHandler.listofunits.size()-(names.size()-1);
+		if (diff<0) {
+			System.out.println("Desynch detected --- unitlist smaller than visual");
+			diff = -1*diff;
+			for (int i=NationHandler.listofunits.size();i<names.size();i++) {
+				
+			}
+		}else if (diff>0) {
+			System.out.println("Desynch detected --- unitlist larger than visual");
+		}
+		for (int i=1;i<names.size();i++) {
+			if ((names.get(i-1).getText().equals("")&&names.get(i).getText().equals(""))||
+					(i!=names.size()-1&&names.get(i).getText().equals(""))) {
+				unitpanel.remove(names.get(i));
+				unitpanel.remove(costs.get(i));
+				unitpanel.remove(upkeeps.get(i));
+				unitpanel.remove(lords.get(i));
+				unitpanel.remove(amounts.get(i));
+				unitpanel.remove(designbuttons.get(i));
+				names.remove(i);
+				costs.remove(i);
+				upkeeps.remove(i);
+				lords.remove(i);
+				amounts.remove(i);
+				designbuttons.remove(i);
+				NationHandler.listofunits.remove(i);
+				i--;
+			}
 		}
 	}
 	

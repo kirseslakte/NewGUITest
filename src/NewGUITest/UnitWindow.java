@@ -350,7 +350,7 @@ public class UnitWindow {
 	}
 	
 	public static void loadActiveUnit() {
-		System.out.println(NationHandler.listofunits.size());
+		System.out.println("Size of unitlist: "+NationHandler.listofunits.size());
 		current_unit = NationHandler.listofunits.get(current_unit_number);
 		unitwindow.setTitle(current_unit.name);
 		loadUnitToVisuals();

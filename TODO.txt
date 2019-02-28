@@ -6,7 +6,7 @@ Add guilds to the buildings & guildstitutions
 -see what is wrong with load races!!!DONE!!!
 -add possibility in the raceloader to remove a race!!!DONE!!!
 (then done with races??)nope;
--add flexible racestat
+-add flexible racestat (or however I will do it)
 ::Units::
 -Add code to everything, as in code in Unit(), and connections between everything
 -need to make sure loading/saving works
