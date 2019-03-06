@@ -10,6 +10,7 @@ public class Unit {
 	//Input variables
 	public Race race = new Race();
 	public int[] stats = new int[6];
+	public int[] stat_mods = new int[6];
 	public String type;
 	public String subtype;
 	public String training;
@@ -27,16 +28,21 @@ public class Unit {
 	
 	
 	//static variables
-	static public String[] types = {"Infantry","Cavalry","Aerial Infantry","Aerial Cavalry"};
-	static public String[] subtypes = {"None","Archer","Combat Engineer","Crusading","Garrison","Mercenary","Penal","Personal","Scout",
+	static public String[] types = {"","Infantry","Cavalry","Aerial Infantry","Aerial Cavalry"};
+	static public String[] subtypes = {"","Archer","Combat Engineer","Crusading","Garrison","Mercenary","Penal","Personal","Scout",
 			"Slayer","Worker"};
-	static public String[] trainings = {"Irregular","Regular","Elite"};
-	static public String[] training_types = {"Light","Medium","Heavy"};
-	static public String[] feats = {"Crossbow Sniper","Dash","Deadly Aim","Dodge","Exotic Weapon Proficiency","Mounted Archery","Mounted Combat",
+	static public String[] trainings = {"","Irregular","Regular","Elite"};
+	static public String[] training_types = {"","Light","Medium","Heavy"};
+	static public String[] feats = {"","Crossbow Sniper","Dash","Deadly Aim","Dodge","Exotic Weapon Proficiency","Mounted Archery","Mounted Combat",
 			"Power Attack","Rapid Reload","Shield Focus","Toughness","Weapon Finesse","Weapon Focus (W1)","Weapon Focus (W2)","Weapon Focus (W3)"};
-	static public String[] unit_feats = {"Brave","Disciplined","Fast","Mage-Trained","Mount Attack","Precision Drill","Skilled Defenders",
+	static public String[] unit_feats = {"","Brave","Disciplined","Fast","Mage-Trained","Mount Attack","Precision Drill","Skilled Defenders",
 			"Terrain-Trained (Light Forest)","Terrain-Trained (Dense Forest)","Terrain-Trained (Marsh)","Terrain-Trained (Rocky)"
 			,"Terrain-Trained (Glacier)","Unbreakable"};
+	public static int[] stat_costs = {20,15,25,5,5,5};
+	public static int[] training_costs = {60,160,260};
+	public static int aerial_training_cost = 50;
+	public static int[] subtype_costs = {100,200,200,200,150,50,125,100,75,-30};//150,50,125 are percentages (+50%,-50%,+25%)
+	public static int[] unit_feat_costs = {20,30,50,50,150,10,20,50,30};//mount-attack(index 4) is in percentage of mount cost
 	
 	//unit-specific variables
 	public String[] available_feats = {};
@@ -57,9 +63,9 @@ public class Unit {
 		this.subtype = s[9];
 		this.training = s[10];
 		this.training_type = s[11];
-		for (int i=0;i<feats.length;i++) {
-			this.feats[i] = s[12+i];
-			this.unit_feats[i] = s[15+i];
+		for (int i=0;i<feat.length;i++) {
+			this.feat[i] = s[12+i];
+			this.unit_feat[i] = s[15+i];
 		}
 		String[] weaponstring = Arrays.copyOfRange(s,18,22);
 		this.weapon1.setWeapon(weaponstring);
@@ -81,8 +87,14 @@ public class Unit {
 	
 	public String[] getUnit() {
 		String[] unitstring = new String[76];
-		
+		//put unit into the output string
 		return unitstring;
+	}
+	
+	public void updateUnit() {
+		for (int i=0;i<this.stats.length;i++)
+			stat_mods[i] = (int) Math.floor((this.stats[i]-10)/2);
+		
 	}
 	
 	//weapon class

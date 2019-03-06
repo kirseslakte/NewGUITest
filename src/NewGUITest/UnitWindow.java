@@ -340,17 +340,19 @@ public class UnitWindow {
 	}
 	
 	public static void update() {
+		//update unit from visuals
+		//update visuals from unit
 		
 	}
 	
 	public static void saveCurrentUnit() {
 		//get all data from visual layer into current_unit
-		NationHandler.getUnit(current_unit_number,current_unit);
-		current_unit_number = NationHandler.listofunits.size()-1;
+		
+		//NationHandler.getUnit(current_unit_number,current_unit);
+		//current_unit_number = NationHandler.listofunits.size()-1;
 	}
 	
 	public static void loadActiveUnit() {
-		System.out.println("Size of unitlist: "+NationHandler.listofunits.size());
 		current_unit = NationHandler.listofunits.get(current_unit_number);
 		unitwindow.setTitle(current_unit.name);
 		loadUnitToVisuals();

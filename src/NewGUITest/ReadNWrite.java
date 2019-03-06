@@ -200,8 +200,7 @@ public class ReadNWrite {
 		try {
 			Scanner sc = new Scanner(file);
 			while(sc.hasNextLine()){
-						
-				//listofunits.add(hex);
+				
 			}
 			sc.close();
 		} catch(Exception e){

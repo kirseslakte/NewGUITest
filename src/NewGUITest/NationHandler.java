@@ -71,6 +71,11 @@ public class NationHandler extends JFrame{
 		//System.out.println("first recalibration of hexes");
 		recalibrateHexes();
 		listofunits = ReadNWrite.loadUnits();
+		try {
+			listofunits.get(0);
+		} catch (IndexOutOfBoundsException e) {
+			listofunits.add(new Unit());
+		}
 		UnitTab.loadUnits();
 		//mainPane.addTab("Units", new JScrollPane(unitpanel.unitPane()));
 		listofofficials = ReadNWrite.loadOfficials();
@@ -219,11 +224,11 @@ public class NationHandler extends JFrame{
 			}
 		}
 	}
-	
+	/*
 	public static void getUnit(int i,Unit u) {
 		listofunits.remove(i);
 		listofunits.add(u);
-	}
+	}*/
 	
 	public void initializeHex() {
 		//System.out.println("NATIONHANDLER! initializeHex");
