@@ -438,21 +438,13 @@ public class ReadNWrite {
 				for (int i=0;i<unit.feats.length;i++) {
 					fw.write(unit.unit_feats[i]+System.getProperty("line.separator"));
 				}
-				fw.write(unit.weapon1.name+System.getProperty("line.separator"));//weapon1
-				fw.write(Integer.toString(unit.weapon1.cost)+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.weapon1.damage_dice)+System.getProperty("line.separator"));
-				fw.write(unit.weapon1.type+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.weapon1.weight)+System.getProperty("line.separator"));
-				fw.write(unit.weapon2.name+System.getProperty("line.separator"));//weapon2
-				fw.write(Integer.toString(unit.weapon2.cost)+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.weapon2.damage_dice)+System.getProperty("line.separator"));
-				fw.write(unit.weapon2.type+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.weapon2.weight)+System.getProperty("line.separator"));
-				fw.write(unit.weapon3.name+System.getProperty("line.separator"));//weapon3
-				fw.write(Integer.toString(unit.weapon3.cost)+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.weapon3.damage_dice)+System.getProperty("line.separator"));
-				fw.write(unit.weapon3.type+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.weapon3.weight)+System.getProperty("line.separator"));
+				for (int i=0;i<unit.weapons.length;i++) {
+					fw.write(unit.weapons[i].name+System.getProperty("line.separator"));//weapons
+					fw.write(Integer.toString(unit.weapons[i].cost)+System.getProperty("line.separator"));
+					fw.write(Integer.toString(unit.weapons[i].damage_dice)+System.getProperty("line.separator"));
+					fw.write(unit.weapons[i].type+System.getProperty("line.separator"));
+					fw.write(Integer.toString(unit.weapons[i].weight)+System.getProperty("line.separator"));
+				}
 				fw.write(unit.armour.name+System.getProperty("line.separator"));//armour
 				fw.write(Integer.toString(unit.armour.cost)+System.getProperty("line.separator"));
 				fw.write(Integer.toString(unit.armour.max_dex)+System.getProperty("line.separator"));

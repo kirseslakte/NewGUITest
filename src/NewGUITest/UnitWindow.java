@@ -118,7 +118,7 @@ public class UnitWindow {
 			eqpanel.add(eqcost[i]);
 			wpdice[i] = new JTextField("0");
 			eqpanel.add(wpdice[i]);
-			eqtype[i] = new JComboBox<String>(current_unit.weapon1.types);
+			eqtype[i] = new JComboBox<String>(current_unit.weapons[0].types);
 			eqpanel.add(eqtype[i]);
 			eqwgt[i] = new JTextField("0");
 			eqpanel.add(eqwgt[i]);
