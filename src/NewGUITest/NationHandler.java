@@ -224,11 +224,16 @@ public class NationHandler extends JFrame{
 			}
 		}
 	}
-	/*
-	public static void getUnit(int i,Unit u) {
-		listofunits.remove(i);
+
+	public static void saveUnit(int i,Unit u) {
+		List<Unit> tempunitlist = listofunits;
+		for (int k=i;k<listofunits.size();k++)
+			listofunits.remove(k);
 		listofunits.add(u);
-	}*/
+		for (int k=i+1;k<tempunitlist.size();k++)
+			listofunits.add(tempunitlist.get(k));
+		ReadNWrite.saveUnit(listofunits);
+	}
 	
 	public void initializeHex() {
 		//System.out.println("NATIONHANDLER! initializeHex");

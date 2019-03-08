@@ -31,6 +31,7 @@ public class Unit {
 	public String[] available_unit_feats= {};
 	public int training_cost = 0;
 	public int equipment_cost = 0;
+	public int mount_cost = 0;
 	public int total_cost = 0;
 	public int T = 0;
 	public int W = 0;
@@ -71,26 +72,26 @@ public class Unit {
 		this.subtype = s[9];
 		this.training = s[10];
 		this.training_type = s[11];
-		for (int i=0;i<feats.length;i++) {
-			this.feats[i] = s[12+i];
-			this.unit_feats[i] = s[15+i];
-		}
-		String[] weaponstring = Arrays.copyOfRange(s,18,22);
+		for (int i=0;i<feat.length;i++) 
+			this.feat[i] = s[12+i];
+		for (int i=0;i<unit_feat.length;i++)
+			this.unit_feat[i] = s[15+i];
+		String[] weaponstring = Arrays.copyOfRange(s,17,21);
 		this.weapons[0].setWeapon(weaponstring);
-		weaponstring = Arrays.copyOfRange(s,23,27);
+		weaponstring = Arrays.copyOfRange(s,22,26);
 		this.weapons[1].setWeapon(weaponstring);
-		weaponstring = Arrays.copyOfRange(s,28,32);
+		weaponstring = Arrays.copyOfRange(s,27,31);
 		this.weapons[2].setWeapon(weaponstring);
-		String[] armourstring = Arrays.copyOfRange(s,33,38);
+		String[] armourstring = Arrays.copyOfRange(s,32,37);
 		this.armour.setArmour(armourstring);
-		armourstring = Arrays.copyOfRange(s,39,44);
+		armourstring = Arrays.copyOfRange(s,38,43);
 		this.shield.setArmour(armourstring);
-		if (!s[65].equals("no_mount")) {
-			String[] mountstring = Arrays.copyOfRange(s,45,73);
+		if (!s[44].equals("no_mount")) {
+			String[] mountstring = Arrays.copyOfRange(s,44,72);
 			mount.setMount(mountstring);
 		}
-		this.unit_lord = s[74];
-		this.number_of_units = Integer.parseInt(s[75]);
+		this.unit_lord = s[73];
+		this.number_of_units = Integer.parseInt(s[74]);
 		this.updateUnit();
 	}
 	
@@ -329,7 +330,7 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 			this.equipment_cost += this.weapons[i].cost;
 		}
 		this.equipment_cost = (int) Math.round(this.equipment_cost*eq_mod);
-		this.total_cost = this.equipment_cost + this.training_cost;
+		this.total_cost = this.equipment_cost + this.training_cost + this.mount_cost;
 	}
 	
 	public void updateUnit() {

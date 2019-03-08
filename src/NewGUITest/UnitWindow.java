@@ -15,7 +15,7 @@ public class UnitWindow {
 	static GridBagConstraints c = new GridBagConstraints();
 	
 	static Panel racepanel = new Panel(new GridBagLayout());
-	static JComboBox<Race> race;
+	static JComboBox<String> race;
 	static Button[] racebtn = new Button[2];
 	static JTextField[] pointbuy = new JTextField[6];
 	static JLabel[] statmod = new JLabel[6];
@@ -54,9 +54,9 @@ public class UnitWindow {
 	public static void racePanelSetup() {
 		c.gridy = 0;
 		c.gridx = 0;
-		race = new JComboBox<Race>();
+		race = new JComboBox<String>();
 		for (Race r:UnitTab.listofraces)
-			race.addItem(r);
+			race.addItem(r.name);
 		racepanel.add(race,c);
 		c.gridx = 1;
 		racebtn[0] = new Button("Add Race");
@@ -223,7 +223,7 @@ public class UnitWindow {
 	}
 	
 	public static void init() {
-		unitwindow.setSize(1000,500);
+		unitwindow.setSize(1200,500);
 		unitwindow.setLocationRelativeTo(null);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
@@ -268,7 +268,7 @@ public class UnitWindow {
 	public static void updateComboBoxes() {
 		String[] holder = new String[feats.length+ufeats.length];
 		
-		Race tmprace = (Race) race.getSelectedItem();//remove all items and save placeholders
+		String tmprace = (String) race.getSelectedItem();//remove all items and save placeholders
 		race.removeAllItems();
 		for (int i=0;i<feats.length;i++){
 			holder[i] = (String) feats[i].getSelectedItem();
@@ -280,7 +280,7 @@ public class UnitWindow {
 		}
 		
 		for (Race r:UnitTab.listofraces)//add all available items
-			race.addItem(r);
+			race.addItem(r.name);
 		for (int i=0;i<feats.length;i++) {
 			for (String s:current_unit.available_feats)
 				feats[i].addItem(s);
@@ -298,6 +298,7 @@ public class UnitWindow {
 	}
 	
 	public static void updateTypePanel() {
+		/*
 		if (current_unit.race.feat) {
 			if (!(feats[2].getParent() == typepanel)) {
 				typepanel.add(featlbl[2]);
@@ -332,6 +333,9 @@ public class UnitWindow {
 					typepanel.add(ufeatlbl[i]);
 				}
 			}
+		}*/
+		for (int i=0;i<feats.length;i++) {
+			
 		}
 	}
 	
@@ -341,15 +345,46 @@ public class UnitWindow {
 	
 	public static void update() {
 		//update unit from visuals
-		//update visuals from unit
 		
+		//update visuals from unit
+		//current_unit.updateUnit();
+		updateComboBoxes();
 	}
 	
 	public static void saveCurrentUnit() {
 		//get all data from visual layer into current_unit
-		
-		//NationHandler.getUnit(current_unit_number,current_unit);
-		//current_unit_number = NationHandler.listofunits.size()-1;
+		String[] unitstr = new String[75];
+		//variables from unit tab
+		unitstr[0] = current_unit.name;
+		unitstr[73] = current_unit.unit_lord;
+		unitstr[74] = Integer.toString(current_unit.number_of_units);
+		//variables from racepanel
+		unitstr[1] = (String) race.getSelectedItem();
+		for (int i=0;i<pointbuy.length;i++)
+			unitstr[2+i] = pointbuy[i].getText();
+		for (int i=0;i<typeboxes.length;i++)
+			unitstr[8+i] = (String) typeboxes[i].getSelectedItem();
+		for (int i=0;i<feats.length;i++)
+			unitstr[12+i] = (String) feats[i].getSelectedItem();
+		for (int i=0;i<ufeats.length;i++)
+			unitstr[15+i] = (String) ufeats[i].getSelectedItem();
+		for (int i=0;i<wpatk.length;i++) {
+			unitstr[17+5*i] = eqname[i].getText();
+			unitstr[18+5*i] = eqcost[i].getText();
+			unitstr[19+5*i] = wpdice[i].getText();
+			unitstr[20+5*i] = (String) eqtype[i].getSelectedItem();
+			unitstr[21+5*i] = eqwgt[i].getText();
+		}
+		for (int i=0;i<ac.length;i++) {
+			unitstr[32+6*i] = eqname[3+i].getText();
+			unitstr[33+6*i] = eqcost[3+i].getText();
+			unitstr[34+6*i] = mxdex[i].getText();
+			unitstr[35+6*i] = ac[i].getText();
+			unitstr[36+6*i] = (String) eqtype[3+i].getSelectedItem();
+			unitstr[37+6*i] = eqwgt[3+i].getText();
+		}
+		unitstr[44] = "no_mount";//get mount to here later
+		NationHandler.saveUnit(current_unit_number,current_unit);
 	}
 	
 	public static void loadActiveUnit() {
@@ -359,7 +394,58 @@ public class UnitWindow {
 	}
 	
 	public static void loadUnitToVisuals() {//takes whatever is in current_unit and puts into the visuals
-		
+		unitwindow.setTitle(current_unit.name);
+		//racepanel
+		race.setSelectedItem(current_unit.race.name);
+		for (int i=0;i<pointbuy.length;i++) {
+			pointbuy[i].setText(Integer.toString(current_unit.stats[i]));
+			statmod[i].setText(Integer.toString(current_unit.stat_mods[i]));
+		}
+		//typepanel
+		typeboxes[0].setSelectedItem(current_unit.type);
+		typeboxes[1].setSelectedItem(current_unit.subtype);
+		typeboxes[2].setSelectedItem(current_unit.training);
+		typeboxes[3].setSelectedItem(current_unit.training_type);
+		for (int i=0;i<feats.length;i++)
+			feats[i].setSelectedItem(current_unit.feat[i]);
+		for (int i=0;i<ufeats.length;i++)
+			ufeats[i].setSelectedItem(current_unit.unit_feat[i]);
+		//equipmentpanel
+		for (int i=0;i<current_unit.weapons.length;i++) {
+			eqname[i].setText(current_unit.weapons[i].name);
+			eqcost[i].setText(Integer.toString(current_unit.weapons[i].cost));
+			wpdice[i].setText(Integer.toString(current_unit.weapons[i].damage_dice));
+			eqtype[i].setSelectedItem(current_unit.weapons[i].type);
+			eqwgt[i].setText(Integer.toString(current_unit.weapons[i].weight));
+			wpatk[i].setText(Integer.toString(current_unit.weapons[i].AB));
+			wppwr[i].setText(Integer.toString(current_unit.weapons[i].AP));
+		}
+		eqname[3].setText(current_unit.armour.name);
+		eqcost[3].setText(Integer.toString(current_unit.armour.cost));
+		mxdex[0].setText(Integer.toString(current_unit.armour.max_dex));
+		ac[0].setText(Integer.toString(current_unit.armour.ac));
+		eqtype[3].setSelectedItem(current_unit.armour.type);
+		eqwgt[3].setText(Integer.toString(current_unit.armour.weight));
+		eqname[4].setText(current_unit.shield.name);
+		eqcost[4].setText(Integer.toString(current_unit.shield.cost));
+		mxdex[1].setText(Integer.toString(current_unit.shield.max_dex));
+		ac[1].setText(Integer.toString(current_unit.shield.ac));
+		eqtype[4].setSelectedItem(current_unit.shield.type);
+		eqwgt[4].setText(Integer.toString(current_unit.shield.weight));
+		//outputpanel
+		op[0].setText(Integer.toString(current_unit.T));
+		op[1].setText(Integer.toString(current_unit.W));
+		op[2].setText(Integer.toString(current_unit.M));
+		op[3].setText(Integer.toString(current_unit.C));
+		op[4].setText(Integer.toString(current_unit.speed));
+		op[5].setText(Integer.toString(current_unit.AC));
+		op[6].setText(Integer.toString(current_unit.saves[0]));
+		op[7].setText(Integer.toString(current_unit.saves[1]));
+		op[8].setText(Integer.toString(current_unit.saves[2]));
+		op[9].setText(Integer.toString(current_unit.training_cost));
+		op[10].setText(Integer.toString(current_unit.equipment_cost));
+		op[11].setText(Integer.toString(current_unit.mount_cost));
+		op[12].setText(Integer.toString(current_unit.total_cost));
 	}
 	
 	public static void clean() {
