@@ -117,6 +117,7 @@ public class BuildingsAddOns extends JFrame{
 			this.add_on.get(i).setSelectedItem(addon);
 			//System.out.println("SETTING COST OF "+addon+" TO "+findCost(addon));
 			this.add_on_cost.get(i).setText(Integer.toString(findCost(addon,i)));
+			this.add_on_cost.get(i).setToolTipText(findOfficialCost(findCost(addon,i)));
 		}
 	}
 	
@@ -151,5 +152,19 @@ public class BuildingsAddOns extends JFrame{
 			}
 		}
 		return build_cost;
+	}
+	
+	public String findOfficialCost(int add_on_cost) {
+		String output = "<html>";
+		for (Official o:NationHandler.listofofficials) {
+			if (o.lord.equals(NationHandler.listofhexes.get(this.hex_index).owner)) {
+				if (o.job.equals("Build Fortification")) {
+					output += o.name+" is currently building buildings for "+o.lord+" and is reducing the cost of buildings by "+o.effect+"%. This building would therefore"
+							+ " cost "+Integer.toString((int) Math.round(add_on_cost*(100-o.effect)/100))+".<br>";
+				}
+			}
+		}
+		output += "</html";
+		return output;
 	}
 }

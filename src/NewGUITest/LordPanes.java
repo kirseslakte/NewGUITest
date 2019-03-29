@@ -51,7 +51,6 @@ public class LordPanes {
 		pane.add(routes);
 		pane.add(officials);
 		int lordindex = Utility.findLord(lord_name);
-		System.out.println(lordindex);
 		if (NationHandler.listoflords.get(lordindex).title.equals("overlord")) {
 			newVassalBtn.addActionListener(new ActionListener() {//add action event to new button
 				public void actionPerformed(ActionEvent e){

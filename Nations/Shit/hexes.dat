@@ -7,9 +7,11 @@ LG
 0
 
 false
-0
-0
+598
+700
+B-Road-1
 F-Bastion-1-Bastion,Bastion
+W-Primitive-Bastion,1
 xxxxxx
 34
 Shit2
@@ -20,7 +22,9 @@ LG
 0
 
 false
-0
-0
+700
+400
+B-Highway-1
 F-Fortress-3-Bastion
+W-Primitive-Bastion,2
 xxxxxx

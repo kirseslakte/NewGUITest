@@ -311,6 +311,7 @@ public class Buildings extends JFrame{
 				this.built_buildings.add(build+"-"+Integer.toString(tier));
 				tier = findBuildingCost(build,tier);
 				this.buildings_cost.get(i).setText(Integer.toString(tier));
+				this.buildings_cost.get(i).setToolTipText(findOfficialBuildingCost(tier));
 				if (build.equals("RGO")||build.equals("Supply Cache")||build.equals("Bureau")||build.equals("Center of Trade"))
 					this.buildings_upkeep.get(i).setText("0");
 				else
@@ -344,6 +345,7 @@ public class Buildings extends JFrame{
 					this.fortifications_upkeep.get(i).setText(Integer.toString((int) Math.round(tier*0.2+add_upk)));
 					tier += this.addonframes.get(i).cost;
 					this.fortifications_cost.get(i).setText(Integer.toString(tier));
+					this.fortifications_cost.get(i).setToolTipText(findOfficialFortificationCost(tier));
 			}else {
 				this.fortifications_cost.get(i).setText("0");
 				this.fortifications_upkeep.get(i).setText("0");
@@ -365,6 +367,7 @@ public class Buildings extends JFrame{
 		tier = findFortificationCost(built,0);
 		tier += this.wallframe.cost;
 		this.walls_cost.setText(Integer.toString(tier));
+		this.walls_cost.setToolTipText(findOfficialFortificationCost(tier));
 		this.walls_upkeep.setText(Integer.toString((int) Math.round(tier*0.2)));
 		int wall = 0;
 		if (!(this.built_walls.equals("")))
@@ -541,7 +544,34 @@ public class Buildings extends JFrame{
 		}else if (s.equals(buildinglist[11])){//Port
 			build_cost = (int) Math.round(500*Hex.list_pm[this.hex.pop_size-1]*Hex.list_pm[this.hex.pop_size-1]*this.modifiers[1]);
 		}
+		//findOfficialBuildingCost(build_cost);
 		return build_cost;
 	}
 
+	public String findOfficialBuildingCost(int building_cost) {//find an official of the lord building buildings and see what the building cost would be for them
+		String output = "<html>";
+		for (Official o:NationHandler.listofofficials) {
+			if (o.lord.equals(this.hex.owner)) {
+				if (o.job.equals("Build Building")) {
+					output += o.name+" is currently building buildings for "+this.hex.owner+" and is reducing the cost of buildings by "+o.effect+"%. This building would therefore"
+							+ " cost "+Integer.toString((int) Math.round(building_cost*(100-o.effect)/100))+".<br>";
+				}
+			}
+		}
+		output += "</html>";
+		return output;
+	}
+	public String findOfficialFortificationCost(int fortification_cost) {
+		String output = "<html>";
+		for (Official o:NationHandler.listofofficials) {
+			if (o.lord.equals(this.hex.owner)) {
+				if (o.job.equals("Build Fortification")) {
+					output += o.name+" is currently building fortifications for "+this.hex.owner+" and is reducing the cost of fortifications by "+o.effect+"%. This building would"
+							+ " therefore cost "+Integer.toString((int) Math.round(fortification_cost*(100-o.effect)/100))+".<br>";
+				}
+			}
+		}
+		output += "</html>";
+		return output;
+	}
 }

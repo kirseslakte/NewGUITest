@@ -32,7 +32,7 @@ public class NationHandler extends JFrame{
 	}
 	
 	public static void loadNation (String s) {//only ever called from MainThread when an old nation is loaded
-		//System.out.println("NATIONHANDLER! loadNation");
+		System.out.println("NATIONHANDLER! loadNation");
 		ReadNWrite.setNationName(s);
 		List<String> listofloads = new ArrayList<String>();
 		for (String loadstr:ReadNWrite.directory.list()) {
@@ -42,6 +42,7 @@ public class NationHandler extends JFrame{
 		listofloads.remove("hexes");listofloads.remove("units");listofloads.remove("officials");
 		listofloads.remove("culture");listofloads.remove("routes");listofloads.remove("races");//remove all non-lords
 		int i = 0;
+		System.out.println("So far so good");
 		for (String lord:listofloads){//lords SHOULD be sorted alphabetically meaning overlord is first,
 			String[] loaded_lord = ReadNWrite.loadLord(lord);//then vassal1, then vassals of 1, then vassal2, then vassals of 2, aso
 			listoflords.add(new Lord(loaded_lord[0],loaded_lord[9]));//name, master_title
@@ -62,15 +63,19 @@ public class NationHandler extends JFrame{
 			}
 			listoflords.get(listoflords.size()-1).loadModifiers();
 		}
+		System.out.println("All lords loaded");
 		//all lords have been loaded!!
 		listofhexes = ReadNWrite.loadHexes();
+		System.out.println("Hexes loaded");
 		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPane()));//loaded after all the lords
 		mainPane.addTab("Culture & Portfolio", new JScrollPane(Culture.culturePane()));
 		unitTab();
 		recalibrateLords();
 		//System.out.println("first recalibration of hexes");
 		recalibrateHexes();
+		System.out.println("loading units");
 		listofunits = ReadNWrite.loadUnits();
+		System.out.println("Units loaded");
 		try {
 			listofunits.get(0);
 		} catch (IndexOutOfBoundsException e) {
@@ -79,6 +84,7 @@ public class NationHandler extends JFrame{
 		UnitTab.loadUnits();
 		//mainPane.addTab("Units", new JScrollPane(unitpanel.unitPane()));
 		listofofficials = ReadNWrite.loadOfficials();
+		System.out.println("Officials loaded");
 		listofroutes = ReadNWrite.loadRoutes();
 		for (Lord lord:listoflords) {//load all officials into the lords
 			lord.official.loadOfficials();
@@ -86,7 +92,7 @@ public class NationHandler extends JFrame{
 			lord.updateLord();
 		}
 		listoflords.get(0).updateLord();//extra call in order to update the overlord
-			
+		System.out.println("NationHandler Almost done");
 		//update the nationpanes of the lords
 		//load notes
 		//mainPane.addTab("Notes");
@@ -103,7 +109,7 @@ public class NationHandler extends JFrame{
 		ReadNWrite.saveUnit(listofunits);
 		ReadNWrite.saveRoute(listofroutes);
 		ReadNWrite.saveOfficial(listofofficials);
-		UnitTab.save();
+		UnitTab.save();//save races?
 	}//that was pretty straight forward, right?
 	
 	public static void removeLord(int lordindex) {

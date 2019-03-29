@@ -205,7 +205,7 @@ public class UnitTab {
 	}
 	
 	public static void save() {
-		
+		saveRaces();
 	}
 	
 	public static void getUnits() {

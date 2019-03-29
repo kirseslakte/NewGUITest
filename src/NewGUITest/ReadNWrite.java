@@ -150,6 +150,14 @@ public class ReadNWrite {
 				culture[i] = sc.nextLine();
 			}
 			sc.close();
+		} catch (java.io.FileNotFoundException e) {
+			System.out.println("Culture file not found, creating new file!");
+			try {
+				file.createNewFile();
+			} catch(Exception x) {
+				System.out.println(x);
+			}
+			loadCulture();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -184,6 +192,14 @@ public class ReadNWrite {
 				}
 			}
 			sc.close();
+		} catch (java.io.FileNotFoundException e) {
+			System.out.println("Hex file not found, creating new file!");
+			try {
+				file.createNewFile();
+			} catch(Exception x) {
+				System.out.println(x);
+			}
+			loadHexes();
 		} catch(Exception e){
 			System.out.println(e);
 		}
@@ -200,12 +216,21 @@ public class ReadNWrite {
 		try {
 			Scanner sc = new Scanner(file);
 			while(sc.hasNextLine()){
-				
+				s = sc.nextLine();
 			}
 			sc.close();
-		} catch(Exception e){
+		} catch (java.io.FileNotFoundException e) {
+			System.out.println("Unit file not found, creating new file!");
+			try {
+				file.createNewFile();
+			} catch(Exception x) {
+				System.out.println(x);
+			}
+			loadUnits();
+		}  catch(Exception e){
 			System.out.println(e);
-		}
+		} 
+		
 		return listofunits;
 	}
 	
@@ -259,6 +284,14 @@ public class ReadNWrite {
 				}
 			}
 			sc.close();
+		} catch (java.io.FileNotFoundException e) {
+			System.out.println("Routes file not found, creating new file!");
+			try {
+				file.createNewFile();
+			} catch(Exception x) {
+				System.out.println(x);
+			}
+			loadRoutes();
 		} catch(Exception e){
 			System.out.println(e);
 		}
@@ -286,6 +319,14 @@ public class ReadNWrite {
 				}
 			}
 			sc.close();
+		} catch (java.io.FileNotFoundException e) {
+			System.out.println("Officials file not found, creating new file!");
+			try {
+				file.createNewFile();
+			} catch(Exception x) {
+				System.out.println(x);
+			}
+			loadOfficials();
 		} catch(Exception e){
 			System.out.println(e);
 		}
@@ -313,6 +354,14 @@ public class ReadNWrite {
 				}
 			}
 			sc.close();
+		} catch (java.io.FileNotFoundException e) {
+			System.out.println("Races file not found, creating new file!");
+			try {
+				file.createNewFile();
+			} catch(Exception x) {
+				System.out.println(x);
+			}
+			loadRaces();
 		} catch(Exception e){
 			System.out.println(e);
 		}
@@ -423,6 +472,8 @@ public class ReadNWrite {
 			file.createNewFile();
 			FileWriter fw = new FileWriter(file);
 			for (Unit unit:listofunits){
+				if (unit.name == null)
+					continue;
 				fw.write(unit.name+System.getProperty("line.separator"));
 				fw.write(unit.race.name+System.getProperty("line.separator"));
 				for (int i=0;i<unit.stats.length;i++) {//stats
@@ -432,11 +483,11 @@ public class ReadNWrite {
 				fw.write(unit.subtype+System.getProperty("line.separator"));
 				fw.write(unit.training+System.getProperty("line.separator"));
 				fw.write(unit.training_type+System.getProperty("line.separator"));
-				for (int i=0;i<unit.feats.length;i++) {
-					fw.write(unit.feats[i]+System.getProperty("line.separator"));
+				for (int i=0;i<unit.feat.length;i++) {
+					fw.write(unit.feat[i]+System.getProperty("line.separator"));
 				}
-				for (int i=0;i<unit.feats.length;i++) {
-					fw.write(unit.unit_feats[i]+System.getProperty("line.separator"));
+				for (int i=0;i<unit.unit_feat.length;i++) {
+					fw.write(unit.unit_feat[i]+System.getProperty("line.separator"));
 				}
 				for (int i=0;i<unit.weapons.length;i++) {
 					fw.write(unit.weapons[i].name+System.getProperty("line.separator"));//weapons
@@ -460,10 +511,10 @@ public class ReadNWrite {
 				fw.write(unit.mount.name+System.getProperty("line.separator"));//mount
 				fw.write(unit.mount.type+System.getProperty("line.separator"));
 				fw.write(unit.mount.hd_type+System.getProperty("line.separator"));
-				for (int i=0;i<unit.stats.length;i++) {
+				for (int i=0;i<unit.mount.stats.length;i++) {
 					fw.write(Integer.toString(unit.mount.stats[i])+System.getProperty("line.separator"));
 				}
-				for (int i=0;i<unit.stats.length;i++) {
+				for (int i=0;i<unit.mount.stats_used.length;i++) {
 					fw.write(Boolean.toString(unit.mount.stats_used[i])+System.getProperty("line.separator"));
 				}
 				fw.write(unit.mount.size+System.getProperty("line.separator"));

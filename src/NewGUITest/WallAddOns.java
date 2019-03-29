@@ -117,6 +117,7 @@ public class WallAddOns extends JFrame{
 			this.add_on.get(i).setSelectedItem(s[i]);
 			this.add_on_amount.get(i).setText(Integer.toString(amounts[i]));
 			this.add_on_cost.get(i).setText(Integer.toString(findCost(s[i])));
+			this.add_on_cost.get(i).setToolTipText(findOfficialCost(findCost(s[i])));
 			this.add_on_upkeep.get(i).setText(Integer.toString((int) Math.round(findCost(s[i])*0.2)));
 		}
 	}
@@ -152,5 +153,19 @@ public class WallAddOns extends JFrame{
 	public void stop() {
 		//System.out.println("WALLADDON! stop");
 		this.setVisible(false);
+	}
+	
+	public String findOfficialCost(int add_on_cost) {
+		String output = "<html>";
+		for (Official o:NationHandler.listofofficials) {
+			if (o.lord.equals(NationHandler.listofhexes.get(this.hex_index).owner)) {
+				if (o.job.equals("Build Fortification")) {
+					output += o.name+" is currently building buildings for "+o.lord+" and is reducing the cost of buildings by "+o.effect+"%. This building would therefore"
+							+ " cost "+Integer.toString((int) Math.round(add_on_cost*(100-o.effect)/100))+".<br>";
+				}
+			}
+		}
+		output += "</html";
+		return output;
 	}
 }
