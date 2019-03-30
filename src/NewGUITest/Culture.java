@@ -41,8 +41,14 @@ public class Culture {
 	
 	public static void setCulturePane(double[] s) {//setting culture pane
 		//System.out.println("CULTURE! setCulturePane");
-		for (int i=0;i<culture_names.length;i++)//only ever called from lord.setCulture()
-			culturefields.get(i).setText(Double.toString((s[i]*100)));
+		for (int i=0;i<culture_names.length;i++) {//only ever called from lord.setCulture()
+			if (s[i]!=0)
+				System.out.println(s[i]*100+" "+(int) (s[i]*100));
+			if (s[i]*100==(int)(s[i]*100))
+				culturefields.get(i).setText(Integer.toString( (int) (s[i]*100)));
+			else
+				culturefields.get(i).setText(Double.toString((s[i]*100)));
+		}
 	}
 	
 	public static void getCulture() {//extracting all the culture modifiers
