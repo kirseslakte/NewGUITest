@@ -554,7 +554,7 @@ public class ReadNWrite {
 			for (Route route:listofroutes){
 				fw.write(route.name+System.getProperty("line.separator"));
 				fw.write(route.lord+System.getProperty("line.separator"));
-				fw.write(Boolean.toString(route.active)+System.getProperty("line.separator"));
+				fw.write(route.official+System.getProperty("line.separator"));
 				fw.write(Integer.toString(route.lord_TAR)+System.getProperty("line.separator"));
 				fw.write(Integer.toString(route.partner_TAR)+System.getProperty("line.separator"));
 				fw.write(Integer.toString(route.partner_BP)+System.getProperty("line.separator"));

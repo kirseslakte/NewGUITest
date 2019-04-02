@@ -10,24 +10,25 @@ public class RouteWindow extends JFrame{
 	
 	public List<Route> listofroutes = new ArrayList<Route>();
 	
-	public List<JTextField> anames = new ArrayList<JTextField>();
-	public List<JTextField> alord_tar = new ArrayList<JTextField>();
-	public List<JTextField> apartner_tar = new ArrayList<JTextField>();
-	public List<JTextField> apartner_bp = new ArrayList<JTextField>();
-	public List<JLabel> atrade_value = new ArrayList<JLabel>();
-	
-	public List<JTextField> pnames = new ArrayList<JTextField>();
-	public List<JTextField> plord_tar = new ArrayList<JTextField>();
-	public List<JTextField> ppartner_tar = new ArrayList<JTextField>();
-	public List<JLabel> ppartner_bp = new ArrayList<JLabel>();
-	public List<JLabel> ptrade_value = new ArrayList<JLabel>();
-	public List<Panel> passiveroute = new ArrayList<Panel>();
+	public List<JButton> names = new ArrayList<JButton>();
+	public List<JLabel> trade_value = new ArrayList<JLabel>();
+	public List<JLabel> official = new ArrayList<JLabel>();
+	public List<JButton> remove = new ArrayList<JButton>();
+
 	public Lord lord;
 	
 	Panel basepanel = new Panel(new GridBagLayout());
-	Panel main = new Panel(new GridLayout(1,2));//panel with all routes
-	Panel activemain = new Panel(new GridLayout(0,2));//panel with all active routes
-	Panel passivemain = new Panel(new GridLayout(0,2));//panel with all passive routes
+    Button add_route = new Button("Add Trade Route");
+    Button save = new Button("Save Trade Routes");
+	//Panel main = new Panel(new GridLayout(1,2));//panel with all routes
+	
+	JFrame route = new JFrame();
+	Panel routepanel = new Panel(new GridBagLayout());//panel with the currently displayed route
+	JTextField route_name = new JTextField("Name of Route");
+	JComboBox<String> route_official = new JComboBox<>();
+	JTextField[] tar_pbp_ptar = new JTextField[3];
+    JButton close = new JButton("Save&Close");
+	int active_route = -1;
 	
 	public RouteWindow() {
 		
@@ -36,13 +37,13 @@ public class RouteWindow extends JFrame{
 	public void initialize(Lord lord) {
 		//System.out.println("ROUTEWINDOW! initialize");
 		this.lord = lord;
-		//setJobsList();
 		this.setFrame();
+		this.initializeRoute();
 	}
 	
 	public void setFrame() {
 		//System.out.println("ROUTEWINDOW! setFrame");
-		this.setSize(1000, 100);
+		this.setSize(500, 300);
 		this.setLocationRelativeTo(null);
 		this.setTitle("Trade routes of "+this.lord.name);
 	    this.addWindowListener(new WindowAdapter() {//close frame on closing window
@@ -57,245 +58,249 @@ public class RouteWindow extends JFrame{
 	    constraints.gridy = 0;
 	    constraints.gridx = 0;
 	    constraints.weighty = 0.05;
-	    constraints.gridwidth = 2;
-	    Button update = new Button("Save & Update");
-	    update.addActionListener(new ActionListener() {
+	    this.basepanel.add(new JLabel("Route Name"),constraints);
+	    constraints.gridx = 1;
+	    this.basepanel.add(new JLabel("Trade Value"),constraints);
+	    constraints.gridx = 2;
+	    this.basepanel.add(new JLabel("Supervising Official"),constraints);
+	    this.addRoute(true);
+	    this.add_route.addActionListener(new ActionListener() {
 	    	public void actionPerformed (ActionEvent e) {
-	    		updateRoutes();
+	    		addRoute(false);
+	    		//System.out.println("Adding route");
 	    	}
 	    });
-	    this.basepanel.add(update,constraints);
-	    JPanel labels = new JPanel(new GridLayout(1,2));
-	    constraints.gridy = 1;
-	    labels.add(new JLabel("Active Trade Routes"));
-	    labels.add(new JLabel("Passive Trade Routes"));
-	    this.basepanel.add(labels,constraints);
-	    this.setActiveRoutes();
-	    this.passivePanel();
+	    this.save.addActionListener(new ActionListener() {
+	    	public void actionPerformed (ActionEvent e) {
+	    		saveRoutes();
+	    		//System.out.println("Saving route");
+	    	}
+	    });
 	    this.add(this.basepanel);
 	}
 	
-	public void setActiveRoutes() {//removes all routes from local memory
+	public void setJobsList() {
 		//System.out.println("ROUTEWINDOW! setActiveRoutes");
-		this.activemain.removeAll();
-	    GridBagConstraints constraints = new GridBagConstraints();
-	    constraints.fill = GridBagConstraints.BOTH;
-	    constraints.weightx = 0.5;
-	    for (int i=0;i<this.lord.official_jobs[0];i++) {
-			Panel routepanel = new Panel(new GridBagLayout());
-		    constraints.gridy = 0;
-		    constraints.gridx = 0;
-		    constraints.gridwidth = 2;
-		    this.anames.add(new JTextField("Name of Trade Route"));
-		    routepanel.add(anames.get(i), constraints);
-		    constraints.gridx = 2;
-		    routepanel.add(new JLabel("Partner"), constraints);
-		    constraints.gridwidth = 1;
-		    constraints.gridy = 1;
-		    constraints.gridx = 0;
-		    routepanel.add(new JLabel("Trade Value"), constraints);
-		    constraints.gridx = 1;
-		    routepanel.add(new JLabel("TAR"), constraints);
-		    constraints.gridx = 2;
-		    routepanel.add(new JLabel("BP"), constraints);
-		    constraints.gridx = 3;
-		    routepanel.add(new JLabel("TAR"), constraints);
-		    constraints.gridy = 2;
-		    constraints.gridx = 0;
-		    this.atrade_value.add(new JLabel("0"));
-		    routepanel.add(this.atrade_value.get(this.atrade_value.size()-1), constraints);
-		    constraints.gridx = 1;
-		    this.alord_tar.add(new JTextField("0"));
-		    routepanel.add(this.alord_tar.get(i), constraints);
-		    constraints.gridx = 2;
-		    this.apartner_bp.add(new JTextField("0"));
-		    routepanel.add(this.apartner_bp.get(i), constraints);
-		    constraints.gridx = 3;
-		    this.apartner_tar.add(new JTextField("0"));
-		    routepanel.add(this.apartner_tar.get(i), constraints);
-	    	this.activemain.add(routepanel);
-	    }
-	    constraints.gridy = 2;
-	    constraints.gridx = 0;
-	    constraints.weighty = 1;
-	    this.main.add(this.activemain);
-	    this.main.add(this.passivemain);
-	    this.basepanel.add(this.main,constraints);
-	    this.setSize(this.getWidth(), 200+30*(this.anames.size()+this.pnames.size()));
-	    this.revalidate();
-	}
-	
-	public void passivePanel() {
-		//System.out.println("ROUTEWINDOW! passivePanel");
-		Button addRoute = new Button("Add Passive Trade Route");
-		addRoute.addActionListener(new ActionListener() {
-			public void actionPerformed (ActionEvent e) {
-				addPassiveRoute();
+		this.route_official.removeAllItems();
+		this.route_official.addItem("Passive");
+		for (Official o:this.lord.official.listofofficials) {
+			if (o.rollhelper==3) {
+				String ok = o.name+" ("+o.effect+")";
+				this.route_official.addItem(ok);
 			}
-		});	
-	    this.passivemain.add(addRoute);
-		this.addPassiveRoute();
+		}
+		this.routepanel.revalidate();
 	}
 	
-	public void addPassiveRoute() {
-		//System.out.println("ROUTEWINDOW! addPassiveRoute");
+	public void addRoute(boolean startup) {
+		//System.out.println("ROUTEWINDOW! addRoute");
+		String[] name = {"Trade Route "+(this.names.size()+1),this.lord.name," ","0","0","0"};
+		this.listofroutes.add(new Route(name));
+		this.names.add(new JButton(name[0]));
+		int route_index = this.names.size()-1;
+		this.names.get(this.names.size()-1).addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+				startRoute(route_index);
+			}
+		});
+	    this.trade_value.add(new JLabel("0"));
+	    this.official.add(new JLabel(" "));
+	    this.remove.add(new JButton("Remove Route"));
+	    this.remove.get(this.remove.size()-1).addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    		removeRoute(route_index);
+	    	}
+	    });
+	    this.basepanel.remove(this.add_route);
+	    this.basepanel.remove(this.save);
 	    GridBagConstraints constraints = new GridBagConstraints();
 	    constraints.fill = GridBagConstraints.BOTH;
 	    constraints.weightx = 0.5;
-		this.passiveroute.add(new Panel(new GridBagLayout()));
-	    constraints.gridy = 0;
+	    constraints.weighty = 1;
+	    constraints.gridy = this.names.size();
 	    constraints.gridx = 0;
-	    constraints.gridwidth = 2;
-	    this.pnames.add(new JTextField("Name of Trade Route"));
-	    this.passiveroute.get(this.passiveroute.size()-1).add(pnames.get(this.pnames.size()-1), constraints);
-	    constraints.gridx = 2;
-	    this.passiveroute.get(this.passiveroute.size()-1).add(new JLabel("Partner"), constraints);
-	    constraints.gridwidth = 1;
-	    constraints.gridy = 1;
+	    this.basepanel.add(this.names.get(this.names.size()-1),constraints);
+	    constraints.gridx++;
+	    this.basepanel.add(this.trade_value.get(this.trade_value.size()-1),constraints);
+	    constraints.gridx++;
+	    this.basepanel.add(this.official.get(this.official.size()-1),constraints);
+	    constraints.gridx++;
+	    this.basepanel.add(this.remove.get(this.remove.size()-1),constraints);
 	    constraints.gridx = 0;
-	    this.passiveroute.get(this.passiveroute.size()-1).add(new JLabel("Trade Value"), constraints);
-	    constraints.gridx = 1;
-	    this.passiveroute.get(this.passiveroute.size()-1).add(new JLabel("TAR"), constraints);
-	    constraints.gridx = 2;
-	    this.passiveroute.get(this.passiveroute.size()-1).add(new JLabel("BP"), constraints);
-	    constraints.gridx = 3;
-	    this.passiveroute.get(this.passiveroute.size()-1).add(new JLabel("TAR"), constraints);
-	    constraints.gridy = 2;
-	    constraints.gridx = 0;
-	    this.ptrade_value.add(new JLabel("0"));
-	    this.passiveroute.get(this.passiveroute.size()-1).add(this.ptrade_value.get(this.ptrade_value.size()-1), constraints);
-	    constraints.gridx = 1;
-	    this.plord_tar.add(new JTextField("0"));
-	    this.passiveroute.get(this.passiveroute.size()-1).add(this.plord_tar.get(this.plord_tar.size()-1), constraints);
-	    constraints.gridx = 2;
-	    this.ppartner_bp.add(new JLabel(Integer.toString(this.lord.total_bp)));
-	    this.passiveroute.get(this.passiveroute.size()-1).add(this.ppartner_bp.get(this.ppartner_bp.size()-1), constraints);
-	    constraints.gridx = 3;
-	    this.ppartner_tar.add(new JTextField("0"));
-	    this.passiveroute.get(this.passiveroute.size()-1).add(this.ppartner_tar.get(this.ppartner_tar.size()-1), constraints);
-    	this.passivemain.add(this.passiveroute.get(this.passiveroute.size()-1));
+	    constraints.gridy++;
+	    constraints.weighty = 0.05;
+	    this.basepanel.add(this.add_route,constraints);
+	    constraints.gridx++;
+	    this.basepanel.add(this.save,constraints);
+	    if (!startup)
+	    	this.updateRoutes();
     	this.revalidate();
+    	//System.out.println("Added route index "+(this.names.size()-1));
+	}
+	
+	public void removeRoute(int route_index) {
+		//System.out.println("Removing route index "+route_index);
+		List<Route> templist = new ArrayList<Route>();
+		for (int i=this.listofroutes.size()-1;i>=route_index;i--) {
+			if (i != route_index)
+				templist.add(this.listofroutes.get(i));
+			this.basepanel.remove(this.names.get(i));
+			this.basepanel.remove(this.trade_value.get(i));
+			this.basepanel.remove(this.official.get(i));
+			this.basepanel.remove(this.remove.get(i));
+			this.names.remove(i);
+			this.trade_value.remove(i);
+			this.official.remove(i);
+			this.remove.remove(i);
+			this.listofroutes.remove(i);
+			//System.out.println("removed route index "+i);
+		}
+		for (int i=templist.size()-1;i>=0;i--) {
+			this.addRoute(false);
+			this.listofroutes.remove(this.listofroutes.size()-1);
+			this.listofroutes.add(templist.get(i));
+			//System.out.println("added route index "+(this.listofroutes.size()-1));
+		}
+		this.updateRoutes();
+		this.basepanel.revalidate();
+	}
+	
+	public void saveActiveRoute() {//visual->code/save
+		this.listofroutes.get(this.active_route).name = this.route_name.getText();
+		this.listofroutes.get(this.active_route).lord = this.lord.name;
+		this.listofroutes.get(this.active_route).official = (String) this.route_official.getSelectedItem();
+		this.listofroutes.get(this.active_route).lord_TAR = (int) Integer.parseInt(this.tar_pbp_ptar[0].getText());
+		this.listofroutes.get(this.active_route).partner_TAR = (int) Integer.parseInt(this.tar_pbp_ptar[2].getText());
+		this.listofroutes.get(this.active_route).partner_BP = (int) Integer.parseInt(this.tar_pbp_ptar[1].getText());
+		NationHandler.getRoutes(this.lord.name);
+		NationHandler.saveNation();
+		this.updateRoutes();
+		this.saveRoutes();
 	}
 	
 	public void updateRoutes() {
 		//System.out.println("ROUTEWINDOW! updateRoutes");
 		this.lord = NationHandler.listoflords.get(Utility.findLord(this.lord.name));
-		this.saveRoutes();
-		for (int i=0;i<this.pnames.size();i++) {
-			if (this.ppartner_bp.get(i).getText().equals("")||this.ppartner_bp.get(i).getText().equals("0")) {
-				this.passivemain.remove(this.passiveroute.get(i));
-				this.passiveroute.remove(i);
-				this.pnames.remove(i);
-				this.ptrade_value.remove(i);
-				this.plord_tar.remove(i);
-				this.ppartner_bp.remove(i);
-				this.ppartner_tar.remove(i);
-				this.listofroutes.remove(this.anames.size()+i);
-				i--;
+		try {
+			for (int i=0;i<this.names.size();i++) {
+				this.names.get(i).setText(this.listofroutes.get(i).name);
+				this.trade_value.get(i).setText(Integer.toString((int) this.listofroutes.get(i).trade_value));
+				this.official.get(i).setText(this.listofroutes.get(i).official);
+				this.listofroutes.get(i).calculateRoute();
 			}
+		} catch (IndexOutOfBoundsException e) {
+			
 		}
-		int a=0,p=0;
-		for (Route route:this.listofroutes) {
-			if (route.active) {
-				this.atrade_value.get(a).setText(Integer.toString(route.rounded_tv));
-				a++;
-			} else {
-				this.ppartner_bp.get(p).setText(Integer.toString(this.lord.total_bp));
-				this.ptrade_value.get(p).setText(Integer.toString(route.rounded_tv));
-				p++;
-			}
-		}
+		//this.saveRoutes();
 		this.revalidate();
-		//System.out.println("Done updating routes");
 	}
 	
 	public void clearRoutes() {
 		//System.out.println("ROUTEWINDOW! clearRoutes");
-		this.anames.clear();
-		this.atrade_value.clear();
-		this.alord_tar.clear();
-		this.apartner_tar.clear();
-		this.apartner_bp.clear();
-		this.pnames.clear();
-		this.ptrade_value.clear();
-		this.plord_tar.clear();
-		this.ppartner_tar.clear();
-		this.ppartner_bp.clear();
-		for (int i=0;i<this.passiveroute.size();i++) {
-			this.passivemain.remove(this.passiveroute.get(i));
-		}
-		this.passiveroute.clear();
-		//System.out.println("Cleared routes");
+		for (int i=this.listofroutes.size()-1;i>=0;i--)
+			this.removeRoute(i);
 	}
 	
 	public void saveRoutes() {//reads routes from visual layer and puts into codelayer
 		//System.out.println("ROUTEWINDOW! saveRoutes");
-		this.listofroutes.clear();
-		String[] route = new String[6];
-		for (int i=0;i<this.anames.size();i++) {
-			for (int j=0;j<route.length;j++)
-				route[j] = "";
-			route[0] = this.anames.get(i).getText();
-			route[1] = this.lord.name;
-			route[2] = "true";
-			route[3] = this.alord_tar.get(i).getText();
-			route[4] = this.apartner_tar.get(i).getText();
-			route[5] = this.apartner_bp.get(i).getText();
-			this.listofroutes.add(new Route(route));
-		}
-		
-		for (int i=0;i<this.pnames.size();i++) {
-			for (int j=0;j<route.length;j++)
-				route[j] = "";
-			route[0] = this.pnames.get(i).getText();
-			route[1] = this.lord.name;
-			route[2] = "false";
-			route[3] = this.plord_tar.get(i).getText();
-			route[4] = this.ppartner_tar.get(i).getText();
-			route[5] = this.ppartner_bp.get(i).getText();
-			this.listofroutes.add(new Route(route));
-		}
+		for (Route route:this.listofroutes)
+			route.calculateRoute();
 		NationHandler.getRoutes(this.lord.name);
 		NationHandler.saveNation();
-		//System.out.println("Saved routes");
 	}
 	
 	public void loadRoutes() {//loads directly from saved layer and puts into code and visual layers
 		//System.out.println("ROUTEWINDOW! loadRoutes");
-		this.listofroutes.clear();
-		this.listofroutes = ReadNWrite.loadRoutes(this.lord.name);
 		this.clearRoutes();
-		NationHandler.listoflords.get(Utility.findLord(this.lord.name)).getOfficials();
-		this.setActiveRoutes();
-		int a = 0,p = 0;
-		for (Route route:this.listofroutes) {
-			if (route.active) {
-				this.anames.get(a).setText(route.name);
-				this.atrade_value.get(a).setText(Integer.toString(route.rounded_tv));
-				this.alord_tar.get(a).setText(Integer.toString(route.lord_TAR));
-				this.apartner_bp.get(a).setText(Integer.toString(route.partner_BP));
-				this.apartner_tar.get(a).setText(Integer.toString(route.partner_TAR));
-				a++;
-			}else {
-				this.addPassiveRoute();
-				this.pnames.get(p).setText(route.name);
-				this.ptrade_value.get(p).setText(Integer.toString(route.rounded_tv));
-				this.plord_tar.get(p).setText(Integer.toString(route.lord_TAR));
-				this.ppartner_bp.get(p).setText(Integer.toString(route.partner_BP));
-				this.ppartner_tar.get(p).setText(Integer.toString(route.partner_TAR));
-				p++;
-			}
+		List<Route> temp = ReadNWrite.loadRoutes(this.lord.name);
+		//System.out.println("loaded routes for "+this.lord.name);
+		//for (Route r:temp)
+			//System.out.println(r.name);
+		for (int i=0;i<temp.size();i++) {
+			this.addRoute(false);
+			this.listofroutes.get(i).name = temp.get(i).name;
+			this.listofroutes.get(i).lord = temp.get(i).lord;
+			this.listofroutes.get(i).official = temp.get(i).official;
+			this.listofroutes.get(i).lord_TAR = temp.get(i).lord_TAR;
+			this.listofroutes.get(i).partner_TAR = temp.get(i).partner_TAR;
+			this.listofroutes.get(i).partner_BP = temp.get(i).partner_BP;
+			this.listofroutes.get(i).calculateRoute();
 		}
+		NationHandler.listoflords.get(Utility.findLord(this.lord.name)).getOfficials();
+		NationHandler.getRoutes(this.lord.name);
+		//System.out.println("there are "+this.listofroutes.size()+" routes after loading "+this.lord.name+" "+temp.size());
+		this.updateRoutes();
+	}
+	
+	public void loadActiveRoute() {
+		this.route.setTitle("Trading with "+this.listofroutes.get(this.active_route).name);
+		this.route_name.setText(this.listofroutes.get(this.active_route).name);
+		this.route_official.setSelectedItem(this.listofroutes.get(this.active_route).official);
+		this.tar_pbp_ptar[0].setText(Integer.toString(this.listofroutes.get(this.active_route).lord_TAR));
+		this.tar_pbp_ptar[1].setText(Integer.toString(this.listofroutes.get(this.active_route).partner_BP));
+		this.tar_pbp_ptar[2].setText(Integer.toString(this.listofroutes.get(this.active_route).partner_TAR));
+		this.routepanel.revalidate();
 	}
 	
 	public void start() {
 		//System.out.println("ROUTEWINDOW! start");
-		this.setVisible(true);
 		this.loadRoutes();
+		this.updateRoutes();
+		this.setVisible(true);
+		this.setJobsList();
 	}
-	
 	public void stop() {
 		//System.out.println("ROUTEWINDOW! stop");
 		this.setVisible(false);
+		NationHandler.updateNation();
+	}
+	
+	public void initializeRoute() {
+		this.route.setSize(400, 135);
+		this.route.setLocationRelativeTo(null);
+		GridBagConstraints constraints = new GridBagConstraints();
+	    constraints.fill = GridBagConstraints.BOTH;
+	    constraints.weightx = 0.5;
+	    constraints.gridy = 0;
+	    constraints.gridx = 0;
+	    constraints.gridwidth = 2;
+	    this.routepanel.add(this.route_name,constraints);
+	    constraints.gridwidth = 1;
+	    constraints.gridx = 2;
+	    this.routepanel.add(this.route_official,constraints);
+	    constraints.gridy = 1;
+	    constraints.gridx = 0;
+	    this.routepanel.add(new JLabel("Lord TAR"),constraints);
+	    constraints.gridx = 1;
+	    this.routepanel.add(new JLabel("Partner BP"),constraints);
+	    constraints.gridx = 2;
+	    this.routepanel.add(new JLabel("Partner TAR"),constraints);
+	    constraints.gridy = 2;
+	    constraints.gridx = 0;
+	    for (int i=0;i<this.tar_pbp_ptar.length;i++) {
+	    	this.tar_pbp_ptar[i] = new JTextField("0");
+	    	this.routepanel.add(this.tar_pbp_ptar[i],constraints);
+	    	constraints.gridx++;
+	    }
+	    constraints.gridy = 3;
+	    constraints.gridx = 0;
+	    this.close.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    		saveActiveRoute();
+	    		stopRoute();
+	    	}
+	    });
+	    this.routepanel.add(this.close,constraints);
+	    this.route.add(this.routepanel);
+	}
+	public void startRoute(int route_index) {
+		//System.out.println("Starting up route index "+route_index);
+		this.active_route = route_index;
+		this.loadActiveRoute();
+		this.route.setVisible(true);
+	}
+	public void stopRoute() {
+		this.updateRoutes();
+		this.route.setVisible(false);
 	}
 }

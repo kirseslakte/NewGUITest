@@ -32,7 +32,7 @@ public class NationHandler extends JFrame{
 	}
 	
 	public static void loadNation (String s) {//only ever called from MainThread when an old nation is loaded
-		System.out.println("NATIONHANDLER! loadNation");
+		//System.out.println("NATIONHANDLER! loadNation");
 		ReadNWrite.setNationName(s);
 		List<String> listofloads = new ArrayList<String>();
 		for (String loadstr:ReadNWrite.directory.list()) {
