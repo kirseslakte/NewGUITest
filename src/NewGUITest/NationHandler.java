@@ -69,19 +69,19 @@ public class NationHandler extends JFrame{
 		System.out.println("Hexes loaded");
 		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPane()));//loaded after all the lords
 		mainPane.addTab("Culture & Portfolio", new JScrollPane(Culture.culturePane()));
-		//unitTab();
+		unitTab();
 		recalibrateLords();
 		//System.out.println("first recalibration of hexes");
 		recalibrateHexes();
 		System.out.println("loading units");
-		//listofunits = ReadNWrite.loadUnits();
+		listofunits = ReadNWrite.loadUnits();
 		System.out.println("Units loaded");
 		try {
-			//listofunits.get(0);
+			listofunits.get(0);
 		} catch (IndexOutOfBoundsException e) {
-			//listofunits.add(new Unit());
+			listofunits.add(new Unit());
 		}
-		//UnitTab.loadUnits();
+		UnitTab.loadUnits();
 		//mainPane.addTab("Units", new JScrollPane(unitpanel.unitPane()));
 		listofofficials = ReadNWrite.loadOfficials();
 		System.out.println("Officials loaded");
