@@ -454,7 +454,7 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 			}
 		}
 			//racials
-		if (this.race.statsinuse[0]) {
+		if (this.race.isundead) {
 			
 		} //else if (this.race.statsinuse[1]&&)
 		this.getUnitCost();

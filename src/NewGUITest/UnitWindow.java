@@ -3,6 +3,8 @@ package NewGUITest;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.*;
 
 public class UnitWindow {
@@ -11,14 +13,14 @@ public class UnitWindow {
 	
 	static int current_unit_number;
 	static Unit current_unit;
-
-	static GridBagConstraints c = new GridBagConstraints();
 	
-	static Panel racepanel = new Panel(new GridBagLayout());
-	static JComboBox<String> race;
+	static Panel racepanel = new Panel(new GridLayout(0,2));
+	static JComboBox<String> race = new JComboBox<String>();
 	static Button[] racebtn = new Button[2];
 	static JTextField[] pointbuy = new JTextField[6];
-	static JLabel[] statmod = new JLabel[6];
+	static Button mountbtn = new Button("Mount");
+	static JComboBox<String> stat = new JComboBox<String>();
+	static JLabel statlabel = new JLabel("Racial Point-up Ability");
 	
 	static Panel typepanel = new Panel(new GridLayout(0,4));
 	static JComboBox<String>[] typeboxes = new JComboBox[4];
@@ -39,68 +41,51 @@ public class UnitWindow {
 	static JTextField[] eqwgt = new JTextField[5];
 	static JLabel[] wpatk = new JLabel[3];
 	static JLabel[] wppwr = new JLabel[3];
-	static Button mountbtn = new Button("Mount");
 	
 	static Panel outputpanel = new Panel(new GridLayout(0,4));
 	static JLabel[] oplbl = new JLabel[13];
 	static JLabel[] op = new JLabel[13];
 	static String[] outputtags = {"Toughness","Wounds","Morale","Command","Speed","AC","Fort","Ref","Will","Training Cost","Equipment Cost",
 			"Mount Cost","Total Cost"};
+	static String[] abilities = {"Strength","Constitution","Dexterity","Intelligence","Wisdom","Charisma"};
+	
 	
 	public UnitWindow() {
 		
 	}
 	
 	public static void racePanelSetup() {
-		c.gridy = 0;
-		c.gridx = 0;
-		race = new JComboBox<String>();
-		for (Race r:UnitTab.listofraces)
-			race.addItem(r.name);
-		racepanel.add(race,c);
-		c.gridx = 1;
+		racepanel.add(new JLabel("Race"));
+		racepanel.add(race);
 		racebtn[0] = new Button("Add Race");
 		racebtn[0].addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				RaceWindow.start();
 			}
 		});
-		racepanel.add(racebtn[0],c);
-		c.gridx = 2;
+		racepanel.add(racebtn[0]);
 		racebtn[1] = new Button("Race List");
 		racebtn[1].addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				RaceWindow.loadStart();
 			}
 		});
-		racepanel.add(racebtn[1],c);
-		c.gridx = 0;
-		c.gridy = 1;
-		racepanel.add(new JLabel("Ability"),c);
-		c.gridy = 2;
-		racepanel.add(new JLabel("Str"),c);
-		c.gridy = 3;
-		racepanel.add(new JLabel("Dex"),c);
-		c.gridy = 4;
-		racepanel.add(new JLabel("Con"),c);
-		c.gridy = 5;
-		racepanel.add(new JLabel("Int"),c);
-		c.gridy = 6;
-		racepanel.add(new JLabel("Wis"),c);
-		c.gridy = 7;
-		racepanel.add(new JLabel("Cha"),c);
-		c.gridy = 1;
-		c.gridx = 1;
-		racepanel.add(new JLabel("Point-buy Score"),c);
+		racepanel.add(racebtn[1]);
+		racepanel.add(new JLabel("Ability"));
+		racepanel.add(new JLabel("Point-buy Score"));
 		for (int i=0;i<pointbuy.length;i++) {
-			c.gridx = 1;
-			c.gridy ++;
 			pointbuy[i] = new JTextField("0");
-			racepanel.add(pointbuy[i],c);
-			c.gridx = 2;
-			statmod[i] = new JLabel("-5");
-			racepanel.add(statmod[i],c);
+			racepanel.add(new JLabel(abilities[i]));
+			racepanel.add(pointbuy[i]);
 		}
+		mountbtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//get to the mountbit
+			}
+		});
+		racepanel.add(mountbtn);
+		for (String ab:abilities)
+			stat.addItem(ab);
 	}
 	
 	public static void equipmentPanelSetup() {
@@ -155,12 +140,7 @@ public class UnitWindow {
 			eqpanel.add(eqwgt[i]);
 			eqpanel.add(new Panel());
 		}
-		mountbtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//get to the mountbit
-			}
-		});
-		eqpanel.add(mountbtn);
+		//eqpanel.add(mountbtn);
 	}
 	
 	public static void typePanelSetup() {
@@ -225,8 +205,6 @@ public class UnitWindow {
 	public static void init() {
 		unitwindow.setSize(1200,500);
 		unitwindow.setLocationRelativeTo(null);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.5;
 
 		current_unit = new Unit();
 		racePanelSetup();
@@ -263,6 +241,7 @@ public class UnitWindow {
 			for (String s:current_unit.armour.shieldtypes)
 				eqtype[i].addItem(s);
 		}
+		update();
 	}
 	
 	public static void updateComboBoxes() {
@@ -339,6 +318,24 @@ public class UnitWindow {
 		}
 	}
 	
+	public static void visualsToUnit() {
+		try {
+			current_unit.race = UnitTab.listofraces.get(Utility.findRace((String) race.getSelectedItem()));
+			if (current_unit.race.hasfixedabilities) {
+				racepanel.remove(statlabel);
+				racepanel.remove(stat);
+			}else {
+				racepanel.remove(mountbtn);
+				racepanel.add(statlabel);
+				racepanel.add(stat);
+				racepanel.add(mountbtn);
+			}
+			racepanel.revalidate();
+		} catch (Exception e) {
+			
+		}
+	}
+	
 	public static void calculateOutputs() {//calculates all the calculated values of the unit and 
 										   //displays it in the appropriate visual context
 	}
@@ -347,8 +344,9 @@ public class UnitWindow {
 		//update unit from visuals
 		
 		//update visuals from unit
-		//current_unit.updateUnit();
 		updateComboBoxes();
+		visualsToUnit();
+		//current_unit.updateUnit();
 	}
 	
 	public static void saveCurrentUnit() {
@@ -397,10 +395,8 @@ public class UnitWindow {
 		unitwindow.setTitle(current_unit.name);
 		//racepanel
 		race.setSelectedItem(current_unit.race.name);
-		for (int i=0;i<pointbuy.length;i++) {
+		for (int i=0;i<pointbuy.length;i++) 
 			pointbuy[i].setText(Integer.toString(current_unit.stats[i]));
-			statmod[i].setText(Integer.toString(current_unit.stat_mods[i]));
-		}
 		//typepanel
 		typeboxes[0].setSelectedItem(current_unit.type);
 		typeboxes[1].setSelectedItem(current_unit.subtype);
@@ -456,10 +452,11 @@ public class UnitWindow {
 	public static void start(int unit) {
 		current_unit_number = unit;
 		loadActiveUnit();
+		update();
 		unitwindow.setVisible(true);
 	}
 	
 	public static void stop() {
 		unitwindow.setVisible(false);
-	}
+	}	
 }

@@ -339,7 +339,7 @@ public class ReadNWrite {
 		List<Race> listofraces = new ArrayList<Race>();
 		String s = directory+"\\races"+filetype;
 		File file = new File(s);
-		String[] race = new String[23];
+		String[] race = new String[19];
 		int i = 0;
 		try {
 			Scanner sc = new Scanner(file);
@@ -600,10 +600,8 @@ public class ReadNWrite {
 			FileWriter fw = new FileWriter(file);
 			for (Race race:listofraces) {
 				fw.write(race.name+System.getProperty("line.separator"));
-				for (int i=0;i<race.stats.length;i++) {
+				for (int i=0;i<race.stats.length;i++)
 					fw.write(race.stats[i]+System.getProperty("line.separator"));
-					fw.write(race.statsinuse[i]+System.getProperty("line.separator"));
-				}
 				fw.write(race.size+System.getProperty("line.separator"));
 				fw.write(race.bipedal+System.getProperty("line.separator"));
 				fw.write(race.natac+System.getProperty("line.separator"));
@@ -614,6 +612,8 @@ public class ReadNWrite {
 				fw.write(race.natattacks+System.getProperty("line.separator"));
 				fw.write(race.basespeed+System.getProperty("line.separator"));
 				fw.write(race.feat+System.getProperty("line.separator"));
+				fw.write(race.isundead+System.getProperty("line.separator"));
+				fw.write(race.hasfixedabilities+System.getProperty("line.separator"));
 				fw.write(separator+System.getProperty("line.separator"));
 			}
 			fw.close();

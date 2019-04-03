@@ -256,8 +256,9 @@ public class RouteWindow extends JFrame{
 	}
 	
 	public void initializeRoute() {
-		this.route.setSize(400, 135);
+		this.route.setSize(400, 122);
 		this.route.setLocationRelativeTo(null);
+		this.route.setResizable(false);
 		GridBagConstraints constraints = new GridBagConstraints();
 	    constraints.fill = GridBagConstraints.BOTH;
 	    constraints.weightx = 0.5;

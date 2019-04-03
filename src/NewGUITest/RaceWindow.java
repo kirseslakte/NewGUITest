@@ -17,92 +17,71 @@ public class RaceWindow{
 	static JFrame racewindow = new JFrame();
 	static int active_race_number;
 	static Race active_race = new Race();
-	static Panel racepanel = new Panel(new GridBagLayout());
-	static GridBagConstraints c = new GridBagConstraints();
+	static Panel racepanel = new Panel(new GridLayout(0,4));
 	static JTextField[] stats = new JTextField[6];
-	static JRadioButton[] used = new JRadioButton[7];//stats+feat
-	static JComboBox<String>[] combos = new JComboBox[2];//size,bipedal/quadropedal
-	static JTextField[] rest = new JTextField[8];//speed,natAC,miscAC,DRbps,DRmm,natattackdice,natattacks,name
+	static JRadioButton feat = new JRadioButton();//feat
+	static JComboBox<String>[] combos = new JComboBox[4];//size,life,bipedal/quadropedal,abilitymod
+	static JTextField[] rest = new JTextField[8];//name,speed,nac,mac,dr/bps,dr/mm,natattdice,#ofnatatt
 	
 	public RaceWindow() {
 		
 	}
 	
 	public static void init() {
-		c.fill = GridBagConstraints.HORIZONTAL;//the window for the individual races
-		c.weightx = 0.5;
-		c.gridy = 0;
-		c.gridwidth = 2;
-		c.gridx = 0;
-		racepanel.add(new Label("Racial Ability Mods"),c);
-		c.gridy = 1;
-		racepanel.add(new Label("Str"),c);
-		c.gridy = 2;
-		racepanel.add(new Label("Dex"),c);
-		c.gridy = 3;
-		racepanel.add(new Label("Con"),c);
-		c.gridy = 4;
-		racepanel.add(new Label("Int"),c);
-		c.gridy = 5;
-		racepanel.add(new Label("Wis"),c);
-		c.gridy = 6;
-		racepanel.add(new Label("Cha"),c);
-		c.gridx = 4;
-		c.gridy = 1;
-		racepanel.add(new Label("Name of Race"),c);
-		c.gridy = 2;
-		racepanel.add(new Label("Natural AC"),c);
-		c.gridy = 3;
-		racepanel.add(new Label("Misc AC"),c);
-		c.gridy = 4;
-		racepanel.add(new Label("DR/b,p,s"),c);
-		c.gridy = 5;
-		racepanel.add(new Label("DR/magic,material"),c);
-		c.gridy = 6;
-		racepanel.add(new Label("Natural attack dice (if any)"),c);
-		c.gridy = 7;
-		racepanel.add(new Label("Number of natural attacks"),c);
-		c.gridy = 8;
-		racepanel.add(new Label("Speed"),c);
-		c.gridy ++;
-		racepanel.add(new Label("Gains extra feat"),c);
-		c.gridwidth = 1;
-		c.gridy = 0;
-		c.gridx = 1;
-		racepanel.add(new Label("Racial Ability Mod"));
-		c.gridx = 2;
-		racepanel.add(new Label("Used?"));
-		for (int i=0;i<stats.length;i++) {
-			c.gridy = 1+i;
-			c.gridx = 2;
-			stats[i] = new JTextField("0");
-			racepanel.add(stats[i],c);
-			c.gridx = 3;
-			used[i] = new JRadioButton();
-			used[i].setSelected(true);
-			racepanel.add(used[i],c);
-		}
-		c.gridx = 6;
-		c.gridy = 1;
-		rest[0] = new JTextField("Race");
-		racepanel.add(rest[0],c);
-		for (int i=1;i<rest.length;i++) {
-			c.gridy ++;
+		for (int i=0;i<rest.length;i++)
 			rest[i] = new JTextField("0");
-			racepanel.add(rest[i],c);
-		}
-		c.gridy ++;
-		used[6] = new JRadioButton();
-		racepanel.add(used[6],c);
-		c.gridwidth = 4;
-		c.gridx = 0;
-		c.gridy = 7;
-		combos[0] = new JComboBox<String>(Race.footing);
-		racepanel.add(combos[0],c);
-		combos[1] = new JComboBox<String>(Race.sizes);
-		c.gridy ++;
-		racepanel.add(combos[1],c);
-		c.gridy ++;
+		for (int i=0;i<combos.length;i++)
+			combos[i] = new JComboBox<String>();
+		for (String size:Race.sizes)
+			combos[0].addItem(size);
+		combos[1].addItem("Living");
+		combos[1].addItem("Undead");
+		for (String footing:Race.footing)
+			combos[2].addItem(footing);
+		combos[3].addItem("Fixed");
+		combos[3].addItem("Variable");
+		for (int i=0;i<stats.length;i++) 
+			stats[i] = new JTextField("0");
+		racepanel.add(new JLabel("Name of Race"));
+		racepanel.add(rest[0]);
+		racepanel.add(new JLabel("Size"));
+		racepanel.add(combos[0]);
+		racepanel.add(new JLabel("Life"));
+		racepanel.add(combos[1]);
+		racepanel.add(new JLabel("Leggedness"));
+		racepanel.add(combos[2]);
+		racepanel.add(new JLabel("Base Speed"));
+		racepanel.add(rest[1]);
+		racepanel.add(new JLabel("Ability Mod"));
+		racepanel.add(combos[3]);
+		racepanel.add(new JLabel("Natural Armour Bonus"));
+		racepanel.add(rest[2]);
+		racepanel.add(new JLabel("Ability"));
+		racepanel.add(new JLabel("Racial Modifier"));
+		racepanel.add(new JLabel("Misc Armour Bonus"));
+		racepanel.add(rest[3]);
+		racepanel.add(new JLabel("Strength"));
+		racepanel.add(stats[0]);
+		racepanel.add(new JLabel("DR/B,P,S"));
+		racepanel.add(rest[4]);
+		racepanel.add(new JLabel("Dexterity"));
+		racepanel.add(stats[1]);
+		racepanel.add(new JLabel("DR/Magic,Material"));
+		racepanel.add(rest[5]);
+		racepanel.add(new JLabel("Constitution"));
+		racepanel.add(stats[2]);
+		racepanel.add(new JLabel("Largest Natural Weapons Dice"));
+		racepanel.add(rest[6]);
+		racepanel.add(new JLabel("Intelligence"));
+		racepanel.add(stats[3]);
+		racepanel.add(new JLabel("Number of Natural Attacks"));
+		racepanel.add(rest[7]);
+		racepanel.add(new JLabel("Wisdom"));
+		racepanel.add(stats[4]);
+		racepanel.add(new JLabel("Gains Extra Feat"));
+		racepanel.add(feat);
+		racepanel.add(new JLabel("Charisma"));
+		racepanel.add(stats[5]);
 		Button save = new Button("Save");
 		save.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
@@ -115,12 +94,8 @@ public class RaceWindow{
 				stop();
 			}
 		});
-		c.gridy ++;
-		c.gridwidth = 2;
-		c.gridx = 0;
-		racepanel.add(save,c);
-		c.gridx = 2;
-		racepanel.add(close,c);
+		racepanel.add(save);
+		racepanel.add(close);
 		racewindow.setSize(1000,300);
 		racewindow.setLocationRelativeTo(null);
 		racewindow.setTitle(active_race.name);
@@ -134,44 +109,51 @@ public class RaceWindow{
 	}
 	
 	public static void loadActiveRace() {
-		for (int i=0;i<stats.length;i++) {
+		for (int i=0;i<stats.length;i++)
 			stats[i].setText(Integer.toString(active_race.stats[i]));
-			used[i].setSelected(active_race.statsinuse[i]);
-		}
-		used[6].setSelected(active_race.feat);
+		feat.setSelected(active_race.feat);
+		combos[0].setSelectedItem(active_race.size);
 		int k = 0;
+		if (active_race.isundead)
+			k = 1;
+		combos[1].setSelectedIndex(k);
+		k = 0;
 		if (!active_race.bipedal)
 			k = 1;
-		combos[0].setSelectedIndex(k);
-		combos[1].setSelectedItem(active_race.size);
+		combos[2].setSelectedIndex(k);
+		k = 0;
+		if (!active_race.hasfixedabilities)
+			k = 1;
+		combos[3].setSelectedIndex(k);
 		rest[0].setText(active_race.name);
-		rest[1].setText(Integer.toString(active_race.natac));
-		rest[2].setText(Integer.toString(active_race.miscac));
-		rest[3].setText(Integer.toString(active_race.drbps));
-		rest[4].setText(Integer.toString(active_race.drmm));
-		rest[5].setText(Integer.toString(active_race.natattackdice));
-		rest[6].setText(Integer.toString(active_race.natattacks));
-		rest[7].setText(Integer.toString(active_race.basespeed));
+		rest[1].setText(Integer.toString(active_race.basespeed));
+		rest[2].setText(Integer.toString(active_race.natac));
+		rest[3].setText(Integer.toString(active_race.miscac));
+		rest[4].setText(Integer.toString(active_race.drbps));
+		rest[5].setText(Integer.toString(active_race.drmm));
+		rest[6].setText(Integer.toString(active_race.natattackdice));
+		rest[7].setText(Integer.toString(active_race.natattacks));
 		racepanel.revalidate();
 	}
 	
 	public static void saveActiveRace() {
-		for (int i=0;i<stats.length;i++) {
+		for (int i=0;i<stats.length;i++)
 			active_race.stats[i] = (int) Integer.parseInt(stats[i].getText());
-			active_race.statsinuse[i] = used[i].isSelected();
-		}
-		active_race.feat = used[6].isSelected();
-		active_race.bipedal = combos[0].getSelectedItem().equals(Race.footing[0]);
-		active_race.size = (String) combos[1].getSelectedItem();
+		active_race.feat = feat.isSelected();
+		active_race.size = (String) combos[0].getSelectedItem();
+		active_race.isundead = combos[1].getSelectedItem().equals("Undead");
+		active_race.bipedal = combos[2].getSelectedItem().equals(Race.footing[0]);
+		active_race.hasfixedabilities = combos[3].getSelectedItem().equals("Fixed");
+		System.out.println(combos[3].getSelectedItem()+" and in the race "+active_race.hasfixedabilities);
 		active_race.name = rest[0].getText();
-		active_race.basespeed = Integer.parseInt(rest[7].getText());
-		active_race.natac = Integer.parseInt(rest[1].getText());
-		active_race.miscac = Integer.parseInt(rest[2].getText());
-		active_race.drbps = Integer.parseInt(rest[3].getText());
-		active_race.drmm = Integer.parseInt(rest[4].getText());
+		active_race.basespeed = Integer.parseInt(rest[1].getText());
+		active_race.natac = Integer.parseInt(rest[2].getText());
+		active_race.miscac = Integer.parseInt(rest[3].getText());
+		active_race.drbps = Integer.parseInt(rest[4].getText());
+		active_race.drmm = Integer.parseInt(rest[5].getText());
 		if (rest[5].getText()!=null) {
-			active_race.natattackdice = Integer.parseInt(rest[5].getText());
-			active_race.natattacks = Integer.parseInt(rest[6].getText());
+			active_race.natattackdice = Integer.parseInt(rest[6].getText());
+			active_race.natattacks = Integer.parseInt(rest[7].getText());
 		} else {
 			active_race.natattackdice = 0;
 			active_race.natattacks = 0;
@@ -202,6 +184,7 @@ public class RaceWindow{
 	public static void stop() {
 		saveActiveRace();
 		UnitTab.clearRaces();
+		UnitWindow.update();
 		racewindow.setVisible(false);
 	}
 	
@@ -243,5 +226,6 @@ public class RaceWindow{
 	
 	public static void loadStop() {
 		raceswindow.setVisible(false);
+		UnitWindow.update();
 	}
 }

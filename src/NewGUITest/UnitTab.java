@@ -197,6 +197,7 @@ public class UnitTab {
 	}
 	
 	public static void saveRaces() {
+		clearRaces();
 		ReadNWrite.saveRaces(listofraces);
 	}
 	
