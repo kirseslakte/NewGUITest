@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.*;
 
 public class UnitWindow {
@@ -80,7 +82,7 @@ public class UnitWindow {
 		}
 		mountbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//get to the mountbit
+				MountWindow.start();
 			}
 		});
 		racepanel.add(mountbtn);
@@ -205,6 +207,11 @@ public class UnitWindow {
 	public static void init() {
 		unitwindow.setSize(1200,500);
 		unitwindow.setLocationRelativeTo(null);
+		unitwindow.addWindowListener(new WindowAdapter() {//close program on closing window
+			public void windowClosing(WindowEvent windowEvent){
+				stop();
+			}
+		});
 
 		current_unit = new Unit();
 		racePanelSetup();
@@ -242,6 +249,7 @@ public class UnitWindow {
 				eqtype[i].addItem(s);
 		}
 		update();
+		MountWindow.initialize();
 	}
 	
 	public static void updateComboBoxes() {
@@ -351,11 +359,11 @@ public class UnitWindow {
 	
 	public static void saveCurrentUnit() {
 		//get all data from visual layer into current_unit
-		String[] unitstr = new String[75];
+		String[] unitstr = new String[67];
 		//variables from unit tab
 		unitstr[0] = current_unit.name;
-		unitstr[73] = current_unit.unit_lord;
-		unitstr[74] = Integer.toString(current_unit.number_of_units);
+		unitstr[65] = current_unit.unit_lord;
+		unitstr[66] = Integer.toString(current_unit.number_of_units);
 		//variables from racepanel
 		unitstr[1] = (String) race.getSelectedItem();
 		for (int i=0;i<pointbuy.length;i++)
@@ -442,6 +450,7 @@ public class UnitWindow {
 		op[10].setText(Integer.toString(current_unit.equipment_cost));
 		op[11].setText(Integer.toString(current_unit.mount_cost));
 		op[12].setText(Integer.toString(current_unit.total_cost));
+		MountWindow.setWindow(current_unit);
 	}
 	
 	public static void clean() {
@@ -458,5 +467,7 @@ public class UnitWindow {
 	
 	public static void stop() {
 		unitwindow.setVisible(false);
+		MountWindow.stop();
+		RaceWindow.stop();
 	}	
 }

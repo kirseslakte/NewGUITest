@@ -165,8 +165,8 @@ public class Unit {
 		public String name;
 		public String type;
 		public String hd_type;
-		public int[] stats = new int[6];
-		public boolean[] stats_used = new boolean[6];
+		public int[] stats = new int[3];
+		public boolean undead = false;
 		public String size;
 		public int natural_armour;
 		public int number_of_hd;
@@ -175,7 +175,7 @@ public class Unit {
 		public int cost_of_one_mount;
 		public String footing;
 		public int base_speed;
-		public Armour mount_armour = new Armour();
+		public Armour armour = new Armour();
 		
 		public Mount() {
 			
@@ -188,19 +188,19 @@ public class Unit {
 			this.hd_type = s[2];
 			for (int i=0;i<stats.length;i++) {
 				this.stats[i] = Integer.parseInt(s[3+i]);
-				this.stats_used[i] = Boolean.parseBoolean(s[9+i]);
 			}
-			this.size = s[15];
-			this.natural_armour = Integer.parseInt(s[16]);
-			this.number_of_hd = Integer.parseInt(s[17]);
-			this.damage_dice = Integer.parseInt(s[18]);
-			this.number_of_attacks = Integer.parseInt(s[19]);
-			this.cost_of_one_mount = Integer.parseInt(s[20]);
-			this.footing = s[21];
-			this.base_speed = Integer.parseInt(s[22]);
-			if (!s[23].equals("")) {
-				String[] mountarmourstring = Arrays.copyOfRange(s,23,s.length);
-				this.mount_armour.setArmour(mountarmourstring);
+			this.undead = Boolean.parseBoolean(s[7]);
+			this.size = s[8];
+			this.natural_armour = Integer.parseInt(s[9]);
+			this.number_of_hd = Integer.parseInt(s[10]);
+			this.damage_dice = Integer.parseInt(s[11]);
+			this.number_of_attacks = Integer.parseInt(s[12]);
+			this.cost_of_one_mount = Integer.parseInt(s[13]);
+			this.footing = s[14];
+			this.base_speed = Integer.parseInt(s[15]);
+			if (!s[16].equals("")) {
+				String[] mountarmourstring = Arrays.copyOfRange(s,16,s.length);
+				this.armour.setArmour(mountarmourstring);
 			}
 		}
 	}

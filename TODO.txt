@@ -11,3 +11,4 @@ Add guilds to the buildings & guildstitutions
 -Add code to everything, as in code in Unit(), and connections between everything
 -need to make sure loading/saving works
 -should also check that loading into visulas work as intended
+-NEXT THING TO DO: Make sure that the load/save works and that the unit key is correct (nothing is actually checked yet)

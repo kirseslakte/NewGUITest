@@ -514,9 +514,7 @@ public class ReadNWrite {
 				for (int i=0;i<unit.mount.stats.length;i++) {
 					fw.write(Integer.toString(unit.mount.stats[i])+System.getProperty("line.separator"));
 				}
-				for (int i=0;i<unit.mount.stats_used.length;i++) {
-					fw.write(Boolean.toString(unit.mount.stats_used[i])+System.getProperty("line.separator"));
-				}
+				fw.write(Boolean.toString(unit.mount.undead)+System.getProperty("line.separator"));
 				fw.write(unit.mount.size+System.getProperty("line.separator"));
 				fw.write(Integer.toString(unit.mount.natural_armour)+System.getProperty("line.separator"));
 				fw.write(Integer.toString(unit.mount.number_of_hd)+System.getProperty("line.separator"));
@@ -525,12 +523,12 @@ public class ReadNWrite {
 				fw.write(Integer.toString(unit.mount.cost_of_one_mount)+System.getProperty("line.separator"));
 				fw.write(unit.mount.footing+System.getProperty("line.separator"));
 				fw.write(Integer.toString(unit.mount.base_speed)+System.getProperty("line.separator"));
-				fw.write(unit.mount.mount_armour.name+System.getProperty("line.separator"));//mount armour
-				fw.write(Integer.toString(unit.mount.mount_armour.cost)+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.mount.mount_armour.max_dex)+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.mount.mount_armour.ac)+System.getProperty("line.separator"));
-				fw.write(unit.mount.mount_armour.type+System.getProperty("line.separator"));
-				fw.write(Integer.toString(unit.mount.mount_armour.weight)+System.getProperty("line.separator"));
+				fw.write(unit.mount.armour.name+System.getProperty("line.separator"));//mount armour
+				fw.write(Integer.toString(unit.mount.armour.cost)+System.getProperty("line.separator"));
+				fw.write(Integer.toString(unit.mount.armour.max_dex)+System.getProperty("line.separator"));
+				fw.write(Integer.toString(unit.mount.armour.ac)+System.getProperty("line.separator"));
+				fw.write(unit.mount.armour.type+System.getProperty("line.separator"));
+				fw.write(Integer.toString(unit.mount.armour.weight)+System.getProperty("line.separator"));
 				fw.write(unit.unit_lord+System.getProperty("line.separator"));//general information
 				fw.write(Integer.toString(unit.number_of_units)+System.getProperty("line.separator"));
 				fw.write(separator+System.getProperty("line.separator"));
