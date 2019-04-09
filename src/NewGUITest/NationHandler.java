@@ -233,7 +233,7 @@ public class NationHandler extends JFrame{
 
 	public static void saveUnit(int i,Unit u) {
 		List<Unit> tempunitlist = listofunits;
-		for (int k=i;k<listofunits.size();k++)
+		for (int k=listofunits.size()-1;k>=i;k--)
 			listofunits.remove(k);
 		listofunits.add(u);
 		for (int k=i+1;k<tempunitlist.size();k++)

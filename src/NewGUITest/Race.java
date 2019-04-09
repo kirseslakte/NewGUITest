@@ -10,8 +10,9 @@ public class Race {
 	public int miscac = 0;
 	public int drbps = 0;
 	public int drmm = 0;
-	public int natattackdice = 0;
+	public String natattackdice ;
 	public int natattacks = 0;
+	public int natattackdiceint = 0;
 	public int basespeed = 0;
 	public boolean feat = false;
 	public boolean isundead = false;
@@ -35,7 +36,7 @@ public class Race {
 			this.miscac = Integer.parseInt(s[10]);
 			this.drbps = Integer.parseInt(s[11]);
 			this.drmm = Integer.parseInt(s[12]);
-			this.natattackdice = Integer.parseInt(s[13]);
+			this.natattackdice = s[13];
 			this.natattacks = Integer.parseInt(s[14]);
 			this.basespeed = Integer.parseInt(s[15]);
 			this.feat = Boolean.parseBoolean(s[16]);

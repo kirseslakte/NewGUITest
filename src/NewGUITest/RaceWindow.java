@@ -20,7 +20,9 @@ public class RaceWindow{
 	static Panel racepanel = new Panel(new GridLayout(0,4));
 	static JTextField[] stats = new JTextField[6];
 	static JRadioButton feat = new JRadioButton();//feat
-	static JComboBox<String>[] combos = new JComboBox[4];//size,life,bipedal/quadropedal,abilitymod
+	static JRadioButton undead = new JRadioButton();
+	static JRadioButton varmod = new JRadioButton();
+	static JComboBox<String>[] combos = new JComboBox[2];//size,bipedal/quadropedal
 	static JTextField[] rest = new JTextField[8];//name,speed,nac,mac,dr/bps,dr/mm,natattdice,#ofnatatt
 	
 	public RaceWindow() {
@@ -34,26 +36,22 @@ public class RaceWindow{
 			combos[i] = new JComboBox<String>();
 		for (String size:Race.sizes)
 			combos[0].addItem(size);
-		combos[1].addItem("Living");
-		combos[1].addItem("Undead");
 		for (String footing:Race.footing)
-			combos[2].addItem(footing);
-		combos[3].addItem("Fixed");
-		combos[3].addItem("Variable");
+			combos[1].addItem(footing);
 		for (int i=0;i<stats.length;i++) 
 			stats[i] = new JTextField("0");
 		racepanel.add(new JLabel("Name of Race"));
 		racepanel.add(rest[0]);
 		racepanel.add(new JLabel("Size"));
 		racepanel.add(combos[0]);
-		racepanel.add(new JLabel("Life"));
-		racepanel.add(combos[1]);
+		racepanel.add(new JLabel("Undead"));
+		racepanel.add(undead);
 		racepanel.add(new JLabel("Leggedness"));
-		racepanel.add(combos[2]);
+		racepanel.add(combos[1]);
 		racepanel.add(new JLabel("Base Speed"));
 		racepanel.add(rest[1]);
-		racepanel.add(new JLabel("Ability Mod"));
-		racepanel.add(combos[3]);
+		racepanel.add(new JLabel("+2 Varied Ability Mod"));
+		racepanel.add(varmod);
 		racepanel.add(new JLabel("Natural Armour Bonus"));
 		racepanel.add(rest[2]);
 		racepanel.add(new JLabel("Ability"));
@@ -112,26 +110,20 @@ public class RaceWindow{
 		for (int i=0;i<stats.length;i++)
 			stats[i].setText(Integer.toString(active_race.stats[i]));
 		feat.setSelected(active_race.feat);
+		undead.setSelected(active_race.isundead);
+		varmod.setSelected(!active_race.hasfixedabilities);
 		combos[0].setSelectedItem(active_race.size);
 		int k = 0;
-		if (active_race.isundead)
-			k = 1;
-		combos[1].setSelectedIndex(k);
-		k = 0;
 		if (!active_race.bipedal)
 			k = 1;
-		combos[2].setSelectedIndex(k);
-		k = 0;
-		if (!active_race.hasfixedabilities)
-			k = 1;
-		combos[3].setSelectedIndex(k);
+		combos[1].setSelectedIndex(k);
 		rest[0].setText(active_race.name);
 		rest[1].setText(Integer.toString(active_race.basespeed));
 		rest[2].setText(Integer.toString(active_race.natac));
 		rest[3].setText(Integer.toString(active_race.miscac));
 		rest[4].setText(Integer.toString(active_race.drbps));
 		rest[5].setText(Integer.toString(active_race.drmm));
-		rest[6].setText(Integer.toString(active_race.natattackdice));
+		rest[6].setText(active_race.natattackdice);
 		rest[7].setText(Integer.toString(active_race.natattacks));
 		racepanel.revalidate();
 	}
@@ -141,10 +133,9 @@ public class RaceWindow{
 			active_race.stats[i] = (int) Integer.parseInt(stats[i].getText());
 		active_race.feat = feat.isSelected();
 		active_race.size = (String) combos[0].getSelectedItem();
-		active_race.isundead = combos[1].getSelectedItem().equals("Undead");
-		active_race.bipedal = combos[2].getSelectedItem().equals(Race.footing[0]);
-		active_race.hasfixedabilities = combos[3].getSelectedItem().equals("Fixed");
-		System.out.println(combos[3].getSelectedItem()+" and in the race "+active_race.hasfixedabilities);
+		active_race.isundead = undead.isSelected();
+		active_race.bipedal = combos[1].getSelectedItem().equals(Race.footing[0]);
+		active_race.hasfixedabilities = !varmod.isSelected();
 		active_race.name = rest[0].getText();
 		active_race.basespeed = Integer.parseInt(rest[1].getText());
 		active_race.natac = Integer.parseInt(rest[2].getText());
@@ -152,10 +143,10 @@ public class RaceWindow{
 		active_race.drbps = Integer.parseInt(rest[4].getText());
 		active_race.drmm = Integer.parseInt(rest[5].getText());
 		if (rest[5].getText()!=null) {
-			active_race.natattackdice = Integer.parseInt(rest[6].getText());
+			active_race.natattackdice = rest[6].getText();
 			active_race.natattacks = Integer.parseInt(rest[7].getText());
 		} else {
-			active_race.natattackdice = 0;
+			active_race.natattackdice = "0";
 			active_race.natattacks = 0;
 		}
 		UnitTab.getRace(active_race_number, active_race);

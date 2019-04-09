@@ -16,13 +16,15 @@ public class UnitWindow {
 	static int current_unit_number;
 	static Unit current_unit;
 	
-	static Panel racepanel = new Panel(new GridLayout(0,2));
+	static Panel racepanel = new Panel(new GridLayout(0,3));
 	static JComboBox<String> race = new JComboBox<String>();
 	static Button[] racebtn = new Button[2];
 	static JTextField[] pointbuy = new JTextField[6];
+	static JLabel[] totstat = new JLabel[6];
 	static Button mountbtn = new Button("Mount");
 	static JComboBox<String> stat = new JComboBox<String>();
 	static JLabel statlabel = new JLabel("Racial Point-up Ability");
+	static JLabel raceplaceholder = new JLabel("");
 	
 	static Panel typepanel = new Panel(new GridLayout(0,4));
 	static JComboBox<String>[] typeboxes = new JComboBox[4];
@@ -30,6 +32,7 @@ public class UnitWindow {
 	static JComboBox<String>[] feats = new JComboBox[3];
 	static JLabel[] ufeatlbl = new JLabel[2];
 	static JComboBox<String>[] ufeats = new JComboBox[2];
+	static JLabel[] typeplaceholder = new JLabel[4];
 	static Button savebtn = new Button("Save & Update");
 	static Button clrbtn = new Button("Clear Unit");
 	
@@ -59,6 +62,7 @@ public class UnitWindow {
 	public static void racePanelSetup() {
 		racepanel.add(new JLabel("Race"));
 		racepanel.add(race);
+		racepanel.add(new JLabel(""));
 		racebtn[0] = new Button("Add Race");
 		racebtn[0].addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -73,12 +77,16 @@ public class UnitWindow {
 			}
 		});
 		racepanel.add(racebtn[1]);
+		racepanel.add(new JLabel(""));
 		racepanel.add(new JLabel("Ability"));
 		racepanel.add(new JLabel("Point-buy Score"));
+		racepanel.add(new JLabel("Total Ability Score"));
 		for (int i=0;i<pointbuy.length;i++) {
-			pointbuy[i] = new JTextField("0");
+			pointbuy[i] = new JTextField("10");
+			totstat[i] = new JLabel("10");
 			racepanel.add(new JLabel(abilities[i]));
 			racepanel.add(pointbuy[i]);
+			racepanel.add(totstat[i]);
 		}
 		mountbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -158,7 +166,7 @@ public class UnitWindow {
 		typepanel.add(new JLabel("Training Type"));
 		typeboxes[3] = new JComboBox<String>(Unit.training_types);
 		typepanel.add(typeboxes[3]);
-
+		
 		featlbl[0] = new JLabel("Feat 1");
 		typepanel.add(featlbl[0]);
 		feats[0] = new JComboBox<String>(current_unit.available_feats);
@@ -179,6 +187,8 @@ public class UnitWindow {
 		typepanel.add(featlbl[2]);
 		feats[2] = new JComboBox<String>(current_unit.available_feats);
 		typepanel.add(feats[2]);
+		for (int i=0;i<typeplaceholder.length;i++)
+			typeplaceholder[i] = new JLabel("");
 	}
 	
 	public static void outputPanelSetup() {
@@ -191,7 +201,6 @@ public class UnitWindow {
 
 		savebtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				update();
 				saveCurrentUnit();
 			}
 		});
@@ -224,19 +233,6 @@ public class UnitWindow {
 		mainpanel.add(outputpanel);
 		
 		unitwindow.add(mainpanel);
-		
-		typeboxes[0] = new JComboBox<String>();
-		for (String s:Unit.types)
-			typeboxes[0].addItem(s);
-		typeboxes[1] = new JComboBox<String>();
-		for (String s:Unit.subtypes)
-			typeboxes[1].addItem(s);
-		typeboxes[2] = new JComboBox<String>();
-		for (String s:Unit.trainings)
-			typeboxes[2].addItem(s);
-		typeboxes[3] = new JComboBox<String>();
-		for (String s:Unit.training_types)
-			typeboxes[3].addItem(s);
 		
 		for (int i=0;i<3;i++) {
 			eqtype[i] = new JComboBox<String>();
@@ -284,81 +280,144 @@ public class UnitWindow {
 			ufeats[i].setSelectedItem(holder[feats.length+i]);
 	}
 	
-	public static void updateTypePanel() {
-		/*
-		if (current_unit.race.feat) {
-			if (!(feats[2].getParent() == typepanel)) {
-				typepanel.add(featlbl[2]);
-				typepanel.add(feats[2]);
-			}
-		} else {
-			if (feats[2].getParent() == typepanel) {
-				typepanel.remove(featlbl[2]);
-				typepanel.remove(feats[2]);
-			}
-		}
-		if (current_unit.training.equals(Unit.trainings[0])) {//irregulars
-			for (int i=0;i<ufeats.length;i++) {
-				if (ufeats[i].getParent() == typepanel) {
-					typepanel.remove(ufeats[i]);
-					typepanel.remove(ufeatlbl[i]);
-				}
-			}
-		} else if(current_unit.training.equals(Unit.trainings[1])) {//regulars
-			if (!(ufeats[0].getParent() == typepanel)) {
-				typepanel.remove(ufeats[0]);
-				typepanel.remove(ufeatlbl[0]);
-			}			
-			if (ufeats[1].getParent() == typepanel) {
-				typepanel.remove(ufeats[1]);
-				typepanel.remove(ufeatlbl[1]);
-			}
-		} else {//elites
-			for (int i=0;i<ufeats.length;i++) {
-				if (!(ufeats[i].getParent() == typepanel)) {
-					typepanel.add(ufeats[i]);
-					typepanel.add(ufeatlbl[i]);
-				}
-			}
-		}*/
-		for (int i=0;i<feats.length;i++) {
-			
-		}
-	}
-	
-	public static void visualsToUnit() {
-		try {
-			current_unit.race = UnitTab.listofraces.get(Utility.findRace((String) race.getSelectedItem()));
+	public static void updateRacePanel() {
+		try {//update the racepanel
 			if (current_unit.race.hasfixedabilities) {
 				racepanel.remove(statlabel);
 				racepanel.remove(stat);
+				racepanel.remove(raceplaceholder);
 			}else {
 				racepanel.remove(mountbtn);
 				racepanel.add(statlabel);
 				racepanel.add(stat);
+				racepanel.add(raceplaceholder);
 				racepanel.add(mountbtn);
 			}
+			int k;
+			for (int i=0;i<totstat.length;i++) {
+				totstat[i].setText(Integer.toString(current_unit.stats[i]));
+			}
 			racepanel.revalidate();
-		} catch (Exception e) {
-			
+		} catch (IndexOutOfBoundsException e) {
+			//this should only be thrown on startup
+		} catch (NullPointerException ex) {
+			//this should only be thrown opening the unit window without any race selected (like first time opening that units window)
 		}
 	}
 	
-	public static void calculateOutputs() {//calculates all the calculated values of the unit and 
+	public static void updateTypePanel() {
+		try {
+			for (int i=0;i<2;i++) {
+				typepanel.remove(feats[i]);
+				typepanel.remove(featlbl[i]);
+				typepanel.remove(ufeats[i]);
+				typepanel.remove(ufeatlbl[i]);
+				typepanel.remove(typeplaceholder[i]);
+				typepanel.remove(typeplaceholder[2+i]);
+			}
+			typepanel.remove(feats[2]);
+			typepanel.remove(featlbl[2]);
+			int k = 0;
+			System.out.println("Training of current unit: "+current_unit.training);
+			if (current_unit.training.equals("Regular"))
+				k = 1;
+			else if (current_unit.training.equals("Elite"))
+				k = 2;
+			for (int i=0;i<k;i++) {
+				typepanel.add(featlbl[i]);
+				typepanel.add(feats[i]);
+				typepanel.add(ufeatlbl[i]);
+				typepanel.add(ufeats[i]);
+			}
+			if (k==1||k==0) {
+				for (int i=k;i<feats.length-1;i++) {
+					typepanel.add(featlbl[i]);
+					typepanel.add(feats[i]);
+					typepanel.add(typeplaceholder[2*i]);
+					typepanel.add(typeplaceholder[2*i+1]);
+				}
+			}
+			if (current_unit.race.feat) {
+				typepanel.add(featlbl[2]);
+				typepanel.add(feats[2]);
+			}
+		} catch (NullPointerException e) {
+		}
+	}
+	
+	public static void visualsToUnit() {//visual layer->current_unit
+		try {
+			if (!(race.getSelectedItem()==null))
+				current_unit.race = UnitTab.listofraces.get(Utility.findRace((String) race.getSelectedItem()));
+			for (int i=0;i<6;i++)
+				current_unit.stats[i] = Integer.parseInt(pointbuy[i].getText());
+			current_unit.type = (String) typeboxes[0].getSelectedItem();
+			current_unit.subtype = (String) typeboxes[1].getSelectedItem();
+			current_unit.training = (String) typeboxes[2].getSelectedItem();
+			current_unit.training_type = (String) typeboxes[3].getSelectedItem();
+			for (int i=0;i<3;i++)
+				current_unit.feat[i] = (String) feats[i].getSelectedItem();
+			if (!current_unit.race.feat)
+				current_unit.feat[2] = "";
+			for (int i=0;i<2;i++)
+				current_unit.unit_feat[i] = (String) ufeats[i].getSelectedItem();
+			if (!current_unit.training.equals("Elite")) {
+				current_unit.unit_feat[1] = "";
+				if (!current_unit.training.equals("Regular"))
+					current_unit.unit_feat[0] = "";
+			}
+			for (int i=0;i<3;i++) {
+				current_unit.weapons[i].name = eqname[i].getText();
+				current_unit.weapons[i].cost = Integer.parseInt(eqcost[i].getText());
+				current_unit.weapons[i].damage_dice = Integer.parseInt(wpdice[i].getText());
+				current_unit.weapons[i].type = (String) eqtype[i].getSelectedItem();
+				current_unit.weapons[i].weight = Integer.parseInt(eqwgt[i].getText());
+			}
+			current_unit.armour.name = eqname[3].getText();
+			current_unit.armour.cost = Integer.parseInt(eqcost[3].getText());
+			current_unit.armour.max_dex = Integer.parseInt(mxdex[0].getText());
+			current_unit.armour.ac = Integer.parseInt(ac[0].getText());
+			current_unit.armour.type = (String) eqtype[3].getSelectedItem();
+			current_unit.armour.weight = Integer.parseInt(eqwgt[3].getText());
+			
+			current_unit.shield.name = eqname[4].getText();
+			current_unit.shield.cost = Integer.parseInt(eqcost[4].getText());
+			current_unit.shield.max_dex = Integer.parseInt(mxdex[1].getText());
+			current_unit.shield.ac = Integer.parseInt(ac[1].getText());
+			current_unit.shield.type = (String) eqtype[4].getSelectedItem();
+			current_unit.shield.weight = Integer.parseInt(eqwgt[4].getText());
+		} catch (IndexOutOfBoundsException e) {
+			//this should only be thrown on startup
+			System.out.println("could not update visuals to unit: INDEXERROR");
+		} catch (NullPointerException ex) {
+			//this should only be thrown opening the unit window without any race selected (like first time opening that units window)
+			System.out.println("could not update visuals to unit: NULLERROR");
+		}
+	}
+	
+	public static void calculateOutputsPanel() {//calculates all the calculated values of the unit and 
 										   //displays it in the appropriate visual context
 	}
 	
 	public static void update() {
 		//update unit from visuals
-		
-		//update visuals from unit
-		updateComboBoxes();
 		visualsToUnit();
+		//update visuals from unit
+		updateRacePanel();
+		updateTypePanel();
+		updateComboBoxes();
 		//current_unit.updateUnit();
+		
 	}
 	
-	public static void saveCurrentUnit() {
-		//get all data from visual layer into current_unit
+	public static void saveCurrentUnit() {//visual->current_unit//listofunits(NH)//savelayer
+		//visual->current_unit
+		update();
+		//current_unit->listofunits
+		
+		
+		//save listofunits
+		
 		String[] unitstr = new String[67];
 		//variables from unit tab
 		unitstr[0] = current_unit.name;

@@ -59,6 +59,10 @@ public class Unit {
 			this.weapons[i] = new Weapon();
 			this.saves[i] = 0;
 		}
+		this.type = "";
+		this.subtype = "";
+		this.training = "";
+		this.training_type = "";
 	}
 	
 	public void setUnit(String[] s) {//set unit from string
@@ -198,7 +202,7 @@ public class Unit {
 			this.cost_of_one_mount = Integer.parseInt(s[13]);
 			this.footing = s[14];
 			this.base_speed = Integer.parseInt(s[15]);
-			if (!s[16].equals("")) {
+			if (!s[16].equals("no_mount")) {
 				String[] mountarmourstring = Arrays.copyOfRange(s,16,s.length);
 				this.armour.setArmour(mountarmourstring);
 			}
@@ -238,7 +242,7 @@ public class Unit {
 			this.training_cost += this.stat_mods[i]*5;
 		this.training_cost += this.speed;//minus if dash or fast
 		//racethings
-		this.training_cost += (this.race.natac+this.race.drmm)*15+(this.race.miscac+this.race.drbps+this.race.natattackdice+
+		this.training_cost += (this.race.natac+this.race.drmm)*15+(this.race.miscac+this.race.drbps+this.race.natattackdiceint+
 				this.race.natattacks-1)*10;
 		if (this.race.size.equals(Race.sizes[0]))
 			this.training_cost -= 80;
