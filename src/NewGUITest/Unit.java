@@ -28,7 +28,7 @@ public class Unit {
 
 	//unit-specific variables
 	public String[] available_feats = {};
-	public String[] available_unit_feats= {};
+	public String[] available_unit_feats = {};
 	public int training_cost = 0;
 	public int equipment_cost = 0;
 	public int mount_cost = 0;
@@ -42,22 +42,33 @@ public class Unit {
 	public int[] saves = new int[3];
 	
 	//static variables
-	static public String[] types = {"","Infantry","Cavalry","Aerial Infantry","Aerial Cavalry"};
-	static public String[] subtypes = {"","Archer","Combat Engineer","Crusading","Garrison","Mercenary","Penal","Personal","Scout",
+	static public String[] types = {"Infantry","Cavalry","Aerial Infantry","Aerial Cavalry"};
+	static public String[] subtypes = {"None","Archer","Combat Engineer","Crusading","Garrison","Mercenary","Penal","Personal","Scout",
 			"Slayer","Worker"};
-	static public String[] trainings = {"","Irregular","Regular","Elite"};
-	static public String[] training_types = {"","Light","Medium","Heavy"};
-	static public String[] feats = {"","Crossbow Sniper","Dash","Deadly Aim","Dodge","Exotic Weapon Proficiency","Mounted Archery","Mounted Combat",
-			"Power Attack","Rapid Reload","Shield Focus","Toughness","Weapon Finesse","Weapon Focus (W1)","Weapon Focus (W2)","Weapon Focus (W3)"};
-	static public String[] unit_feats = {"","Brave","Disciplined","Fast","Mage-Trained","Mount Attack","Precision Drill","Skilled Defenders",
+	static public String[] trainings = {"Irregular","Regular","Elite"};
+	static public String[] training_types = {"Light","Medium","Heavy"};
+	static public String[] feats = {"","Crossbow Sniper","Dash","Deadly Aim","Dodge","Exotic Weapon Proficiency","Mounted Archery","Mounted Combat","Piranha Strike",
+			"Power Attack","Rapid Reload","Shield Focus","Slashing Grace","Toughness","Weapon Finesse","Weapon Focus (W1)","Weapon Focus (W2)","Weapon Focus (W3)"};
+	static public String[] unit_feats = {"Brave","Disciplined","Fast","Mage-Trained","Mount Attack","Precision Drill","Skilled Defenders",
 			"Terrain-Trained (Light Forest)","Terrain-Trained (Dense Forest)","Terrain-Trained (Marsh)","Terrain-Trained (Rocky)"
 			,"Terrain-Trained (Glacier)","Unbreakable"};
-	
+	static public int[] lgt_load = {3,6,10,13,16,20,23,26,30,33,38,43,50,58,66,76,86,100,116,133,153,173,200,233,266,306,346,400,466};//light load limits str 1-29
+	static public int[] ability_cost = {-4,-2,-1,0,1,2,3,5,7,10,13,17};//cost of ability score 7-18
+	static public int[] baseweight = {0,1,4,34,190,2250,18000,140000,250000};//[F,D,T,S,M,L,H,G,C] = [0,1,4,34,190,2250,18000,140000,250000]lbs as base weight for the creatures
+	static public double[] carry_multiplier_bi = {1/8,1/4,1/2,3/4,1,2,4,8,16};
+	static public double[] carry_multiplier_quad = {1/4,1/2,3/4,1,1.5,3,6,12,24};	
 	
 	public Unit() {
 		for (int i=0;i<this.weapons.length;i++) {
 			this.weapons[i] = new Weapon();
 			this.saves[i] = 0;
+			this.feat[i] = "";
+			if (i<2)
+				this.unit_feat[i] = "";
+		}
+		for (int i=0;i<6;i++) {
+			this.stats[i] = 10;
+			this.stat_mods[i] = 0;
 		}
 		this.type = "";
 		this.subtype = "";
@@ -109,13 +120,13 @@ public class Unit {
 	
 	public class Weapon {
 		
-		public String name;
-		public int cost;
-		public int damage_dice;
-		public String type;
-		public int weight;
-		public int AB;
-		public int AP;
+		public String name = "";
+		public int cost = 0;
+		public int damage_dice = 0;
+		public String type = "";
+		public int weight = 0;
+		public int AB = 0;
+		public int AP = 0;
 		
 		public String[] types = {"","Ranged","One-Handed","Two-Handed","Light"};
 		
@@ -137,12 +148,12 @@ public class Unit {
 	
 	public class Armour {
 		
-		public String name;
-		public int cost;
-		public int max_dex;
-		public int ac;
-		public String type;
-		public int weight;
+		public String name = "";
+		public int cost = 0;
+		public int max_dex = 10;
+		public int ac = 0;
+		public String type = "";
+		public int weight = 0;
 		
 		public String[] armourtypes = {"","Light","Medium","Heavy"};
 		public String[] shieldtypes = {"","Light","Heavy","Tower Shield"};
@@ -166,23 +177,24 @@ public class Unit {
 	
 	public class Mount {
 		
-		public String name;
-		public String type;
-		public String hd_type;
+		public String name = "";
+		public String type = "";
+		public String hd_type = "";
 		public int[] stats = new int[3];
 		public boolean undead = false;
-		public String size;
-		public int natural_armour;
-		public int number_of_hd;
-		public int damage_dice;
-		public int number_of_attacks;
-		public int cost_of_one_mount;
-		public String footing;
-		public int base_speed;
+		public String size = "Large";
+		public int natural_armour = 0;
+		public int number_of_hd = 1;
+		public int damage_dice = 0;
+		public int number_of_attacks = 1;
+		public int cost_of_one_mount = 0;
+		public String footing = "Quadrupedal";
+		public int base_speed = 30;
 		public Armour armour = new Armour();
 		
 		public Mount() {
-			
+			for (int i=0;i<this.stats.length;i++)
+				this.stats[i] = 0;
 		}
 		
 		public void setMount(String[] s) {
@@ -210,7 +222,10 @@ public class Unit {
 	}
 	
 	public void getUnitCost() {
-		Lord lord = NationHandler.listoflords.get(Utility.findLord(unit_lord));
+		System.out.println("UNIT! getUnitCost");
+		if (this.unit_lord==null) 
+			this.unit_lord = NationHandler.listoflords.get(0).name;
+		Lord lord = NationHandler.listoflords.get(Utility.findLord(this.unit_lord));
 		double training_mod = lord.modifiers[21];
 		double eq_mod = lord.modifiers[22];
 		double slavery = 0.75;
@@ -277,24 +292,26 @@ public class Unit {
 			training_mod = training_mod*slavery;
 		//unit feats
 		for (int i=0;i<this.unit_feat.length;i++) {
-			if (this.unit_feat[i].equals("Brave"))
-				this.training_cost += 20;
-			else if (this.unit_feat[i].equals("Disciplined"))
-				this.training_cost += 30;
-			else if (this.unit_feat[i].equals("Fast"))
-				this.training_cost += 50;
-			else if (this.unit_feat[i].equals("Mage-Trained"))
-				this.training_cost += 50;
-			else if (this.unit_feat[i].equals("Mount Attack"))
-				mount_attack = true;
-			else if (this.unit_feat[i].equals("Precision Drill"))
-				this.training_cost += 10;
-			else if (this.unit_feat[i].equals("Skilled Defenders"))
-				this.training_cost += 20;
-			else if (this.unit_feat[i].contains("Terrain"))
-				this.training_cost += 50;
-			else if (this.unit_feat[i].equals("Unbreakable"))
-				this.training_cost += 30;
+			if (this.unit_feat[i]!=null) {
+				if (this.unit_feat[i].equals("Brave"))
+					this.training_cost += 20;
+				else if (this.unit_feat[i].equals("Disciplined"))
+					this.training_cost += 30;
+				else if (this.unit_feat[i].equals("Fast"))
+					this.training_cost += 50;
+				else if (this.unit_feat[i].equals("Mage-Trained"))
+					this.training_cost += 50;
+				else if (this.unit_feat[i].equals("Mount Attack"))
+					mount_attack = true;
+				else if (this.unit_feat[i].equals("Precision Drill"))
+					this.training_cost += 10;
+				else if (this.unit_feat[i].equals("Skilled Defenders"))
+					this.training_cost += 20;
+				else if (this.unit_feat[i].contains("Terrain"))
+					this.training_cost += 50;
+				else if (this.unit_feat[i].equals("Unbreakable"))
+					this.training_cost += 30;
+			}
 		}
 		//mount
 		if (this.type.contains("Cavalry")) {
@@ -341,20 +358,29 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 		
 		//available feats
 		List<String> av_feats = new ArrayList<>(Arrays.asList(feats));
-		boolean crs = false;
-		boolean mntd = false;
+		boolean crs = true;
+		boolean mta = true;
+		boolean pst = true;
 		for (int i=0;i<this.feat.length;i++) {
-			if (this.feat[i].equals("Weapon Focus (W1)")&&this.weapons[0].type.equals("Ranged")&&this.weapons[0].name.contains("Cross")||
-					this.feat[i].equals("Weapon Focus (W2)")&&this.weapons[1].type.equals("Ranged")&&this.weapons[1].name.contains("Cross")||
-					this.feat[i].equals("Weapon Focus (W3)")&&this.weapons[2].type.equals("Ranged")&&this.weapons[2].name.contains("Cross"))
-				crs = true;
-			if (this.feat[i].equals("Mounted Combat"))
-				mntd = true;
+			if (this.feat[i]!=null) {
+				if (this.feat[i].equals("Weapon Focus (W1)")||
+						this.feat[i].equals("Weapon Focus (W2)")||
+						this.feat[i].equals("Weapon Focus (W3)"))
+					crs = false;
+				if (this.feat[i].equals("Mounted Combat"))
+					mta = false;
+				if (this.feat[i].equals("Weapon Finesse"))
+					pst = false;
+			}
 		}
-		if (!(crs))
+		if (crs)
 			av_feats.remove("Crossbow Sniper");
-		if (!(mntd))
+		if (mta)
 			av_feats.remove("Mounted Archery");
+		if (pst)
+			av_feats.remove("Piranha Strike");
+		if (pst||crs||this.stats[1]<13)
+			av_feats.remove("Slashing Grace");
 		if (this.stats[0]<13)
 			av_feats.remove("Power Attack");
 		if (this.stats[1]<13) {
@@ -373,17 +399,17 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 			unitf.remove("Unbreakable");
 		this.available_unit_feats = unitf.toArray(new String[0]);
 		
-		//calculate stats
-		int mab = 0;
-		int map = 0;
-		int rab = 0;
-		int rap = 0;
+		//calculate type
 		for (int i=0;i<6;i++)
 			this.stat_mods[i] = (int) Math.floor((this.stats[i]-10)/2);
 		this.W = 2;
 		if (this.type.contains("Cavalry"))
 			this.W = 3;
-			//training mods
+			//training/training_type
+		int mab = 0;
+		int map = 0;
+		int rab = 0;
+		int rap = 0;
 		if (this.training.equals("Irregular")) {
 			this.saves[2] = 0;
 			this.T = 1;
@@ -457,10 +483,190 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 				this.saves[1] = 1;
 			}
 		}
-			//racials
+			//base values
+		this.T += 20;
+		this.saves[0] += 2;
+			//subtypes
+		boolean dis = false;
+		boolean fas = false;
+		for (int i=0;i<this.unit_feat.length;i++) {
+			if (this.unit_feat[i]!=null) {
+				if (this.unit_feat[i].equals("Disciplined"))
+					dis = true;
+				if (this.armour.type!=null)
+					if (this.unit_feat[i].equals("Fast")&&(!(this.armour.type.equals("Medium"))&&!(this.armour.type.equals("Heavy"))))
+						fas = true;
+			}
+		}
+		if (dis)
+			this.C += 2;
+		if (fas)
+			this.speed = 5;
+		else 
+			this.speed = 0;
+			//racials&stats
 		if (this.race.isundead) {
-			
-		} //else if (this.race.statsinuse[1]&&)
+			this.saves[0] += this.stat_mods[5];
+			this.T += this.stat_mods[5];
+		} else {
+			this.saves[0] += this.stat_mods[2];
+			this.T += this.stat_mods[2];
+		}
+		this.saves[1] += this.stat_mods[1];
+		this.saves[2] += this.stat_mods[4];
+		this.speed += this.race.basespeed;
+		this.C += this.stat_mods[3];
+		this.M += this.stat_mods[5];
+			//feats: check
+		crs = false;
+		boolean lgh = false;
+		boolean cav = this.type.contains("Cavalry")&&this.mount!=null;
+		boolean dai = false;
+		boolean das = false;
+		boolean dod = false;
+		boolean mcb = false;
+		boolean pwa = false;
+		boolean shf = false;
+		boolean tou = false;
+		boolean wfi = false;
+		boolean slg = false;
+		pst = false;
+		int[] attack = new int[this.weapons.length];
+		int[] power = new int[this.weapons.length];
+		for (int i=0;i<this.weapons.length;i++) {
+			attack[i] = 0;
+			power[i] = 0;
+		}
+		int wgt = 0;
+		for (int i=0;i<this.weapons.length;i++)
+			wgt += this.weapons[i].weight;
+		wgt += this.armour.weight+this.shield.weight;
+		int cac = 0;
+		//cavalry conditions
+		if (cav) {
+			//check if light load
+			wgt += this.mount.armour.weight+baseweight[Utility.findSize(this.race.size)];
+			if (this.mount.footing.equals("Bipedal"))
+				cac = (int) Math.floor(lgt_load[this.stats[0]-1]*carry_multiplier_bi[Utility.findSize(this.mount.size)]);
+			else 
+				cac = (int) Math.floor(lgt_load[this.stats[0]-1]*carry_multiplier_quad[Utility.findSize(this.mount.size)]);
+			if (wgt<=cac)
+				lgh = true;
+			this.speed += this.mount.base_speed;
+			for (String s:this.feat) {
+				//check which feats are selected
+				if (s==null)
+					continue;
+				if (s.equals("Mounted Combat"))
+					mcb = true;
+			}
+		//infantry conditions
+		} else {
+			//check if light load
+			if (this.race.bipedal)
+				cac = (int) Math.floor(lgt_load[this.stats[0]-1]*carry_multiplier_bi[Utility.findSize(this.race.size)]);
+			else 
+				cac = (int) Math.floor(lgt_load[this.stats[0]-1]*carry_multiplier_quad[Utility.findSize(this.race.size)]);
+			if (wgt<=cac)
+				lgh = true;
+			for (String s:this.feat) {
+				//check which feats are selected
+				if (s==null)
+					continue;
+				if (s.equals("Dash")&&lgh)
+					das = true;
+			}
+		}
+		//general feats for both cav and inf
+		for (String s:this.feat) {
+			if (s==null)
+				continue;
+			if (s.equals("Toughness"))
+				tou = true;
+			if (s.equals("Shield Focus")&&this.shield.ac!=0)
+				shf = true;
+			if (s.equals("Power Attack"))
+				pwa = true;
+			if (s.equals("Weapon Finesse"))
+				wfi = true;
+			if (s.equals("Deadly Aim"))
+				dai = true;
+			if (s.equals("Dodge"))
+				dod = true;
+			if (s.equals("Piranha Strike"))
+				pst = true;
+			if (s.equals("Crossbow Sniper"))
+				crs = true;
+			if (s.equals("Slashing Grace"))
+				slg = true;
+		}
+			//feat effects
+		if (das)
+			this.speed += 5;
+		if (dai) {
+			rap += 2;
+			rab -= 1;
+		}
+		if (dod)
+			this.AC = 11;
+		else
+			this.AC = 10;
+		if (mcb)
+			System.out.println("this is a bit advanced");
+		if (shf)
+			this.AC += 1;
+		if (tou)
+			this.T += 1;
+		//weapon feats & damage dice
+		boolean[] wpnfin = new boolean[3];
+		for (int i=0;i<this.weapons.length;i++) {
+			wpnfin[i] = true;
+			power[i] += this.weapons[i].damage_dice;
+			String focus = "Weapon Focus (W"+Integer.toString(i+1)+")";
+			for (String s:feat) {
+				if (s!=null)
+					if (s.equals(focus)) {
+						attack[i] += 1;
+						if (crs&&this.weapons[i].type.equals("Ranged")&&this.weapons[i].name.toLowerCase().contains("cross"))
+							power[i] += (int) Math.floor(this.stat_mods[1]/2);
+					}
+			}
+			if ((this.weapons[i].type.equals("Light")||this.weapons[i].type.equals("One-Handed"))&&slg) {
+				attack[i] += this.stat_mods[1]-this.stat_mods[0];
+				power[i] += this.stat_mods[1]-this.stat_mods[0];
+				wpnfin[i] = false;
+			} else if(this.weapons[i].type.equals("Light")&&pst) {
+				attack[i] -= 1;
+				power[i] += 2;
+			} else if (pwa) {
+				attack[i] -= 1;
+				power[i] += 2;
+				if (this.weapons[i].type.equals("Two-Handed"))
+					power[i] += 1;
+			}
+			if (wpnfin[i]&&this.weapons[i].type.equals("Light")&&wfi) {
+				attack[i] += this.stat_mods[1]-this.stat_mods[0];
+				wpnfin[i] = false;
+			}
+		}
+			//unit feats
+		
+			//weapons
+		for (int i=0;i<this.weapons.length;i++) {
+			if (this.weapons[i].type.equals("Ranged")) {
+				this.weapons[i].AB = rab+attack[i]+this.stat_mods[1];
+				this.weapons[i].AP = rap+power[i];
+			} else {
+				this.weapons[i].AB = mab+attack[i]+this.stat_mods[0];
+				this.weapons[i].AP = map+power[i]+this.stat_mods[0];
+				if (this.weapons[i].type.equals("Two-Handed")) {
+					this.weapons[i].AP += Math.floor(this.stat_mods[0]/2);
+				}
+			}
+		}
+			//armour
+		this.AC += this.armour.ac+this.shield.ac;
+		this.AC += Math.min(Math.min(this.shield.max_dex,this.armour.max_dex),this.stat_mods[1]);
 		this.getUnitCost();
 	}
 }

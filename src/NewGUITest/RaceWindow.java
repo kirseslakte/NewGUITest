@@ -89,6 +89,7 @@ public class RaceWindow{
 		Button close = new Button("Save & Close");
 		close.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
+				saveActiveRace();
 				stop();
 			}
 		});
@@ -173,7 +174,6 @@ public class RaceWindow{
 	}
 	
 	public static void stop() {
-		saveActiveRace();
 		UnitTab.clearRaces();
 		UnitWindow.update();
 		racewindow.setVisible(false);

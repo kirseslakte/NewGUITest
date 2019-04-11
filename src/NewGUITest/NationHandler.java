@@ -69,7 +69,7 @@ public class NationHandler extends JFrame{
 		System.out.println("Hexes loaded");
 		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPane()));//loaded after all the lords
 		mainPane.addTab("Culture & Portfolio", new JScrollPane(Culture.culturePane()));
-		unitTab();
+		mainPane.addTab("Units", new JScrollPane(UnitTab.unitTab()));
 		recalibrateLords();
 		//System.out.println("first recalibration of hexes");
 		recalibrateHexes();
@@ -92,6 +92,9 @@ public class NationHandler extends JFrame{
 			lord.updateLord();
 		}
 		listoflords.get(0).updateLord();//extra call in order to update the overlord
+		CommentsTab.init();
+		mainPane.addTab("Notes", new JScrollPane(CommentsTab.text_panel));
+		ReadNWrite.loadNotes();
 		System.out.println("NationHandler Almost done");
 		//update the nationpanes of the lords
 		//load notes
@@ -109,6 +112,7 @@ public class NationHandler extends JFrame{
 		ReadNWrite.saveUnit(listofunits);
 		ReadNWrite.saveRoute(listofroutes);
 		ReadNWrite.saveOfficial(listofofficials);
+		ReadNWrite.saveNotes();
 		UnitTab.save();//save races?
 	}//that was pretty straight forward, right?
 	
@@ -177,10 +181,6 @@ public class NationHandler extends JFrame{
 	public static void addVassalTab(String lord) {
 		//System.out.println("NATIONHANDLER! addVassalTab");
 		mainPane.addTab(lord,listoflords.get(Utility.findLord(lord)).setPanel(false));
-	}
-	
-	public static void unitTab() {
-		mainPane.addTab("Units", new JScrollPane(UnitTab.unitTab()));
 	}
 	
 	public static void recalibrateHexes() {

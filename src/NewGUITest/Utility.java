@@ -85,4 +85,13 @@ public class Utility {
 		
 		return -1;
 	}
+	
+	public static int findSize(String s){
+		for (int i=0;i<Race.sizes.length;i++) {
+			if (s.equals(Race.sizes[i]))
+				return i;
+		}
+		
+		return -1;
+	}
 }

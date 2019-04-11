@@ -368,6 +368,27 @@ public class ReadNWrite {
 		return listofraces;
 	}
 	
+	public static void loadNotes() {
+		String s = directory+"\\notes"+filetype;
+		File file = new File(s);
+		try {
+			Scanner sc = new Scanner(file);
+			s = sc.nextLine();
+			CommentsTab.text.setText(s);
+			sc.close();
+		} catch (java.io.FileNotFoundException e) {
+			System.out.println("Notes file not found, creating new file!");
+			try {
+				file.createNewFile();
+			} catch (Exception x) {
+				System.out.println(x);
+			}
+			loadNotes();
+		} catch (java.util.NoSuchElementException ex) {
+			
+		}
+	}
+	
 	////SAVE METHODS////
 	
 	//Saving hex
@@ -614,6 +635,21 @@ public class ReadNWrite {
 				fw.write(race.hasfixedabilities+System.getProperty("line.separator"));
 				fw.write(separator+System.getProperty("line.separator"));
 			}
+			fw.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+	
+	public static void saveNotes() {
+		String s = directory+"\\notes"+filetype;
+		File file = new File(s);
+		file.delete();
+		try {
+			file.createNewFile();
+			FileWriter fw = new FileWriter(file);
+			s = CommentsTab.text.getText();
+			fw.write(s);
 			fw.close();
 		} catch (Exception e) {
 			System.out.println(e);

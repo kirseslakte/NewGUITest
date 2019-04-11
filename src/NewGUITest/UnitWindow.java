@@ -52,7 +52,7 @@ public class UnitWindow {
 	static JLabel[] op = new JLabel[13];
 	static String[] outputtags = {"Toughness","Wounds","Morale","Command","Speed","AC","Fort","Ref","Will","Training Cost","Equipment Cost",
 			"Mount Cost","Total Cost"};
-	static String[] abilities = {"Strength","Constitution","Dexterity","Intelligence","Wisdom","Charisma"};
+	static String[] abilities = {"Strength","Dexterity","Constitution","Intelligence","Wisdom","Charisma"};
 	
 	
 	public UnitWindow() {
@@ -233,17 +233,18 @@ public class UnitWindow {
 		mainpanel.add(outputpanel);
 		
 		unitwindow.add(mainpanel);
-		
+		/*
 		for (int i=0;i<3;i++) {
-			eqtype[i] = new JComboBox<String>();
-			for (String s:current_unit.armour.armourtypes)
+			eqtype[i].removeAll();
+			for (String s:current_unit.weapons[i].types)
 				eqtype[i].addItem(s);
 		}
-		for (int i=3;i<5;i++) {
-			eqtype[i] = new JComboBox<String>();
-			for (String s:current_unit.armour.shieldtypes)
-				eqtype[i].addItem(s);
-		}
+		eqtype[3].removeAll();
+		for (String s:current_unit.armour.armourtypes)
+			eqtype[3].addItem(s);
+		eqtype[4].removeAll();
+		for (String s:current_unit.armour.shieldtypes)
+			eqtype[4].addItem(s);*/
 		update();
 		MountWindow.initialize();
 	}
@@ -305,6 +306,13 @@ public class UnitWindow {
 		}
 	}
 	
+	public static void updateEquipmentPanel() {
+		for (int i=0;i<current_unit.weapons.length;i++) {
+			wpatk[i].setText(Integer.toString(current_unit.weapons[i].AB));
+			wppwr[i].setText(Integer.toString(current_unit.weapons[i].AP));
+		}
+	}
+	
 	public static void updateTypePanel() {
 		try {
 			for (int i=0;i<2;i++) {
@@ -318,7 +326,6 @@ public class UnitWindow {
 			typepanel.remove(feats[2]);
 			typepanel.remove(featlbl[2]);
 			int k = 0;
-			System.out.println("Training of current unit: "+current_unit.training);
 			if (current_unit.training.equals("Regular"))
 				k = 1;
 			else if (current_unit.training.equals("Elite"))
@@ -340,17 +347,39 @@ public class UnitWindow {
 			if (current_unit.race.feat) {
 				typepanel.add(featlbl[2]);
 				typepanel.add(feats[2]);
-			}
+			} else
+				feats[2].setSelectedItem("");
 		} catch (NullPointerException e) {
 		}
+	}
+	
+	public static void updateOutputPanel() {
+		op[0].setText(Integer.toString(current_unit.T));
+		op[1].setText(Integer.toString(current_unit.W));
+		op[2].setText(Integer.toString(current_unit.M));
+		op[3].setText(Integer.toString(current_unit.C));
+		op[4].setText(Integer.toString(current_unit.speed));
+		op[5].setText(Integer.toString(current_unit.AC));
+		op[6].setText(Integer.toString(current_unit.saves[0]));
+		op[7].setText(Integer.toString(current_unit.saves[1]));
+		op[8].setText(Integer.toString(current_unit.saves[2]));
+		op[9].setText(Integer.toString(current_unit.training_cost));
+		op[10].setText(Integer.toString(current_unit.equipment_cost));
+		op[11].setText(Integer.toString(current_unit.mount_cost));
+		op[12].setText(Integer.toString(current_unit.total_cost));
 	}
 	
 	public static void visualsToUnit() {//visual layer->current_unit
 		try {
 			if (!(race.getSelectedItem()==null))
 				current_unit.race = UnitTab.listofraces.get(Utility.findRace((String) race.getSelectedItem()));
-			for (int i=0;i<6;i++)
+			for (int i=0;i<6;i++) {
 				current_unit.stats[i] = Integer.parseInt(pointbuy[i].getText());
+				if (!(current_unit.race.hasfixedabilities)&&stat.getSelectedItem().equals(abilities[i]))
+					current_unit.stats[i] += 2;
+				if (current_unit.race.hasfixedabilities)
+					current_unit.stats[i] += current_unit.race.stats[i];
+			}
 			current_unit.type = (String) typeboxes[0].getSelectedItem();
 			current_unit.subtype = (String) typeboxes[1].getSelectedItem();
 			current_unit.training = (String) typeboxes[2].getSelectedItem();
@@ -395,18 +424,16 @@ public class UnitWindow {
 		}
 	}
 	
-	public static void calculateOutputsPanel() {//calculates all the calculated values of the unit and 
-										   //displays it in the appropriate visual context
-	}
-	
 	public static void update() {
 		//update unit from visuals
 		visualsToUnit();
+		current_unit.updateUnit();
 		//update visuals from unit
 		updateRacePanel();
+		updateEquipmentPanel();
 		updateTypePanel();
+		updateOutputPanel();
 		updateComboBoxes();
-		//current_unit.updateUnit();
 		
 	}
 	
