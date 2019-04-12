@@ -47,3 +47,4 @@ type					64
 weight					65
 unit_lord				66
 number_of_units				67
+statup					68

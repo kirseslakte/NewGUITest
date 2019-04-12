@@ -73,6 +73,9 @@ public class NationHandler extends JFrame{
 		recalibrateLords();
 		//System.out.println("first recalibration of hexes");
 		recalibrateHexes();
+		System.out.println("loading races");
+		UnitTab.loadRaces();
+		System.out.println("races loaded");
 		System.out.println("loading units");
 		listofunits = ReadNWrite.loadUnits();
 		System.out.println("Units loaded");
@@ -93,8 +96,8 @@ public class NationHandler extends JFrame{
 		}
 		listoflords.get(0).updateLord();//extra call in order to update the overlord
 		CommentsTab.init();
-		mainPane.addTab("Notes", new JScrollPane(CommentsTab.text_panel));
-		ReadNWrite.loadNotes();
+		//mainPane.addTab("Notes", new JScrollPane(CommentsTab.text_panel));
+		//ReadNWrite.loadNotes();
 		System.out.println("NationHandler Almost done");
 		//update the nationpanes of the lords
 		//load notes
@@ -112,8 +115,8 @@ public class NationHandler extends JFrame{
 		ReadNWrite.saveUnit(listofunits);
 		ReadNWrite.saveRoute(listofroutes);
 		ReadNWrite.saveOfficial(listofofficials);
-		ReadNWrite.saveNotes();
-		UnitTab.save();//save races?
+		//ReadNWrite.saveNotes();
+		UnitTab.saveRaces();//save races?
 	}//that was pretty straight forward, right?
 	
 	public static void removeLord(int lordindex) {
@@ -160,6 +163,8 @@ public class NationHandler extends JFrame{
 		recalibrateLords();
 		recalibrateHexes();
 		getOfficials();
+		UnitTab.setUnits();
+		getUnitTabInfo();
 	}
 	
 	public static void mainSetup(String s) {
@@ -239,6 +244,14 @@ public class NationHandler extends JFrame{
 		for (int k=i+1;k<tempunitlist.size();k++)
 			listofunits.add(tempunitlist.get(k));
 		ReadNWrite.saveUnit(listofunits);
+	}
+	
+	public static void getUnitTabInfo() {
+		for (int i=0;i<listofunits.size();i++) {
+			listofunits.get(i).name = UnitTab.names.get(i).getText();
+			listofunits.get(i).unit_lord = (String) UnitTab.lords.get(i).getSelectedItem();
+			listofunits.get(i).number_of_units = (int) Integer.parseInt(UnitTab.amounts.get(i).getText());
+		}
 	}
 	
 	public void initializeHex() {

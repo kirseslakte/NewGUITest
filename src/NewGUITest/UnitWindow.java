@@ -32,7 +32,7 @@ public class UnitWindow {
 	static JComboBox<String>[] feats = new JComboBox[3];
 	static JLabel[] ufeatlbl = new JLabel[2];
 	static JComboBox<String>[] ufeats = new JComboBox[2];
-	static JLabel[] typeplaceholder = new JLabel[4];
+	static JLabel[] typeplaceholder = new JLabel[6];
 	static Button savebtn = new Button("Save & Update");
 	static Button clrbtn = new Button("Clear Unit");
 	
@@ -201,7 +201,8 @@ public class UnitWindow {
 
 		savebtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				saveCurrentUnit();
+				update();
+				NationHandler.saveNation();
 			}
 		});
 		outputpanel.add(savebtn);
@@ -233,18 +234,6 @@ public class UnitWindow {
 		mainpanel.add(outputpanel);
 		
 		unitwindow.add(mainpanel);
-		/*
-		for (int i=0;i<3;i++) {
-			eqtype[i].removeAll();
-			for (String s:current_unit.weapons[i].types)
-				eqtype[i].addItem(s);
-		}
-		eqtype[3].removeAll();
-		for (String s:current_unit.armour.armourtypes)
-			eqtype[3].addItem(s);
-		eqtype[4].removeAll();
-		for (String s:current_unit.armour.shieldtypes)
-			eqtype[4].addItem(s);*/
 		update();
 		MountWindow.initialize();
 	}
@@ -294,10 +283,8 @@ public class UnitWindow {
 				racepanel.add(raceplaceholder);
 				racepanel.add(mountbtn);
 			}
-			int k;
-			for (int i=0;i<totstat.length;i++) {
+			for (int i=0;i<totstat.length;i++)
 				totstat[i].setText(Integer.toString(current_unit.stats[i]));
-			}
 			racepanel.revalidate();
 		} catch (IndexOutOfBoundsException e) {
 			//this should only be thrown on startup
@@ -325,30 +312,56 @@ public class UnitWindow {
 			}
 			typepanel.remove(feats[2]);
 			typepanel.remove(featlbl[2]);
-			int k = 0;
+			typepanel.remove(typeplaceholder[4]);
+			typepanel.remove(typeplaceholder[5]);
+			int uf = 0;
 			if (current_unit.training.equals("Regular"))
-				k = 1;
+				uf = 1;
 			else if (current_unit.training.equals("Elite"))
-				k = 2;
-			for (int i=0;i<k;i++) {
-				typepanel.add(featlbl[i]);
-				typepanel.add(feats[i]);
-				typepanel.add(ufeatlbl[i]);
-				typepanel.add(ufeats[i]);
-			}
-			if (k==1||k==0) {
-				for (int i=k;i<feats.length-1;i++) {
+				uf = 2;
+			int f = 1;
+			if (Culture.feat)
+				f += 1;
+			if (current_unit.race.feat)
+				f += 1;
+			if (uf>f) {//more unit feats than feats
+				typepanel.add(featlbl[0]);
+				typepanel.add(feats[0]);
+				typepanel.add(ufeatlbl[0]);
+				typepanel.add(ufeats[0]);
+				typepanel.add(typeplaceholder[0]);
+				typepanel.add(typeplaceholder[1]);
+				typepanel.add(ufeatlbl[1]);
+				typepanel.add(ufeats[1]);
+			} else if (uf==f) {//same amount of each
+				for (int i=0;i<f;i++) {
+					typepanel.add(featlbl[i]);
+					typepanel.add(feats[i]);
+					typepanel.add(ufeatlbl[i]);
+					typepanel.add(ufeats[i]);
+				}
+			} else {//more feats than unit feats
+				for (int i=0;i<uf;i++) {
+					typepanel.add(featlbl[i]);
+					typepanel.add(feats[i]);
+					typepanel.add(ufeatlbl[i]);
+					typepanel.add(ufeats[i]);
+				}
+				for (int i=uf;i<f;i++) {
 					typepanel.add(featlbl[i]);
 					typepanel.add(feats[i]);
 					typepanel.add(typeplaceholder[2*i]);
 					typepanel.add(typeplaceholder[2*i+1]);
 				}
 			}
-			if (current_unit.race.feat) {
-				typepanel.add(featlbl[2]);
-				typepanel.add(feats[2]);
-			} else
-				feats[2].setSelectedItem("");
+			for (int i=ufeats.length;i>uf;i--)
+				ufeats[i-1].setSelectedItem("");
+			for (int i=feats.length;i>f;i--)
+				feats[i-1].setSelectedItem("");
+			/*
+			for (int i=0;i<feats.length;i++)
+				feats[i].setSelectedItem(current_unit.feat[i]);
+				*/
 		} catch (NullPointerException e) {
 		}
 	}
@@ -380,6 +393,7 @@ public class UnitWindow {
 				if (current_unit.race.hasfixedabilities)
 					current_unit.stats[i] += current_unit.race.stats[i];
 			}
+			current_unit.statup = (String) stat.getSelectedItem();
 			current_unit.type = (String) typeboxes[0].getSelectedItem();
 			current_unit.subtype = (String) typeboxes[1].getSelectedItem();
 			current_unit.training = (String) typeboxes[2].getSelectedItem();
@@ -437,51 +451,9 @@ public class UnitWindow {
 		
 	}
 	
-	public static void saveCurrentUnit() {//visual->current_unit//listofunits(NH)//savelayer
-		//visual->current_unit
-		update();
-		//current_unit->listofunits
-		
-		
-		//save listofunits
-		
-		String[] unitstr = new String[67];
-		//variables from unit tab
-		unitstr[0] = current_unit.name;
-		unitstr[65] = current_unit.unit_lord;
-		unitstr[66] = Integer.toString(current_unit.number_of_units);
-		//variables from racepanel
-		unitstr[1] = (String) race.getSelectedItem();
-		for (int i=0;i<pointbuy.length;i++)
-			unitstr[2+i] = pointbuy[i].getText();
-		for (int i=0;i<typeboxes.length;i++)
-			unitstr[8+i] = (String) typeboxes[i].getSelectedItem();
-		for (int i=0;i<feats.length;i++)
-			unitstr[12+i] = (String) feats[i].getSelectedItem();
-		for (int i=0;i<ufeats.length;i++)
-			unitstr[15+i] = (String) ufeats[i].getSelectedItem();
-		for (int i=0;i<wpatk.length;i++) {
-			unitstr[17+5*i] = eqname[i].getText();
-			unitstr[18+5*i] = eqcost[i].getText();
-			unitstr[19+5*i] = wpdice[i].getText();
-			unitstr[20+5*i] = (String) eqtype[i].getSelectedItem();
-			unitstr[21+5*i] = eqwgt[i].getText();
-		}
-		for (int i=0;i<ac.length;i++) {
-			unitstr[32+6*i] = eqname[3+i].getText();
-			unitstr[33+6*i] = eqcost[3+i].getText();
-			unitstr[34+6*i] = mxdex[i].getText();
-			unitstr[35+6*i] = ac[i].getText();
-			unitstr[36+6*i] = (String) eqtype[3+i].getSelectedItem();
-			unitstr[37+6*i] = eqwgt[3+i].getText();
-		}
-		unitstr[44] = "no_mount";//get mount to here later
-		NationHandler.saveUnit(current_unit_number,current_unit);
-	}
-	
 	public static void loadActiveUnit() {
 		current_unit = NationHandler.listofunits.get(current_unit_number);
-		unitwindow.setTitle(current_unit.name);
+		updateComboBoxes();
 		loadUnitToVisuals();
 	}
 	
@@ -489,8 +461,16 @@ public class UnitWindow {
 		unitwindow.setTitle(current_unit.name);
 		//racepanel
 		race.setSelectedItem(current_unit.race.name);
-		for (int i=0;i<pointbuy.length;i++) 
-			pointbuy[i].setText(Integer.toString(current_unit.stats[i]));
+		for (int i=0;i<pointbuy.length;i++) {
+			if (current_unit.race.hasfixedabilities)
+				pointbuy[i].setText(Integer.toString(current_unit.stats[i]-current_unit.race.stats[i]));
+			else if (current_unit.statup.equals(abilities[i]))
+				pointbuy[i].setText(Integer.toString(current_unit.stats[i]-2));
+			else
+				pointbuy[i].setText(Integer.toString(current_unit.stats[i]));
+			totstat[i].setText(Integer.toString(current_unit.stats[i]));
+		}
+		stat.setSelectedItem(current_unit.statup);
 		//typepanel
 		typeboxes[0].setSelectedItem(current_unit.type);
 		typeboxes[1].setSelectedItem(current_unit.subtype);

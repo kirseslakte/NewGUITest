@@ -11,6 +11,7 @@ public class Unit {
 	public int number_of_units;
 	//Input variables
 	public Race race = new Race();
+	public String statup = "";
 	public int[] stats = new int[6];
 	public int[] stat_mods = new int[6];
 	public String type;
@@ -87,26 +88,27 @@ public class Unit {
 		this.subtype = s[9];
 		this.training = s[10];
 		this.training_type = s[11];
-		for (int i=0;i<feat.length;i++) 
+		for (int i=0;i<feat.length;i++)
 			this.feat[i] = s[12+i];
-		for (int i=0;i<unit_feat.length;i++)
+		for (int i=0;i<this.unit_feat.length;i++)
 			this.unit_feat[i] = s[15+i];
-		String[] weaponstring = Arrays.copyOfRange(s,17,21);
+		String[] weaponstring = Arrays.copyOfRange(s,17,22);
 		this.weapons[0].setWeapon(weaponstring);
-		weaponstring = Arrays.copyOfRange(s,22,26);
+		weaponstring = Arrays.copyOfRange(s,22,27);
 		this.weapons[1].setWeapon(weaponstring);
-		weaponstring = Arrays.copyOfRange(s,27,31);
+		weaponstring = Arrays.copyOfRange(s,27,32);
 		this.weapons[2].setWeapon(weaponstring);
-		String[] armourstring = Arrays.copyOfRange(s,32,37);
+		String[] armourstring = Arrays.copyOfRange(s,32,38);
 		this.armour.setArmour(armourstring);
-		armourstring = Arrays.copyOfRange(s,38,43);
+		armourstring = Arrays.copyOfRange(s,38,44);
 		this.shield.setArmour(armourstring);
 		if (!s[44].equals("no_mount")) {
-			String[] mountstring = Arrays.copyOfRange(s,44,72);
+			String[] mountstring = Arrays.copyOfRange(s,44,65);
 			mount.setMount(mountstring);
 		}
-		this.unit_lord = s[73];
-		this.number_of_units = Integer.parseInt(s[74]);
+		this.unit_lord = s[65];
+		this.number_of_units = Integer.parseInt(s[66]);
+		this.statup = s[67];
 		this.updateUnit();
 	}
 	
@@ -135,7 +137,7 @@ public class Unit {
 		}
 		
 		public void setWeapon(String[] s){
-			System.out.println("UNIT! Weapon:setWeapon");
+			System.out.println("UNIT! Weapon:setWeapon "+s.length);
 			this.name = s[0];
 			this.cost = Integer.parseInt(s[1]);
 			this.damage_dice = Integer.parseInt(s[2]);
@@ -202,20 +204,20 @@ public class Unit {
 			this.name = s[0];
 			this.type = s[1];
 			this.hd_type = s[2];
-			for (int i=0;i<stats.length;i++) {
+			for (int i=0;i<this.stats.length;i++) {
 				this.stats[i] = Integer.parseInt(s[3+i]);
 			}
-			this.undead = Boolean.parseBoolean(s[7]);
-			this.size = s[8];
-			this.natural_armour = Integer.parseInt(s[9]);
-			this.number_of_hd = Integer.parseInt(s[10]);
-			this.damage_dice = Integer.parseInt(s[11]);
-			this.number_of_attacks = Integer.parseInt(s[12]);
-			this.cost_of_one_mount = Integer.parseInt(s[13]);
-			this.footing = s[14];
-			this.base_speed = Integer.parseInt(s[15]);
-			if (!s[16].equals("no_mount")) {
-				String[] mountarmourstring = Arrays.copyOfRange(s,16,s.length);
+			this.undead = Boolean.parseBoolean(s[6]);
+			this.size = s[7];
+			this.natural_armour = Integer.parseInt(s[8]);
+			this.number_of_hd = Integer.parseInt(s[9]);
+			this.damage_dice = Integer.parseInt(s[10]);
+			this.number_of_attacks = Integer.parseInt(s[11]);
+			this.cost_of_one_mount = Integer.parseInt(s[12]);
+			this.footing = s[13];
+			this.base_speed = Integer.parseInt(s[14]);
+			if (!s[15].equals("")) {
+				String[] mountarmourstring = Arrays.copyOfRange(s,15,19);
 				this.armour.setArmour(mountarmourstring);
 			}
 		}
@@ -226,8 +228,8 @@ public class Unit {
 		if (this.unit_lord==null) 
 			this.unit_lord = NationHandler.listoflords.get(0).name;
 		Lord lord = NationHandler.listoflords.get(Utility.findLord(this.unit_lord));
-		double training_mod = lord.modifiers[21];
-		double eq_mod = lord.modifiers[22];
+		double training_mod = lord.modifiers[24];
+		double eq_mod = lord.modifiers[25];
 		double slavery = 0.75;
 		for (int i=0;i<lord.institutes.active_institutions.length;i++) {
 			if (lord.institutes.active_institutions[i].equals("Slavery"))
@@ -285,11 +287,11 @@ public class Unit {
 		else if (this.subtype.equals("Worker"))
 			this.training_cost -= 30;
 		else if (this.subtype.equals("Mercenary"))
-			training_mod = training_mod*1.5;
+			training_mod *= 1.5;
 		else if (this.subtype.equals("Personal"))
-			training_mod = training_mod*1.25;
+			training_mod *= 1.25;
 		else if (this.subtype.equals("Penal"))
-			training_mod = training_mod*slavery;
+			training_mod *= slavery;
 		//unit feats
 		for (int i=0;i<this.unit_feat.length;i++) {
 			if (this.unit_feat[i]!=null) {
@@ -352,9 +354,11 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 		}
 		this.equipment_cost = (int) Math.round(this.equipment_cost*eq_mod);
 		this.total_cost = this.equipment_cost + this.training_cost + this.mount_cost;
+		this.addCultureBonuses();
 	}
-	
+		
 	public void updateUnit() {
+		System.out.println("UNIT! updateUnit");
 		
 		//available feats
 		List<String> av_feats = new ArrayList<>(Arrays.asList(feats));
@@ -400,8 +404,9 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 		this.available_unit_feats = unitf.toArray(new String[0]);
 		
 		//calculate type
-		for (int i=0;i<6;i++)
+		for (int i=0;i<6;i++) {
 			this.stat_mods[i] = (int) Math.floor((this.stats[i]-10)/2);
+		}
 		this.W = 2;
 		if (this.type.contains("Cavalry"))
 			this.W = 3;
@@ -669,4 +674,18 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 		this.AC += Math.min(Math.min(this.shield.max_dex,this.armour.max_dex),this.stat_mods[1]);
 		this.getUnitCost();
 	}
+	
+	public void addCultureBonuses() {
+		this.speed += (int) Math.round(Culture.used_bonus[8]);
+		this.AC += (int) Math.round(Culture.used_bonus[11]);
+		this.M += (int) Math.round(Culture.used_bonus[12]);
+		this.C += (int) Math.round(Culture.used_bonus[13]);
+		for (Weapon weapon:this.weapons) {
+			weapon.AP += (int) Math.round(Culture.used_bonus[9]);
+			weapon.AB += (int) Math.round(Culture.used_bonus[10]);
+			if (weapon.type.equals("Ranged"))
+				weapon.AB += (int) Math.round(Culture.used_bonus[14]);
+		}
+	}
+	
 }

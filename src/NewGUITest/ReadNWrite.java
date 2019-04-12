@@ -146,7 +146,7 @@ public class ReadNWrite {
 		File file = new File(directory+"\\culture"+filetype);
 		try {
 			Scanner sc = new Scanner(file);
-			for (int i=0;i<Culture.culture_names.length;i++) {
+			for (int i=0;i<culture.length;i++) {
 				culture[i] = sc.nextLine();
 			}
 			sc.close();
@@ -213,11 +213,26 @@ public class ReadNWrite {
 		List<Unit> listofunits = new ArrayList<Unit>();
 		String s = directory+"\\units"+filetype;
 		File file = new File(s);
+		String[] unit = new String[68];
+		int i = 0;
 		try {
 			Scanner sc = new Scanner(file);
 			while(sc.hasNextLine()){
 				s = sc.nextLine();
+				if (s.equals(separator)) {
+					listofunits.add(new Unit());
+					try {
+						listofunits.get(listofunits.size()-1).setUnit(unit);
+					} catch (IndexOutOfBoundsException e) {
+						listofunits.remove(listofunits.size()-1);
+					}
+					i = 0;
+				} else {
+					unit[i] = s;
+					i++;
+				}
 			}
+			saveUnit(listofunits);
 			sc.close();
 		} catch (java.io.FileNotFoundException e) {
 			System.out.println("Unit file not found, creating new file!");
@@ -228,7 +243,7 @@ public class ReadNWrite {
 			}
 			loadUnits();
 		}  catch(Exception e){
-			System.out.println(e);
+			System.out.println("loadunit "+e);
 		} 
 		
 		return listofunits;
@@ -473,9 +488,10 @@ public class ReadNWrite {
 		try {
 			file.createNewFile();
 			FileWriter fw = new FileWriter(file);
-			for (int i=0;i<Culture.culture_names.length;i++){
+			for (int i=0;i<Culture.culture_names.length-1;i++){
 				fw.write(cultures[i]+System.getProperty("line.separator"));
 			}
+			fw.write(Boolean.toString(Culture.feat)+System.getProperty("line.separator"));
 			fw.close();
 		} catch (Exception e) {
 			System.out.println(e);
@@ -493,7 +509,7 @@ public class ReadNWrite {
 			file.createNewFile();
 			FileWriter fw = new FileWriter(file);
 			for (Unit unit:listofunits){
-				if (unit.name == null)
+				if (unit.race.name == null)
 					continue;
 				fw.write(unit.name+System.getProperty("line.separator"));
 				fw.write(unit.race.name+System.getProperty("line.separator"));
@@ -552,6 +568,7 @@ public class ReadNWrite {
 				fw.write(Integer.toString(unit.mount.armour.weight)+System.getProperty("line.separator"));
 				fw.write(unit.unit_lord+System.getProperty("line.separator"));//general information
 				fw.write(Integer.toString(unit.number_of_units)+System.getProperty("line.separator"));
+				fw.write(unit.statup+System.getProperty("line.separator"));
 				fw.write(separator+System.getProperty("line.separator"));
 			}
 			fw.close();

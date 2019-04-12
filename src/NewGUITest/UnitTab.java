@@ -72,7 +72,8 @@ public class UnitTab {
 			} catch (NullPointerException e) {
 				
 			}
-			NationHandler.listofunits.add(new Unit());
+			if (names.size()>NationHandler.listofunits.size())
+				NationHandler.listofunits.add(new Unit());
 			c.gridy = names.size()+1;
 			names.add(new JTextField(""));
 			c.gridx = 0;
@@ -99,8 +100,13 @@ public class UnitTab {
 			designbuttons.get(k).addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
 					setUnits();
-					if (!UnitWindow.unitwindow.isVisible())
-						UnitWindow.start(k);
+					if (names.get(k).getText().equals(""))
+						JOptionPane.showMessageDialog(null, "<html>If a unit does not have a name or if it has the same name as<br>another unit there may be problems. "
+								+ "Make sure that units<br>with the same name only differ in which owner they have.</html>","Mustering Warning",
+								JOptionPane.INFORMATION_MESSAGE);
+					else
+						if (!UnitWindow.unitwindow.isVisible())
+							UnitWindow.start(k);
 				}
 			});
 			c.gridwidth = widths[5];
@@ -112,6 +118,8 @@ public class UnitTab {
 			addrow = new Button("Add Row/Update");
 			addrow.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
+					setUnits();
+					NationHandler.saveNation();
 					addRow();
 				}
 			});
@@ -164,13 +172,15 @@ public class UnitTab {
 	}
 	
 	public static void loadUnits() {//loads units from the listofunits in the nationhandler and makes neat rows for all of them
-		loadRaces();
+		System.out.println("Loading units "+NationHandler.listofunits.size());
 		for (int i=0;i<NationHandler.listofunits.size();i++) {
 			names.get(i).setText(NationHandler.listofunits.get(i).name);
 			lords.get(i).setSelectedItem(NationHandler.listofunits.get(i).unit_lord);
 			amounts.get(i).setText(Integer.toString(NationHandler.listofunits.get(i).number_of_units));
+			costs.get(i).setText(Integer.toString(NationHandler.listofunits.get(i).total_cost));
 			addRow();
 		}
+		setUnits();
 	}
 	
 	public static void setUnits() {//set name/lord/amount of units
@@ -178,6 +188,8 @@ public class UnitTab {
 			NationHandler.listofunits.get(i).name = (String) names.get(i).getText();
 			NationHandler.listofunits.get(i).unit_lord = (String) lords.get(i).getSelectedItem();
 			NationHandler.listofunits.get(i).number_of_units = (int) Integer.parseInt(amounts.get(i).getText());
+			costs.get(i).setText(Integer.toString(NationHandler.listofunits.get(i).total_cost));
+			upkeeps.get(i).setText(Integer.toString((int) Math.round(NationHandler.listofunits.get(i).total_cost*0.2*NationHandler.listofunits.get(i).number_of_units)));
 		}
 	}
 	
@@ -187,7 +199,7 @@ public class UnitTab {
 		listofraces.add(r);
 	}
 	
-	public static void clearRaces() {
+	public static void cleanRaces() {
 		for (int i=0;i<listofraces.size();i++) {
 			if (listofraces.get(i).name == null) {
 				listofraces.remove(i);
@@ -197,19 +209,12 @@ public class UnitTab {
 	}
 	
 	public static void saveRaces() {
-		clearRaces();
+		cleanRaces();
 		ReadNWrite.saveRaces(listofraces);
 	}
 	
 	public static void loadRaces() {
 		listofraces = ReadNWrite.loadRaces();
-	}
-	
-	public static void save() {
-		saveRaces();
-	}
-	
-	public static void getUnits() {
-		
+		UnitWindow.updateComboBoxes();
 	}
 }

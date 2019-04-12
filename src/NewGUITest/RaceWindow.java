@@ -174,7 +174,7 @@ public class RaceWindow{
 	}
 	
 	public static void stop() {
-		UnitTab.clearRaces();
+		UnitTab.cleanRaces();
 		UnitWindow.update();
 		racewindow.setVisible(false);
 	}
@@ -210,7 +210,7 @@ public class RaceWindow{
 	}
 	
 	public static void loadStart() {
-		UnitTab.clearRaces();
+		UnitTab.cleanRaces();
 		loadSetup();
 		raceswindow.setVisible(true);
 	}
