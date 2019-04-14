@@ -22,8 +22,8 @@ public class MountWindow {
 	static JButton save = new JButton("Save");
 	
 	static String[] lbltags = {"Type","Leggedness","Size","HD","Natural Armour","Number of HD","Natural Attack Dice","Strength","Number of "
-			+ "Natural Attacks","Dexterity","Speed","Constitution","Price of One Mount"};
-	static String[] armourlbltags = {"Armour","Cost","Max Dex","AC","Type","Weight"};
+			+ "Natural Attacks","Dexterity","Speed","Constitution","Price of One Mount (GP)"};
+	static String[] armourlbltags = {"Armour","Cost (GP)","Max Dex","AC","Type","Weight"};
 	static String[] typealt = {"Magical Beast","Animal"};
 	static String[] HDalt = {"d4","d6","d8","d10","d12"};
 	static String[] damage = {"1","1d2","1d3","1d4","1d6","1d8","1d10","2d6","2d8","3d6","3d8","4d6"};
