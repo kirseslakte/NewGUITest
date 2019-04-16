@@ -46,6 +46,7 @@ public class UnitWindow {
 	static JTextField[] eqwgt = new JTextField[5];
 	static JLabel[] wpatk = new JLabel[3];
 	static JLabel[] wppwr = new JLabel[3];
+	static JLabel[] mountattack = new JLabel[2];
 	
 	static Panel outputpanel = new Panel(new GridLayout(0,4));
 	static JLabel[] oplbl = new JLabel[13];
@@ -122,6 +123,15 @@ public class UnitWindow {
 			wppwr[i] = new JLabel("0");
 			eqpanel.add(wppwr[i]);
 		}
+		eqpanel.add(new JLabel("Mount Attack"));
+		eqpanel.add(new JLabel(""));
+		eqpanel.add(new JLabel(""));
+		eqpanel.add(new JLabel(""));
+		eqpanel.add(new JLabel(""));
+		mountattack[0] = new JLabel("0");
+		mountattack[1] = new JLabel("0");
+		eqpanel.add(mountattack[0]);
+		eqpanel.add(mountattack[1]);
 		eqpanel.add(new JLabel("Armour/Shield"));
 		eqpanel.add(new JLabel("Cost (GP)"));
 		eqpanel.add(new JLabel("Max Dex"));
@@ -297,6 +307,13 @@ public class UnitWindow {
 		for (int i=0;i<current_unit.weapons.length;i++) {
 			wpatk[i].setText(Integer.toString(current_unit.weapons[i].AB));
 			wppwr[i].setText(Integer.toString(current_unit.weapons[i].AP));
+		}
+		if (current_unit.type.contains("Cavalry")) {
+			mountattack[0].setText(Integer.toString(current_unit.mount.attack));
+			mountattack[1].setText(Integer.toString(current_unit.mount.power));
+		} else {
+			mountattack[0].setText("0");
+			mountattack[1].setText("0");
 		}
 	}
 	
