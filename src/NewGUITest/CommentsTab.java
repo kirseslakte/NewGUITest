@@ -5,14 +5,17 @@ import javax.swing.JLabel;
 
 public class CommentsTab {
 	
-	static Panel text_panel = new Panel(new GridLayout(1,1));
 	static JLabel text = new JLabel("");
 	
 	public CommentsTab() {
 		
 	}
-	public static void init() {
+	public static Panel init() {
+		Panel text_panel = new Panel(new GridLayout(0,3));
 		text_panel.add(text);
-		text_panel.revalidate();
+		text_panel.add(new JLabel(""));
+		text_panel.add(new JLabel(""));
+		text_panel.add(new JLabel(""));
+		return text_panel;
 	}
 }

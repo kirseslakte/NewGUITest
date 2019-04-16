@@ -27,9 +27,11 @@ public class Culture {
 	//culture variables
 	public static List<JTextField> culturefields = new ArrayList<JTextField>();
 	public static JRadioButton featbtn = new JRadioButton();
+	
 	public Culture() {
 		
 	}
+	
 	public static Panel culturePane() {//culture panel
 		//System.out.println("CULTURE! culturePane");
 		Panel culture_panel = new Panel(new GridLayout(0,4));
@@ -86,7 +88,7 @@ public class Culture {
 		}
 		for (int i=0;i<culture_names.length-1;i++)
 			culture_bonuses[i] = Double.parseDouble(boni[i])*0.01;
-		try {
+		try {//since the pre2.0 save files does not have this added row
 			feat = Boolean.parseBoolean(boni[culture_names.length-1]);
 		} catch (IndexOutOfBoundsException e) {
 			feat = false;

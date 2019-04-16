@@ -205,7 +205,7 @@ public class Unit {
 		
 		public Mount() {
 			for (int i=0;i<this.stats.length;i++)
-				this.stats[i] = 0;
+				this.stats[i] = 10;
 		}
 		
 		public void setMount(String[] s) {

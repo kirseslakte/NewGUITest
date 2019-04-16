@@ -104,9 +104,11 @@ public class UnitTab {
 						JOptionPane.showMessageDialog(null, "<html>If a unit does not have a name or if it has the same name as<br>another unit there may be problems. "
 								+ "Make sure that units<br>with the same name only differ in which owner they have.</html>","Mustering Warning",
 								JOptionPane.INFORMATION_MESSAGE);
-					else
+					else {
+						addRow();
 						if (!UnitWindow.unitwindow.isVisible())
 							UnitWindow.start(k);
+					}
 				}
 			});
 			c.gridwidth = widths[5];
@@ -172,7 +174,7 @@ public class UnitTab {
 	}
 	
 	public static void loadUnits() {//loads units from the listofunits in the nationhandler and makes neat rows for all of them
-		System.out.println("Loading units "+NationHandler.listofunits.size());
+		//System.out.println("Loading units "+NationHandler.listofunits.size());
 		for (int i=0;i<NationHandler.listofunits.size();i++) {
 			names.get(i).setText(NationHandler.listofunits.get(i).name);
 			lords.get(i).setSelectedItem(NationHandler.listofunits.get(i).unit_lord);

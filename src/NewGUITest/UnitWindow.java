@@ -128,8 +128,8 @@ public class UnitWindow {
 		eqpanel.add(new JLabel(""));
 		eqpanel.add(new JLabel(""));
 		eqpanel.add(new JLabel(""));
-		mountattack[0] = new JLabel("0");
-		mountattack[1] = new JLabel("0");
+		mountattack[0] = new JLabel("-");
+		mountattack[1] = new JLabel("-");
 		eqpanel.add(mountattack[0]);
 		eqpanel.add(mountattack[1]);
 		eqpanel.add(new JLabel("Armour/Shield"));
@@ -312,8 +312,8 @@ public class UnitWindow {
 			mountattack[0].setText(Integer.toString(current_unit.mount.attack));
 			mountattack[1].setText(Integer.toString(current_unit.mount.power));
 		} else {
-			mountattack[0].setText("0");
-			mountattack[1].setText("0");
+			mountattack[0].setText("-");
+			mountattack[1].setText("-");
 		}
 	}
 	
