@@ -1,4 +1,4 @@
-Add units tab
+Add units tab!!!DONE!!!
 Add notes tab
 Add guilds to the buildings & guildstitutions
 
@@ -6,9 +6,14 @@ Add guilds to the buildings & guildstitutions
 -see what is wrong with load races!!!DONE!!!
 -add possibility in the raceloader to remove a race!!!DONE!!!
 (then done with races??)nope;
--add flexible racestat (or however I will do it)
+-add flexible racestat (or however I will do it)!!!DONE!!!
 ::Units::
--Add code to everything, as in code in Unit(), and connections between everything
--need to make sure loading/saving works
--should also check that loading into visulas work as intended
--NEXT THING TO DO: Make sure that the load/save works and that the unit key is correct (nothing is actually checked yet)
+-Add code to everything, as in code in Unit(), and connections between everything!!!DONE???
+-need to make sure loading/saving works!!!DONE!!!
+-should also check that loading into visulas work as intended!!!DONE!!!
+-NEXT THING TO DO: Make sure that the load/save works and that the unit key is correct (nothing is actually checked yet)!!!DONE!!!
+
+-add more government modifiers in lord!!!DONE!!!
+-make cavalry work for units!!!DONE!!!
+-check costs for all the units!!!DONE!!!<- not double checked...
+-add visual layer in mount for the mount attack

@@ -50,8 +50,8 @@ public class UnitWindow {
 	static Panel outputpanel = new Panel(new GridLayout(0,4));
 	static JLabel[] oplbl = new JLabel[13];
 	static JLabel[] op = new JLabel[13];
-	static String[] outputtags = {"Toughness","Wounds","Morale","Command","Speed","AC","Fort","Ref","Will","Training Cost","Equipment Cost",
-			"Mount Cost","Total Cost"};
+	static String[] outputtags = {"Toughness","Wounds","Morale","Command","Speed","AC","Fort","Ref","Will","Training Cost (RP)","Equipment Cost (RP)",
+			"Mount Cost (RP)","Total Cost (RP)"};
 	static String[] abilities = {"Strength","Dexterity","Constitution","Intelligence","Wisdom","Charisma"};
 	
 	
@@ -99,8 +99,8 @@ public class UnitWindow {
 	}
 	
 	public static void equipmentPanelSetup() {
-		eqpanel.add(new JLabel("Name"));
-		eqpanel.add(new JLabel("Cost"));
+		eqpanel.add(new JLabel("Weapon"));
+		eqpanel.add(new JLabel("Cost (GP)"));
 		eqpanel.add(new JLabel("Damage Dice"));
 		eqpanel.add(new JLabel("Type"));
 		eqpanel.add(new JLabel("Weigth"));
@@ -122,8 +122,8 @@ public class UnitWindow {
 			wppwr[i] = new JLabel("0");
 			eqpanel.add(wppwr[i]);
 		}
-		eqpanel.add(new JLabel("Name"));
-		eqpanel.add(new JLabel("Cost"));
+		eqpanel.add(new JLabel("Armour/Shield"));
+		eqpanel.add(new JLabel("Cost (GP)"));
 		eqpanel.add(new JLabel("Max Dex"));
 		eqpanel.add(new JLabel("AC"));
 		eqpanel.add(new JLabel("Type"));

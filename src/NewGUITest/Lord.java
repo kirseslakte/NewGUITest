@@ -277,7 +277,7 @@ public class Lord {
 				this.government.max_bank_dev_eff);//bank dev eff
 		this.modifiers[7] = 0;//material inc eff
 		this.modifiers[8] = Culture.used_bonus[6]+this.institutes.outputs[3]*this.government.legitimacy*0.1;//hex prod mod
-		this.modifiers[9] = Culture.used_bonus[7];//unit cap
+		this.modifiers[9] = Culture.used_bonus[7]*this.government.unit_cap_mod;//unit cap
 		this.modifiers[10] = Culture.used_bonus[8];//speed
 		this.modifiers[11] = Culture.used_bonus[9];//dmg
 		this.modifiers[12] = Culture.used_bonus[10];//hit
@@ -289,10 +289,10 @@ public class Lord {
 		this.modifiers[18] = Culture.used_bonus[16];//unrest
 		this.modifiers[19] = traderolls;//trade rolls
 		this.modifiers[20] = Culture.used_bonus[17]*this.institutes.outputs[5]*this.government.legitimacy*0.1;//rgo/road
-		this.modifiers[21] = Culture.used_bonus[18]*darkwood;//building
+		this.modifiers[21] = Culture.used_bonus[18]*darkwood*this.government.build_cost;//building
 		this.modifiers[22] = Culture.used_bonus[19];//settlement upkeep
-		this.modifiers[23] = Culture.used_bonus[20];//settlement cost
-		this.modifiers[24] = Culture.used_bonus[21];//unit training
+		this.modifiers[23] = Culture.used_bonus[20]*this.government.settlement_cost_mod;//settlement cost
+		this.modifiers[24] = Culture.used_bonus[21]*this.government.unit_training_cost_mod;//unit training
 		this.modifiers[25] = Culture.used_bonus[22]*iron;//unit eq
 		this.modifiers[26] = Culture.used_bonus[23]*stone;//fortification
 		this.modifiers[27] = marble;//palace

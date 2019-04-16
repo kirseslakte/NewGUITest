@@ -41,6 +41,8 @@ public class Unit {
 	public int speed = 0;
 	public int AC = 10;
 	public int[] saves = new int[3];
+	public boolean fast = false;
+	public boolean dash = false;
 	
 	//static variables
 	static public String[] types = {"Infantry","Cavalry","Aerial Infantry","Aerial Cavalry"};
@@ -48,8 +50,9 @@ public class Unit {
 			"Slayer","Worker"};
 	static public String[] trainings = {"Irregular","Regular","Elite"};
 	static public String[] training_types = {"Light","Medium","Heavy"};
-	static public String[] feats = {"","Crossbow Sniper","Dash","Deadly Aim","Dodge","Exotic Weapon Proficiency","Mounted Archery","Mounted Combat","Piranha Strike",
-			"Power Attack","Rapid Reload","Shield Focus","Slashing Grace","Toughness","Weapon Finesse","Weapon Focus (W1)","Weapon Focus (W2)","Weapon Focus (W3)"};
+	static public String[] feats = {"","Crossbow Sniper","Dash","Deadly Aim","Dodge","Evil Brand","Exotic Weapon Proficiency","Lichloved","Mounted Archery","Mounted Combat",
+			"Piranha Strike","Power Attack","Rapid Reload","Sacred Vow","Shield Focus","Slashing Grace","Toughness","Weapon Finesse","Weapon Focus (W1)","Weapon Focus (W2)",
+			"Weapon Focus (W3)"};
 	static public String[] unit_feats = {"Brave","Disciplined","Fast","Mage-Trained","Mount Attack","Precision Drill","Skilled Defenders",
 			"Terrain-Trained (Light Forest)","Terrain-Trained (Dense Forest)","Terrain-Trained (Marsh)","Terrain-Trained (Rocky)"
 			,"Terrain-Trained (Glacier)","Unbreakable"};
@@ -78,7 +81,7 @@ public class Unit {
 	}
 	
 	public void setUnit(String[] s) {//set unit from string
-		System.out.println("UNIT! setUnit");
+		//System.out.println("UNIT! setUnit");
 		this.name = s[0];
 		this.race = UnitTab.listofraces.get(Utility.findRace(s[1]));
 		for (int i=0;i<stats.length;i++) {
@@ -137,7 +140,7 @@ public class Unit {
 		}
 		
 		public void setWeapon(String[] s){
-			System.out.println("UNIT! Weapon:setWeapon "+s.length);
+			//System.out.println("UNIT! Weapon:setWeapon "+s.length);
 			this.name = s[0];
 			this.cost = Integer.parseInt(s[1]);
 			this.damage_dice = Integer.parseInt(s[2]);
@@ -165,7 +168,7 @@ public class Unit {
 		}
 		
 		public void setArmour(String[] s) {
-			System.out.println("UNIT! Armour:setArmour");
+			//System.out.println("UNIT! Armour:setArmour");
 			this.name = s[0];
 			this.cost = Integer.parseInt(s[1]);
 			this.max_dex = Integer.parseInt(s[2]);
@@ -183,11 +186,17 @@ public class Unit {
 		public String type = "";
 		public String hd_type = "";
 		public int[] stats = new int[3];
+		public int[] stat_mods = new int[3];
+		public int ref = 0;
 		public boolean undead = false;
 		public String size = "Large";
 		public int natural_armour = 0;
 		public int number_of_hd = 1;
 		public int damage_dice = 0;
+		public int attack = 0;
+		public int power = 0;
+		public int T = 0;
+		public int AC = 0;
 		public int number_of_attacks = 1;
 		public int cost_of_one_mount = 0;
 		public String footing = "Quadrupedal";
@@ -200,12 +209,13 @@ public class Unit {
 		}
 		
 		public void setMount(String[] s) {
-			System.out.println("UNIT! Mount:setMount");
+			//System.out.println("UNIT! Mount:setMount");
 			this.name = s[0];
 			this.type = s[1];
 			this.hd_type = s[2];
 			for (int i=0;i<this.stats.length;i++) {
 				this.stats[i] = Integer.parseInt(s[3+i]);
+				this.stat_mods[i] = 0;
 			}
 			this.undead = Boolean.parseBoolean(s[6]);
 			this.size = s[7];
@@ -220,11 +230,43 @@ public class Unit {
 				String[] mountarmourstring = Arrays.copyOfRange(s,15,19);
 				this.armour.setArmour(mountarmourstring);
 			}
+			this.updateMount();
+		}
+		
+		public void updateMount() {
+			for (int i=0;i<this.stats.length;i++) {
+				this.stat_mods[i] = (int) Math.floor((this.stats[i]-10)/2);
+			}
+			if (this.damage_dice<4)
+				this.power = this.damage_dice+1;
+			else if (this.damage_dice<8)
+				this.power = 2*this.damage_dice-2;
+			else if (this.damage_dice<10)
+				this.power = 2*this.damage_dice;
+			else
+				this.power = 24;
+			this.power += this.stat_mods[0];
+			if (this.hd_type.equals("d4"))
+				this.T = 10+4+ (int) Math.floor(2.5*this.number_of_hd)+this.stat_mods[2];
+			else if (this.hd_type.equals("d6"))
+				this.T = 10+6+ (int) Math.floor(3.5*this.number_of_hd)+this.stat_mods[2];
+			else if (this.hd_type.equals("d8"))
+				this.T = 10+8+ (int) Math.floor(4.5*this.number_of_hd)+this.stat_mods[2];
+			else if (this.hd_type.equals("d10"))
+				this.T = 10+10+ (int) Math.floor(5.5*this.number_of_hd)+this.stat_mods[2];
+			else
+				this.T = 10+12+ (int) Math.floor(6.5*this.number_of_hd)+this.stat_mods[2];
+			if (this.type.equals("Animal"))
+				this.attack = (int) Math.floor(this.number_of_hd*3/4)+this.stat_mods[0];
+			else
+				this.attack = this.number_of_hd+this.stat_mods[0];
+			this.ref = (int) Math.floor(2.5+this.number_of_hd/2)+this.stat_mods[1];
+			this.AC = 10+this.armour.ac+Math.min(this.stat_mods[1],this.armour.max_dex);
 		}
 	}
 	
 	public void getUnitCost() {
-		System.out.println("UNIT! getUnitCost");
+		//System.out.println("UNIT! getUnitCost");
 		if (this.unit_lord==null) 
 			this.unit_lord = NationHandler.listoflords.get(0).name;
 		Lord lord = NationHandler.listoflords.get(Utility.findLord(this.unit_lord));
@@ -232,9 +274,17 @@ public class Unit {
 		double eq_mod = lord.modifiers[25];
 		double slavery = 0.75;
 		for (int i=0;i<lord.institutes.active_institutions.length;i++) {
-			if (lord.institutes.active_institutions[i].equals("Slavery"))
+			if (lord.institutes.active_institutions[i].equals("Slavery")) {
 				slavery = 0.5;
+				if (this.subtype.equals("Penal")) {
+					this.M += 1;
+					this.C += 1;
+				}
+			}
 		}
+		boolean cav = false;
+		if (this.type.contains("Cavalry"))
+			cav = true;
 		boolean mount_attack = false;
 		//training and type
 		if (this.training.equals(trainings[0])) {//irregular
@@ -253,11 +303,54 @@ public class Unit {
 			this.training_cost = 0;
 		//stats&speed
 		this.training_cost += this.stat_mods[0]*20;
-		this.training_cost += this.stat_mods[1]*15;
-		this.training_cost += this.stat_mods[2]*25;
+		this.training_cost += this.stat_mods[1]*25;
+		this.training_cost += this.stat_mods[2]*15;
 		for (int i=3;i<6;i++)
 			this.training_cost += this.stat_mods[i]*5;
-		this.training_cost += this.speed;//minus if dash or fast
+		if (this.race.isundead)
+			this.training_cost += this.stat_mods[5]*15-this.stat_mods[2]*15;
+		int speed_mod = 0;
+		if (fast)
+			speed_mod += 5;
+		if (dash)
+			speed_mod += 5;
+		this.training_cost += this.speed+speed_mod;
+		//mountcosts
+		this.mount_cost = 0;
+		if (cav) {
+			this.mount_cost += this.mount.stat_mods[0]*20+this.mount.stat_mods[1]*25+this.mount.stat_mods[2]*10+this.mount.base_speed+this.mount.natural_armour*15+(this.mount.power-
+					this.mount.stat_mods[0])*10;
+			if (this.mount.type.equals("Animal")) {
+				if (this.mount.number_of_hd>1) {
+					this.mount_cost += 30;
+					for (int i=1;i<this.mount.number_of_hd;i++)
+						this.mount_cost += i*10;
+				}
+			} else {
+				if (this.mount.number_of_hd>1) {
+					this.mount_cost += 20;
+					for (int i=1;i<this.mount.number_of_hd;i++)
+						this.mount_cost += 20+Math.floor(i/2);
+				}
+			}
+			if (this.mount.size.equals(Race.sizes[0]))
+				this.mount_cost -= 80;
+			else if (this.mount.size.equals(Race.sizes[1]))
+				this.mount_cost -= 60;
+			else if (this.mount.size.equals(Race.sizes[2]))
+				this.mount_cost -= 40;
+			else if (this.mount.size.equals(Race.sizes[3]))
+				this.mount_cost -= 20;
+			else if (this.mount.size.equals(Race.sizes[5]))
+				this.mount_cost += 20;
+			else if (this.mount.size.equals(Race.sizes[6]))
+				this.mount_cost += 40;
+			else if (this.mount.size.equals(Race.sizes[7]))
+				this.mount_cost += 60;
+			else if (this.mount.size.equals(Race.sizes[8]))
+				this.mount_cost += 80;
+			this.mount_cost += this.mount.cost_of_one_mount;
+		}
 		//racethings
 		this.training_cost += (this.race.natac+this.race.drmm)*15+(this.race.miscac+this.race.drbps+this.race.natattackdiceint+
 				this.race.natattacks-1)*10;
@@ -315,56 +408,28 @@ public class Unit {
 					this.training_cost += 30;
 			}
 		}
-		//mount
-		if (this.type.contains("Cavalry")) {
-			//mount racials
-			/*For Mounted units, pay for the following
-Mounts Speed
-Mounts Str, Dex
-Mounts Con at 10 per
-Mounts Natural Armour
-Natural Weapons (Power of Primary Natural weapon +1 per additional weapon e.g. a D6 bite costs 30, 2 claws would cost 20 extra)
-Size of the Mount
-For animals with more than 1HD
-HD	Animals		Magical Beasts
-2nd	40		50
-3rd	60		80
-4th	90		120
-5th	130		160
-
-Mounts above 5HD are probably not common enough to serve as mounts (Aside from larger creatures, which work differently)
-
-For Mounted Unit Stats
-Use the Mounts Speed and Reflex Save
-Grant the unit a second attack using the mounts MaB and Mpow
-Rider gets +1 MaB and +1 AC
-Take the Average of the Mount and Riders AC (Including the above bonus) and Toughness (rounding up)
-Add +1 Wound
-
-Special note: The mounted combat feat allows the unit to use the riders AC and Toughness instead of averaging (Great for light horsemen)
-			 * 
-			 */
-			//mount eq
-		}
 		this.training_cost = (int) Math.round(this.training_cost*training_mod);
+		this.mount_cost = (int) Math.round(this.mount_cost*training_mod);
 		//equipment
 		this.equipment_cost = this.armour.cost;
+		this.equipment_cost += this.shield.cost;
 		for (int i=0;i<this.weapons.length;i++) {
 			this.equipment_cost += this.weapons[i].cost;
 		}
+		this.equipment_cost += this.mount.armour.cost;
 		this.equipment_cost = (int) Math.round(this.equipment_cost*eq_mod);
 		this.total_cost = this.equipment_cost + this.training_cost + this.mount_cost;
-		this.addCultureBonuses();
 	}
 		
 	public void updateUnit() {
-		System.out.println("UNIT! updateUnit");
+		//System.out.println("UNIT! updateUnit");
 		
 		//available feats
 		List<String> av_feats = new ArrayList<>(Arrays.asList(feats));
 		boolean crs = true;
 		boolean mta = true;
 		boolean pst = true;
+		boolean lic = true;
 		for (int i=0;i<this.feat.length;i++) {
 			if (this.feat[i]!=null) {
 				if (this.feat[i].equals("Weapon Focus (W1)")||
@@ -375,8 +440,12 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 					mta = false;
 				if (this.feat[i].equals("Weapon Finesse"))
 					pst = false;
+				if (this.feat[i].equals("Evil Brand"))
+					lic = false;
 			}
 		}
+		if (lic)
+			av_feats.remove("Lichloved");
 		if (crs)
 			av_feats.remove("Crossbow Sniper");
 		if (mta)
@@ -408,8 +477,6 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 			this.stat_mods[i] = (int) Math.floor((this.stats[i]-10)/2);
 		}
 		this.W = 2;
-		if (this.type.contains("Cavalry"))
-			this.W = 3;
 			//training/training_type
 		int mab = 0;
 		int map = 0;
@@ -493,21 +560,21 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 		this.saves[0] += 2;
 			//subtypes
 		boolean dis = false;
-		boolean fas = false;
+		this.fast = false;
 		for (int i=0;i<this.unit_feat.length;i++) {
 			if (this.unit_feat[i]!=null) {
 				if (this.unit_feat[i].equals("Disciplined"))
 					dis = true;
 				if (this.armour.type!=null)
 					if (this.unit_feat[i].equals("Fast")&&(!(this.armour.type.equals("Medium"))&&!(this.armour.type.equals("Heavy"))))
-						fas = true;
+						this.fast = true;
 			}
 		}
 		if (dis)
 			this.C += 2;
-		if (fas)
+		if (this.fast)
 			this.speed = 5;
-		else 
+		else
 			this.speed = 0;
 			//racials&stats
 		if (this.race.isundead) {
@@ -557,13 +624,12 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 				cac = (int) Math.floor(lgt_load[this.stats[0]-1]*carry_multiplier_quad[Utility.findSize(this.mount.size)]);
 			if (wgt<=cac)
 				lgh = true;
-			this.speed += this.mount.base_speed;
 			for (String s:this.feat) {
 				//check which feats are selected
 				if (s==null)
 					continue;
 				if (s.equals("Mounted Combat"))
-					mcb = true;
+					mcb = true;	
 			}
 		//infantry conditions
 		} else {
@@ -606,8 +672,11 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 				slg = true;
 		}
 			//feat effects
-		if (das)
+		if (das&&!cav) {
+			this.dash = true;
 			this.speed += 5;
+		} else
+			this.dash = false;
 		if (dai) {
 			rap += 2;
 			rab -= 1;
@@ -672,7 +741,26 @@ Special note: The mounted combat feat allows the unit to use the riders AC and T
 			//armour
 		this.AC += this.armour.ac+this.shield.ac;
 		this.AC += Math.min(Math.min(this.shield.max_dex,this.armour.max_dex),this.stat_mods[1]);
+		this.mount.updateMount();
+		if (cav) {
+			this.speed = this.mount.base_speed;
+			this.saves[1] = this.mount.ref;
+			for (Weapon weapon:this.weapons) {
+				if (!(weapon.type.equals("Ranged")))
+					weapon.AB += 1;
+			}
+			this.W += 1;
+			if (mcb) {
+				this.AC = Math.max(this.AC+1,(int) Math.ceil(((this.AC+1)+(this.mount.AC))/2));
+				this.T = Math.max(this.T,(int) Math.ceil((this.T+this.mount.T)/2));
+				
+			} else {
+				this.AC = (int) Math.ceil(((this.AC+1)+(this.mount.AC))/2);
+				this.T = (int) Math.ceil((this.T+this.mount.T)/2);
+			}
+		}
 		this.getUnitCost();
+		this.addCultureBonuses();
 	}
 	
 	public void addCultureBonuses() {
