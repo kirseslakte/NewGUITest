@@ -7,7 +7,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.concurrent.TimeUnit;
 
-public class HexPane extends Hex{
+public class HexPane {
 	
 	public static List<JTextField> hex_list = new ArrayList<JTextField>();
 	public static List<JComboBox> owner_list = new ArrayList<JComboBox>();
@@ -29,8 +29,9 @@ public class HexPane extends Hex{
 	public static int[] paddyx = {20,10,5,5,5,5,5,8,5,10,10,10,10,5,5,5};
 	static GridBagConstraints c = new GridBagConstraints();
 	public static List<String> lordnames = new ArrayList<String>();
-	public static List<Buildings> buildings = new ArrayList<Buildings>();
 	public static List<String[]> built_buildings = new ArrayList<String[]>();
+	static List<Button> rmv_btns = new ArrayList<Button>();
+	static Button add_hex_btn = new Button("Add hex");
 	
 	public HexPane() {
 		
@@ -56,10 +57,9 @@ public class HexPane extends Hex{
 							correct = false;
 					}
 				}
-				if (correct) {
-					System.out.println("***UPDATING HEX BUTTON***");
-					updateHexPane();
-				} else
+				if (correct)
+					setHexVisuals();
+				else
 					JOptionPane.showMessageDialog(null, "Hex not correctly configured","Update Error",
 							JOptionPane.INFORMATION_MESSAGE);
 			}
@@ -119,73 +119,63 @@ public class HexPane extends Hex{
 		for (int i=0;i<NationHandler.listoflords.size();i++) {
 			lordnames.add(NationHandler.listoflords.get(i).name);
 		}
-		loadHexPane(true);
-		updateHexPane();
+		add_hex_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				addHex();
+			}
+		});
+		Buildings.initialize();
+		setHexVisuals();
+		updateCombos();
 		
 		return hex_panel;
 	}
 	
-	public void updateHexPane() {
+	public static void updateCombos() {
 		//System.out.println("HEXPANE! updateHexPane");
-		NationHandler.updateNation();
-		if (hex_list.size()==0) {//check if we need to add another hex line
-			addHex();
-		}else {
-			if (!(hex_list.get(hex_list.size()-1).getText().equals(""))) {
-				addHex();
-			}
-		}//done with adding new hex line
 		lordnames.clear();//update the lordnames list to see if it has expanded
 		for (int i=0;i<NationHandler.listoflords.size();i++) {
 			lordnames.add(NationHandler.listoflords.get(i).name);
 		}
 		for (int i=0;i<owner_list.size();i++) {//update ownerlist
-			//String own = (String) owner_list.get(i).getSelectedItem();
+			String own = (String) owner_list.get(i).getSelectedItem();
 			owner_list.get(i).removeAllItems();
 			for (String s:lordnames) {
 				owner_list.get(i).addItem(s);
 			}
-			//owner_list.get(i).setSelectedItem(own);
+			owner_list.get(i).setSelectedItem(own);
 		}
-		//need to update the values
-		for (int i=0;i<NationHandler.listofhexes.size();i++) {//need to fetch all the values from hex
-			NationHandler.listofhexes.get(i).updateHex();
-			upgrade_cost_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).upgrade_cost));
-			bp_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).base_production));
-			upkeep_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).upkeep));
-			gov_upkeep_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).govnm_upkeep));
-			pv_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).population_value));
-			unit_cap_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).unit_cap));
-			owner_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).owner);
-		}
-		hex_panel.revalidate();//redraw the pane
 	}
 	
-	public void loadHexPane(boolean loading) {
-		//System.out.println("HEXPANE! loadHexPane "+NationHandler.listofhexes.size());
+	public static void setHexVisuals() {
+		//System.out.println("HEXPANE! setHexVisuals "+NationHandler.listofhexes.size());
 		for (int i=0;i<NationHandler.listofhexes.size();i++) {
-			if (loading)//if this is a load or update
-				addHex();
-			buildings.get(i).getInputs(i);
-			hex_list.get(i).setText(NationHandler.listofhexes.get(i).name);
-			owner_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).owner);
-			hab_list.get(i).setText(Double.toString(NationHandler.listofhexes.get(i).habitability));
-			culture_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).alignment);
-			religion_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).religion);
-			pop_size_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).pop_size));
-			unrest_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).unrest));
-			resource_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).resource);
-			upgrade_cost_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).upgrade_cost));
-			bp_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).base_production));
-			upkeep_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).upkeep));
-			gov_upkeep_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).govnm_upkeep));
-			pv_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).population_value));
-			unit_cap_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).unit_cap));
+			try {
+				NationHandler.listofhexes.get(i).updateHex();
+				hex_list.get(i).setText(NationHandler.listofhexes.get(i).name);
+				owner_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).owner);
+				hab_list.get(i).setText(Double.toString(NationHandler.listofhexes.get(i).habitability));
+				culture_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).alignment);
+				religion_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).religion);
+				pop_size_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).pop_size));
+				unrest_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).unrest));
+				resource_list.get(i).setSelectedItem(NationHandler.listofhexes.get(i).resource);
+				upgrade_cost_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).upgrade_cost));
+				bp_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).base_production));
+				upkeep_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).upkeep));
+				gov_upkeep_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).govnm_upkeep));
+				pv_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).population_value));
+				unit_cap_list.get(i).setText(Integer.toString(NationHandler.listofhexes.get(i).unit_cap));
+			} catch (IndexOutOfBoundsException e) {
+				addHex();i--;
+			}
 		}
+		hex_panel.revalidate();
 		addHex();
 	}
-	public void addHex() {//simply adds another row along with the structure
+	public static void addHex() {//simply adds another row along with the structure
 		//System.out.println("HEXPANE! addHex");
+		hex_panel.remove(add_hex_btn);
 		int i = hex_list.size();
 		c.gridy = 2+i;//starting at the 3rd row (2)
 		c.gridx = 0;
@@ -195,8 +185,6 @@ public class HexPane extends Hex{
 		c.gridx = 1;
 		c.ipadx = paddyx[1];
 		owner_list.add(new JComboBox<>());
-		for (String s:lordnames)
-			owner_list.get(owner_list.size()-1).addItem(s);
 		hex_panel.add(owner_list.get(i),c);//added owner of hex
 		c.gridx = 2;
 		c.ipadx = paddyx[2];
@@ -204,11 +192,11 @@ public class HexPane extends Hex{
 		hex_panel.add(hab_list.get(i),c);//added habitability
 		c.gridx = 3;
 		c.ipadx = paddyx[3];
-		culture_list.add(new JComboBox<>(alignments));
+		culture_list.add(new JComboBox<>(Hex.alignments));
 		hex_panel.add(culture_list.get(i),c);//added culture
 		c.gridx = 4;
 		c.ipadx = paddyx[4];
-		religion_list.add(new JComboBox<>(alignments));
+		religion_list.add(new JComboBox<>(Hex.alignments));
 		hex_panel.add(religion_list.get(i),c);//added religion
 		c.gridx = 5;
 		c.ipadx = paddyx[5];
@@ -220,7 +208,7 @@ public class HexPane extends Hex{
 		hex_panel.add(unrest_list.get(i),c);//added unrest
 		c.gridx = 7;
 		c.ipadx = paddyx[7];
-		resource_list.add(new JComboBox<>(resources));
+		resource_list.add(new JComboBox<>(Hex.resources));
 		hex_panel.add(resource_list.get(i),c);//added resource
 		c.gridx = 8;
 		c.ipadx = paddyx[8];
@@ -253,68 +241,89 @@ public class HexPane extends Hex{
 		c.gridx = 15;
 		c.ipadx = paddyx[15];
 		building_btn_list.add(new Button("Buildings"));
-		buildings.add(new Buildings());
-		buildings.get(i).initialize();
+		//int k = NationHandler.listofhexes.get(i).hex_id;
 		building_btn_list.get(i).addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
-				if ((!buildings.get(i).isVisible())&&i<(hex_list.size()-1))
-					buildingCaller(i);
+				Buildings.stop();
+				Buildings.start(i);
 			}
 		});
 		hex_panel.add(building_btn_list.get(i),c);//added building button
+		c.gridx++;
+		rmv_btns.add(new Button("X"));
+		rmv_btns.get(i).addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+				removeHex(i);
+			}
+		});
+		c.gridy++;c.gridx=0;
+		hex_panel.add(add_hex_btn,c);
+		NationHandler.listofhexes.add(new Hex());
+		updateCombos();
 	}
 	
-	public void buildingCaller(int i) {
-		//System.out.println("HEXPANE! buildingCaller");
-		NationHandler.updateNation();
-		buildings.get(i).start(i);
-	}
-	
-	public void getBuildings(int hex_number) {
-		//System.out.println("HEXPANE! getBuildings");
-		//for (int i=0;i<hex_list.size()-1;i++) 
-			//buildings.get(i).getBuilding();
-		int k = buildings.get(hex_number).all_buildings.length;
-		NationHandler.listofhexes.get(hex_number).built_buildings = new String[k];
-		NationHandler.listofhexes.get(hex_number).building_upgrade = buildings.get(hex_number).upgrade_cost;
-		for (int i=0;i<k;i++){
-			String string = buildings.get(hex_number).all_buildings[i];
-			NationHandler.listofhexes.get(hex_number).built_buildings[i] = string;
+	public static void removeHex(int i) {
+		getHexVisuals();
+		NationHandler.listofhexes.remove(i);
+		hex_panel.remove(add_hex_btn);
+		
+		for (int k=hex_list.size()-1;k>=i;k--) {
+			hex_panel.remove(hex_list.get(k));
+			hex_panel.remove(owner_list.get(k));
+			hex_panel.remove(hab_list.get(k));
+			hex_panel.remove(culture_list.get(k));
+			hex_panel.remove(religion_list.get(k));
+			hex_panel.remove(pop_size_list.get(k));
+			hex_panel.remove(unrest_list.get(k));
+			hex_panel.remove(resource_list.get(k));
+			hex_panel.remove(resource_check_list.get(k));
+			hex_panel.remove(upgrade_cost_list.get(k));
+			hex_panel.remove(bp_list.get(k));
+			hex_panel.remove(upkeep_list.get(k));
+			hex_panel.remove(gov_upkeep_list.get(k));
+			hex_panel.remove(pv_list.get(k));
+			hex_panel.remove(building_btn_list.get(k));
+			hex_panel.remove(rmv_btns.get(k));
+			hex_list.remove(k);
+			owner_list.remove(k);
+			hab_list.remove(k);
+			culture_list.remove(k);
+			religion_list.remove(k);
+			pop_size_list.remove(k);
+			unrest_list.remove(k);
+			resource_list.remove(k);
+			resource_check_list.remove(k);
+			upgrade_cost_list.remove(k);
+			bp_list.remove(k);
+			upkeep_list.remove(k);
+			gov_upkeep_list.remove(k);
+			pv_list.remove(k);
+			building_btn_list.remove(k);
+			rmv_btns.remove(k);
 		}
-		//System.out.println("HexPane.getBuildings: Done");
-	}
+		
+		for (int k=i;k<NationHandler.listofhexes.size();k++) {
+			addHex();
+		}
+		c.gridx=0;
+		c.gridy=2+hex_list.size();
+		hex_panel.add(add_hex_btn,c);
+		setHexVisuals();
+	}	
 	
-	
-	public List<String[]> getHex() {
+	public static void getHexVisuals() {
 		//System.out.println("HEXPANE! getHex");
-		List<String[]> hexlist = new ArrayList<String[]>();
-		boolean empty_buildings;//is this needed???
 		for (int i=0;i<hex_list.size()-1;i++) {
-			hexlist.add(new String[11+buildings.get(i).all_buildings.length]);/*
-			if (buildings.get(i).all_buildings.length==0){
-				hexlist.add(new String[11]);
-				empty_buildings = true;//is this needed???
-			}else{
-				hexlist.add(new String[11+buildings.get(i).all_buildings.length]);
-				empty_buildings = false;
-			}*/
-			hexlist.get(i)[0] = hex_list.get(i).getText();
-			hexlist.get(i)[1] = (String) owner_list.get(i).getSelectedItem();
-			hexlist.get(i)[2] = hab_list.get(i).getText();
-			hexlist.get(i)[3] = (String) culture_list.get(i).getSelectedItem();
-			hexlist.get(i)[4] = (String) religion_list.get(i).getSelectedItem();
-			hexlist.get(i)[5] = pop_size_list.get(i).getText();
-			hexlist.get(i)[6] = unrest_list.get(i).getText();
-			hexlist.get(i)[7] = (String) resource_list.get(i).getSelectedItem();
-			hexlist.get(i)[8] = Boolean.toString(resource_check_list.get(i).isSelected());
-			hexlist.get(i)[9] = Integer.toString(buildings.get(i).upkeep_cost);
-			hexlist.get(i)[10] = Integer.toString(buildings.get(i).upgrade_cost);
-			//if (!empty_buildings){
-				for (int j=0;j<buildings.get(i).all_buildings.length;j++) {
-					hexlist.get(i)[11+j] = buildings.get(i).all_buildings[j];
-				}
-			//}
+			NationHandler.listofhexes.get(i).name = (String) hex_list.get(i).getText();
+			NationHandler.listofhexes.get(i).owner = (String) owner_list.get(i).getSelectedItem();
+			NationHandler.listofhexes.get(i).habitability = Double.parseDouble(hab_list.get(i).getText());
+			NationHandler.listofhexes.get(i).alignment = (String) culture_list.get(i).getSelectedItem();
+			NationHandler.listofhexes.get(i).religion = (String) religion_list.get(i).getSelectedItem();
+			NationHandler.listofhexes.get(i).pop_size = Integer.parseInt(pop_size_list.get(i).getText());
+			NationHandler.listofhexes.get(i).unrest = Integer.parseInt(unrest_list.get(i).getText());
+			NationHandler.listofhexes.get(i).resource = (String) resource_list.get(i).getSelectedItem();
+			NationHandler.listofhexes.get(i).resource_check = resource_check_list.get(i).isSelected();
+			NationHandler.listofhexes.get(i).updateHex();
 		}
-		return hexlist;
 	}
 }

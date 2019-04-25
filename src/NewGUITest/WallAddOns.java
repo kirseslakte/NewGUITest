@@ -44,7 +44,7 @@ public class WallAddOns extends JFrame{
     	this.addWindowListener(new WindowAdapter() {//close frame on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				update();
-				getter.hexpanel.buildings.get(hex_index).update();
+				//getter.hexpanel.buildings.get(hex_index).update();
 			}
 		});
     	this.c.gridy = 0;//first row!

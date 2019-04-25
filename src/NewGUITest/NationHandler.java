@@ -72,7 +72,7 @@ public class NationHandler extends JFrame{
 		mainPane.addTab("Units", new JScrollPane(UnitTab.unitTab()));
 		recalibrateLords();
 		//System.out.println("first recalibration of hexes");
-		recalibrateHexes();
+		//recalibrateHexes();
 		//System.out.println("loading races");
 		UnitTab.loadRaces();
 		//System.out.println("races loaded");
@@ -188,18 +188,18 @@ public class NationHandler extends JFrame{
 	
 	public static void recalibrateHexes() {
 		//System.out.println("NATIONHANDLER! recalibrateHexes");
-		for (int i=0;i<listoflords.size();i++)
-			listoflords.get(i).loadModifiers();
-		List<String[]> hexes = new ArrayList<String[]>();
+		//for (int i=0;i<listoflords.size();i++)
+			//listoflords.get(i).loadModifiers();
+		//List<String[]> hexes = new ArrayList<String[]>();
 		//boolean exists;
-		hexes = hexpanel.getHex();
-		listofhexes.clear();
-		for (int i=0;i<hexes.size();i++) {
+		//hexes = hexpanel.getHex();
+		//listofhexes.clear();
+		//for (int i=0;i<hexes.size();i++) {
 			//exists = false;
-			if ((!(hexes.get(i)[0].equals("")))){
-				listofhexes.add(new Hex(hexes.get(i)));
-			}
-		}
+			//if ((!(hexes.get(i)[0].equals("")))){
+				//listofhexes.add(new Hex(hexes.get(i)));
+			//}
+		//}
 	}
 	public static void recalibrateLords() {
 		//System.out.println("NATIONHANDLER! recalibrateLords");
@@ -251,7 +251,7 @@ public class NationHandler extends JFrame{
 			listofunits.get(i).number_of_units = (int) Integer.parseInt(UnitTab.amounts.get(i).getText());
 		}
 	}
-	
+	/*
 	public void initializeHex() {
 		//System.out.println("NATIONHANDLER! initializeHex");
 		for (int i=0;i<listofhexes.size();i++) {
@@ -263,14 +263,14 @@ public class NationHandler extends JFrame{
 			}
 			if (!(HexPane.buildings.get(i).built_walls.equals(""))) {
 				String wall = HexPane.buildings.get(i).built_walls;
-				int lordy = Utility.findLord(HexPane.buildings.get(i).hex.owner);
+				int lordy = Utility.findLord(listofhexes.get(i).owner);
 				double mod = listoflords.get(lordy).modifiers[26];
 				HexPane.buildings.get(i).wallframe.start(i,wall,mod);
 				HexPane.buildings.get(i).wallframe.stop();
 			}
-			HexPane.buildings.get(i).stop();
+			Buildings.stop();
 		}
-	}
+	}*///just an initialization to fix the issue with loading
 	
 	public static void getOfficials() {//get all of the lords officials
 		listofofficials.clear();

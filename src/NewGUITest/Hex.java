@@ -15,7 +15,6 @@ public class Hex {
 	public int unrest;
 	public String resource;
 	public boolean resource_check;
-	public List<String> buildings = new ArrayList<String>();
 	public String[] built_buildings;
 	public String owner;
 	
@@ -29,6 +28,7 @@ public class Hex {
 	public int govnm_upkeep;
 	public int building_upkeep;
 	public int building_upgrade;
+	//public int hex_id;
 	
 	public static int[] list_pv = {1,2,4,8,16,32,50,70,80,100};//all of these are rules
 	public static double[] list_pm = {0.25,0.5,1,1.5,2,2.75,3.5,4.25,5.25,6.5};
@@ -54,6 +54,7 @@ public class Hex {
 	public int[] add_ons_costs;
 	public int[] walls_costs;
 	public int[] walls_add_costs;
+	//public static int id;
 	
 	public Hex() {
 		
@@ -75,7 +76,7 @@ public class Hex {
 		} catch (ArrayIndexOutOfBoundsException e) {
 			//System.out.println("Hex not found");
 		}
-		for (String s:buildings) {
+		for (String s:this.built_buildings) {
 			String[] splitter = Utility.stringSplitter(s, "-");
 			if (splitter[1].equals("RGO"))
 				rgo_mod += 0.25*Integer.parseInt(splitter[2]);
@@ -96,6 +97,11 @@ public class Hex {
 		//^affected by culture boni,culture/religion,unrest,government,resources,buildings
 	}
 	
+	public void setBuildings(String[] s) {
+		this.built_buildings = s;
+		this.updateHex();
+	}
+	
 	public void loadHex(String[] s){//assumes you have erased the separator
 		//System.out.println("HEX! loadHex");
 		this.name = s[0];
@@ -109,11 +115,9 @@ public class Hex {
 		this.resource_check = Boolean.parseBoolean(s[8]);
 		this.building_upkeep = Integer.parseInt(s[9]);
 		this.building_upgrade = Integer.parseInt(s[10]);
-		built_buildings = new String[s.length-11];//Arrays.copyOfRange(s, 9, s.length);
+		this.built_buildings = new String[s.length-11];//Arrays.copyOfRange(s, 9, s.length);
 		for (int i=0;i<s.length-11;i++){
-			built_buildings[i] = s[11+i];
-			if (!(built_buildings[i].equals("")))
-				buildings.add(built_buildings[i]);
+			this.built_buildings[i] = s[11+i];
 		}
 		this.updateHex();
 	}

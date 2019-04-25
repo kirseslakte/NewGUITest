@@ -72,7 +72,7 @@ public class BuildingsAddOns extends JFrame{
     	this.addWindowListener(new WindowAdapter() {//close frame on closing window
 			public void windowClosing(WindowEvent windowEvent){
 				update();
-				HexPane.buildings.get(hex_index).update();
+				//HexPane.buildings.get(hex_index).update();
 			}
 		});
     	this.c.gridy = 0;//first row!
