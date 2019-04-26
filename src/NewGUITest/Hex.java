@@ -8,26 +8,28 @@ import java.awt.*;
 
 public class Hex {
 	public String name;//all of these are in a sense input variables
-	public double habitability;
-	public String alignment;
-	public String religion;
-	public int pop_size;
-	public int unrest;
-	public String resource;
-	public boolean resource_check;
-	public String[] built_buildings;
+	public double habitability = 1;
+	public String alignment = "LG";
+	public String religion = "LG";
+	public int pop_size = 1;
+	public int unrest = 0;
+	public String resource = "";
+	public boolean resource_check = false;
+	public List<Buildings> buildings = new ArrayList<Buildings>();
+	public List <Buildings> fortifications = new ArrayList<Buildings>();
+	public String walls = "";
 	public String owner;
 	
 	public int[] building_cost;	//all of these are in a sense read variables
-	public int upgrade_cost;	//not sure if these should be here and include some sort of update method
-	public int upkeep;			//or if it should be rolled into hexmap
-	public int base_production;	//probably here since we actually have space here
-	public int base_bp;
-	public int population_value;
-	public int unit_cap;
-	public int govnm_upkeep;
-	public int building_upkeep;
-	public int building_upgrade;
+	public int upgrade_cost = 0;	//not sure if these should be here and include some sort of update method
+	public int upkeep = 0;			//or if it should be rolled into hexmap
+	public int base_production = 0;	//probably here since we actually have space here
+	public int base_bp = 0;
+	public int population_value = 0;
+	public int unit_cap = 0;
+	public int govnm_upkeep = 0;
+	public int building_upkeep = 0;
+	public int building_upgrade = 0;
 	//public int hex_id;
 	
 	public static int[] list_pv = {1,2,4,8,16,32,50,70,80,100};//all of these are rules
@@ -41,8 +43,8 @@ public class Hex {
 	public static String[] passive_resources = {"Darkwood","Precious Metals","Spices","Silk","Incense","Cotton","Herbs","Marble","Sugar","Gemstones/Diamonds",
 			"Ivory","High Quality Iron","High Quality Stone","High Quality Paper","High Quality Glass","Furs","Drugs"};
 	public static String[] resources = {"","Mithril","Adamantine","Baatorian Green Steel","Cold Iron","Astral Driftmetal","Darkwood","Precious Metals",
-			"Spices","Silk","Incense","Cotton","Herbs","Marble","Sugar","Gemstones/Diamonds","Ivory","High Quality Iron","High Quality Stone",
-			"High Quality Paper","High Quality Glass","Furs","Drugs"};
+			"Spices","Silk","Incense","Cotton","Herbs","Marble","Sugar","Gemstones/Diamonds","Ivory","HQ Iron","HQ Stone",
+			"HQ Paper","HQ Glass","Furs","Drugs"};
 	public static double base_pm = 250;
 	public String[] buildinglist;
 	public String[] fortificationlist;
@@ -57,7 +59,9 @@ public class Hex {
 	//public static int id;
 	
 	public Hex() {
-		
+		this.name = "Hex "+Integer.toString(NationHandler.listofhexes.size()+1);
+		this.owner = NationHandler.listoflords.get(0).name;
+		//System.out.println("lord of hex "+this.name+" is "+this.owner);
 	}
 	
 	public Hex(String[] s) {
@@ -75,30 +79,31 @@ public class Hex {
 			trademod = findCenterOfTradeContribution();
 		} catch (ArrayIndexOutOfBoundsException e) {
 			//System.out.println("Hex not found");
-		}
+		}/*
 		for (String s:this.built_buildings) {
 			String[] splitter = Utility.stringSplitter(s, "-");
 			if (splitter[1].equals("RGO"))
 				rgo_mod += 0.25*Integer.parseInt(splitter[2]);
 			if (splitter[1].equals("Road")||splitter[1].equals("Highway"))
 				rgo_mod += 0.1;
-		}
+		}*/
 		if (this.pop_size>9)
 			this.upgrade_cost = 0;
 		else
 			this.upgrade_cost = (int) Math.round(this.building_upgrade+list_upgrade_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(this.owner)).modifiers[23]);
 		this.base_bp = (int) Math.round(base_pm*habitability*list_pm[this.pop_size-1]);
 		this.upkeep = (int) Math.round((list_upkeep_cost[this.pop_size-1]*NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[22]+
-				this.building_upkeep)*this.bureau());
+				this.building_upkeep));//*this.bureau());
 		this.govnm_upkeep = (int) Math.round(base_pm*5*list_pm[this.pop_size-1]);
 		this.population_value = list_pv[this.pop_size-1];
 		this.unit_cap = (int) Math.round(list_unit_cap[this.pop_size-1]*(1+NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[9]));
 		this.base_production = (int) Math.round(this.base_bp*(1+rgo_mod+NationHandler.listoflords.get(Utility.findLord(owner)).modifiers[8]+culturemod+religionmod+unrestmod)+trademod);
 		//^affected by culture boni,culture/religion,unrest,government,resources,buildings
+		 
 	}
 	
 	public void setBuildings(String[] s) {
-		this.built_buildings = s;
+		//this.built_buildings = s;
 		this.updateHex();
 	}
 	
@@ -115,10 +120,10 @@ public class Hex {
 		this.resource_check = Boolean.parseBoolean(s[8]);
 		this.building_upkeep = Integer.parseInt(s[9]);
 		this.building_upgrade = Integer.parseInt(s[10]);
-		this.built_buildings = new String[s.length-11];//Arrays.copyOfRange(s, 9, s.length);
-		for (int i=0;i<s.length-11;i++){
-			this.built_buildings[i] = s[11+i];
-		}
+		//this.built_buildings = new String[s.length-11];//Arrays.copyOfRange(s, 9, s.length);
+		//for (int i=0;i<s.length-11;i++){
+			//this.built_buildings[i] = s[11+i];
+		//}
 		this.updateHex();
 	}
 	
@@ -222,13 +227,14 @@ public class Hex {
 	}
 	
 	public double findCenterOfTradeContribution() {
+		//System.out.println("finding center of trade");
 		Lord lord = NationHandler.listoflords.get(Utility.findLord(this.owner));
 		Lord overlord = NationHandler.listoflords.get(0);
 		boolean exists = false;
-		for (String s:this.built_buildings) {
-			if (s.contains("Center of Trade"))
-				exists = true;
-		}
+		//for (String s:this.built_buildings) {
+			//if (s.contains("Center of Trade"))
+				//exists = true;
+		//}
 		if (exists)
 			return Math.max(lord.total_trade_value*lord.modifiers[2],overlord.total_trade_value*overlord.modifiers[2])*0.2;
 		return 0;
@@ -236,10 +242,10 @@ public class Hex {
 	
 	public double bureau() {
 		double mod = 1;
-		for (String s:this.built_buildings) {
-			if (s.contains("Bureau"))
-				mod = 0.9;
-		}
+		//for (String s:this.built_buildings) {
+			//if (s.contains("Bureau"))
+				//mod = 0.9;
+		//}
 		return mod;
 	}
 }

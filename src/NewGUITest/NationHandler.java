@@ -42,7 +42,7 @@ public class NationHandler extends JFrame{
 		listofloads.remove("hexes");listofloads.remove("units");listofloads.remove("officials");
 		listofloads.remove("culture");listofloads.remove("routes");listofloads.remove("races");//remove all non-lords
 		int i = 0;
-		//System.out.println("So far so good");
+		System.out.println("So far so good");
 		for (String lord:listofloads){//lords SHOULD be sorted alphabetically meaning overlord is first,
 			String[] loaded_lord = ReadNWrite.loadLord(lord);//then vassal1, then vassals of 1, then vassal2, then vassals of 2, aso
 			listoflords.add(new Lord(loaded_lord[0],loaded_lord[9]));//name, master_title
@@ -63,17 +63,18 @@ public class NationHandler extends JFrame{
 			}
 			listoflords.get(listoflords.size()-1).loadModifiers();
 		}
-		//System.out.println("All lords loaded");
+		System.out.println("All lords loaded");
 		//all lords have been loaded!!
 		listofhexes = ReadNWrite.loadHexes();
-		//System.out.println("Hexes loaded");
-		mainPane.addTab("Hexes", new JScrollPane(hexpanel.hexPane()));//loaded after all the lords
+		System.out.println("Hexes loaded");
+		//JScrollPane hexpane = new JScrollPane(hexpanel.hexPane(),JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		mainPane.addTab("Hexes",hexpanel.hexPane());//loaded after all the lords
 		mainPane.addTab("Culture & Portfolio", new JScrollPane(Culture.culturePane()));
 		mainPane.addTab("Units", new JScrollPane(UnitTab.unitTab()));
 		recalibrateLords();
 		//System.out.println("first recalibration of hexes");
 		//recalibrateHexes();
-		//System.out.println("loading races");
+		System.out.println("loading races");
 		UnitTab.loadRaces();
 		//System.out.println("races loaded");
 		//System.out.println("loading units");

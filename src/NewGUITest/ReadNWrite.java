@@ -428,9 +428,9 @@ public class ReadNWrite {
 				fw.write(hex.resource_check+System.getProperty("line.separator"));
 				fw.write(hex.building_upkeep+System.getProperty("line.separator"));
 				fw.write(hex.building_upgrade+System.getProperty("line.separator"));
-				for (String building: hex.built_buildings){
-					fw.write(building+System.getProperty("line.separator"));
-				}
+				//for (String building: hex.built_buildings){
+					//fw.write(building+System.getProperty("line.separator"));
+				//}
 				fw.write(separator+System.getProperty("line.separator"));
 			}
 			fw.close();
